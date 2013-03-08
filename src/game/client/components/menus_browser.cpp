@@ -108,9 +108,10 @@ void CMenus::RenderServerbrowserServerList(CUIRect View)
 	}
 
 	// do headers
+	static int s_GridHeader[10];
 	for(int i = 0; i < NumCols; i++)
 	{
-		if(DoButton_GridHeader(s_aCols[i].m_Caption, s_aCols[i].m_Caption, g_Config.m_BrSort == s_aCols[i].m_Sort, &s_aCols[i].m_Rect))
+		if(DoButton_GridHeader(&s_GridHeader[i], s_aCols[i].m_Caption, g_Config.m_BrSort == s_aCols[i].m_Sort, &s_aCols[i].m_Rect, s_aCols[i].m_Sort))
 		{
 			if(s_aCols[i].m_Sort != -1)
 			{
@@ -485,40 +486,41 @@ void CMenus::RenderServerbrowserFilters(CUIRect View)
 	ServerFilter.Margin(3.0f, &ServerFilter);
 	ServerFilter.VMargin(5.0f, &ServerFilter);
 
+	static int s_Filters[9] = {0};
 	ServerFilter.HSplitTop(20.0f, &Button, &ServerFilter);
-	if (DoButton_CheckBox(&g_Config.m_BrFilterEmpty, Localize("Has people playing"), g_Config.m_BrFilterEmpty, &Button))
+	if (DoButton_CheckBox(&g_Config.m_BrFilterEmpty, &s_Filters[0], Localize("Has people playing"), g_Config.m_BrFilterEmpty, &Button))
 		g_Config.m_BrFilterEmpty ^= 1;
 
 	ServerFilter.HSplitTop(20.0f, &Button, &ServerFilter);
-	if(DoButton_CheckBox(&g_Config.m_BrFilterSpectators, Localize("Count players only"), g_Config.m_BrFilterSpectators, &Button))
+	if(DoButton_CheckBox(&g_Config.m_BrFilterSpectators, &s_Filters[1], Localize("Count players only"), g_Config.m_BrFilterSpectators, &Button))
 		g_Config.m_BrFilterSpectators ^= 1;
 
 	ServerFilter.HSplitTop(20.0f, &Button, &ServerFilter);
-	if (DoButton_CheckBox(&g_Config.m_BrFilterFull, Localize("Server not full"), g_Config.m_BrFilterFull, &Button))
+	if (DoButton_CheckBox(&g_Config.m_BrFilterFull, &s_Filters[2], Localize("Server not full"), g_Config.m_BrFilterFull, &Button))
 		g_Config.m_BrFilterFull ^= 1;
 
 	ServerFilter.HSplitTop(20.0f, &Button, &ServerFilter);
-	if (DoButton_CheckBox(&g_Config.m_BrFilterFriends, Localize("Show friends only"), g_Config.m_BrFilterFriends, &Button))
+	if (DoButton_CheckBox(&g_Config.m_BrFilterFriends, &s_Filters[3], Localize("Show friends only"), g_Config.m_BrFilterFriends, &Button))
 		g_Config.m_BrFilterFriends ^= 1;
 
 	ServerFilter.HSplitTop(20.0f, &Button, &ServerFilter);
-	if (DoButton_CheckBox(&g_Config.m_BrFilterPw, Localize("No password"), g_Config.m_BrFilterPw, &Button))
+	if (DoButton_CheckBox(&g_Config.m_BrFilterPw, &s_Filters[4], Localize("No password"), g_Config.m_BrFilterPw, &Button))
 		g_Config.m_BrFilterPw ^= 1;
 
 	ServerFilter.HSplitTop(20.0f, &Button, &ServerFilter);
-	if (DoButton_CheckBox((char *)&g_Config.m_BrFilterCompatversion, Localize("Compatible version"), g_Config.m_BrFilterCompatversion, &Button))
+	if (DoButton_CheckBox((char *)&g_Config.m_BrFilterCompatversion, &s_Filters[5], Localize("Compatible version"), g_Config.m_BrFilterCompatversion, &Button))
 		g_Config.m_BrFilterCompatversion ^= 1;
 
 	ServerFilter.HSplitTop(20.0f, &Button, &ServerFilter);
-	if (DoButton_CheckBox((char *)&g_Config.m_BrFilterPure, Localize("Standard gametype"), g_Config.m_BrFilterPure, &Button))
+	if (DoButton_CheckBox((char *)&g_Config.m_BrFilterPure, &s_Filters[6], Localize("Standard gametype"), g_Config.m_BrFilterPure, &Button))
 		g_Config.m_BrFilterPure ^= 1;
 
 	ServerFilter.HSplitTop(20.0f, &Button, &ServerFilter);
-	if (DoButton_CheckBox((char *)&g_Config.m_BrFilterPureMap, Localize("Standard map"), g_Config.m_BrFilterPureMap, &Button))
+	if (DoButton_CheckBox((char *)&g_Config.m_BrFilterPureMap, &s_Filters[7], Localize("Standard map"), g_Config.m_BrFilterPureMap, &Button))
 		g_Config.m_BrFilterPureMap ^= 1;
 
 	ServerFilter.HSplitTop(20.0f, &Button, &ServerFilter);
-	if (DoButton_CheckBox((char *)&g_Config.m_BrFilterGametypeStrict, Localize("Strict gametype filter"), g_Config.m_BrFilterGametypeStrict, &Button))
+	if (DoButton_CheckBox((char *)&g_Config.m_BrFilterGametypeStrict, &s_Filters[8], Localize("Strict gametype filter"), g_Config.m_BrFilterGametypeStrict, &Button))
 		g_Config.m_BrFilterGametypeStrict ^= 1;
 
 	ServerFilter.HSplitTop(5.0f, 0, &ServerFilter);
@@ -561,7 +563,8 @@ void CMenus::RenderServerbrowserFilters(CUIRect View)
 		ServerFilter.HSplitTop(26.0f, &Button, &ServerFilter);
 		Button.VSplitRight(60.0f, &Button, &Rect);
 		Button.HMargin(3.0f, &Button);
-		if(DoButton_CheckBox(&g_Config.m_BrFilterCountry, Localize("Player country:"), g_Config.m_BrFilterCountry, &Button))
+		static int s_CountryFilter = 0;
+		if(DoButton_CheckBox(&g_Config.m_BrFilterCountry, &s_CountryFilter, Localize("Player country:"), g_Config.m_BrFilterCountry, &Button))
 			g_Config.m_BrFilterCountry ^= 1;
 
 		float OldWidth = Rect.w;
@@ -637,7 +640,7 @@ void CMenus::RenderServerbrowserServerDetail(CUIRect View)
 			ServerDetails.HSplitBottom(20.0f, &ServerDetails, &Button);
 			Button.VSplitLeft(5.0f, 0, &Button);
 			static int s_AddFavButton = 0;
-			if(DoButton_CheckBox(&s_AddFavButton, Localize("Favorite"), pSelectedServer->m_Favorite, &Button))
+			if(DoButton_CheckBox(&s_AddFavButton, &s_AddFavButton, Localize("Favorite"), pSelectedServer->m_Favorite, &Button))
 			{
 				if(pSelectedServer->m_Favorite)
 					ServerBrowser()->RemoveFavorite(pSelectedServer->m_NetAddr);

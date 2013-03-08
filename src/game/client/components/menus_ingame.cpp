@@ -313,7 +313,7 @@ void CMenus::RenderServerInfo(CUIRect MainView)
 		int IsFavorite = ServerBrowser()->IsFavorite(CurrentServerInfo.m_NetAddr);
 		ServerInfo.HSplitBottom(20.0f, &ServerInfo, &Button);
 		static int s_AddFavButton = 0;
-		if(DoButton_CheckBox(&s_AddFavButton, Localize("Favorite"), IsFavorite, &Button))
+		if(DoButton_CheckBox(&s_AddFavButton, &s_AddFavButton, Localize("Favorite"), IsFavorite, &Button))
 		{
 			if(IsFavorite)
 				ServerBrowser()->RemoveFavorite(CurrentServerInfo.m_NetAddr);

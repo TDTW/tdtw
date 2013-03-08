@@ -37,7 +37,7 @@ class CMenus : public CComponent
 
 	vec4 ButtonColorMul(const void *pID);
 
-	float *ButtonFade(const void *pID, float Seconds, int Checked=0);
+	float *ButtonFade(const void *pID, const void *pValue, float Seconds, int Checked=0);
 
 	int DoButton_DemoPlayer(const void *pID, const char *pText, int Checked, const CUIRect *pRect);
 	int DoButton_Sprite(const void *pID, int ImageID, int SpriteID, int Checked, const CUIRect *pRect, int Corners);
@@ -45,9 +45,9 @@ class CMenus : public CComponent
 	int DoButton_Menu(const void *pID, const char *pText, int Checked, const CUIRect *pRect);
 	int DoButton_MenuTab(const void *pID, const char *pText, int Checked, const CUIRect *pRect, int Corners);
 
-	int DoButton_CheckBox_Common(const void *pID, const char *pText, const char *pBoxText, const CUIRect *pRect);
-	int DoButton_CheckBox(const void *pID, const char *pText, int Checked, const CUIRect *pRect);
-	int DoButton_CheckBox_Number(const void *pID, const char *pText, int Checked, const CUIRect *pRect);
+	int DoButton_CheckBox_Common(const void *pID, const void *s_CheckBox, const char *pText, const char *pBoxText, const CUIRect *pRect);
+	int DoButton_CheckBox(const void *pID, const void *s_CheckBox, const char *pText, int Checked, const CUIRect *pRect);
+	int DoButton_CheckBox_Number(const void *pID, const void *s_CheckBox, const char *pText, int Checked, const CUIRect *pRect);
 
 	/*static void ui_draw_menu_button(const void *id, const char *text, int checked, const CUIRect *r, const void *extra);
 	static void ui_draw_keyselect_button(const void *id, const char *text, int checked, const CUIRect *r, const void *extra);
@@ -56,7 +56,7 @@ class CMenus : public CComponent
 	*/
 
 	int DoButton_Icon(int ImageId, int SpriteId, const CUIRect *pRect);
-	int DoButton_GridHeader(const void *pID, const char *pText, int Checked, const CUIRect *pRect);
+	int DoButton_GridHeader(const void *pID, const char *pText, int Checked, const CUIRect *pRect, int Sort);
 
 	//static void ui_draw_browse_icon(int what, const CUIRect *r);
 	//static void ui_draw_grid_header(const void *id, const char *text, int checked, const CUIRect *r, const void *extra);
