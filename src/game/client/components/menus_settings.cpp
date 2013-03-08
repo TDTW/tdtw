@@ -1004,12 +1004,13 @@ void CMenus::RenderSettings(CUIRect MainView)
 		Localize("Sound")};
 
 	int NumTabs = (int)(sizeof(aTabs)/sizeof(*aTabs));
-
+	
+	static int s_Tabs[7] = {0};
 	for(int i = 0; i < NumTabs; i++)
 	{
 		TabBar.HSplitTop(10, &Button, &TabBar);
 		TabBar.HSplitTop(26, &Button, &TabBar);
-		if(DoButton_MenuTab(aTabs[i], aTabs[i], s_SettingsPage == i, &Button, CUI::CORNER_R))
+		if(DoButton_MenuTab(&s_Tabs[i], aTabs[i], s_SettingsPage == i, &Button, CUI::CORNER_R))
 			s_SettingsPage = i;
 	}
 

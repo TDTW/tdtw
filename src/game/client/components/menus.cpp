@@ -81,6 +81,37 @@ vec4 CMenus::ButtonColorMul(const void *pID)
 	return vec4(1,1,1,1);
 }
 
+float *CMenus::ButtonFade(const void *pID, float Seconds, int Checked)
+{
+	float *pFade = (float*)pID;
+
+	if(UI()->ActiveItem() == pID)
+	{
+		*pFade -= Client()->RenderFrameTime()*3;
+		if(*pFade < 0.35f*Seconds)
+			*pFade = 0.35f*Seconds;
+	}
+	else if(UI()->HotItem() == pID)
+	{
+		*pFade += Client()->RenderFrameTime()*2;
+		if(*pFade > Seconds)
+			*pFade = Seconds;
+	}
+	else if(Checked)
+	{
+		*pFade += Client()->RenderFrameTime()*2;
+		if(*pFade > 0.85f*Seconds)
+			*pFade = 0.85f*Seconds;
+	}
+	else if(*pFade > 0.0f)
+	{
+		*pFade -= Client()->RenderFrameTime();
+		if(*pFade < 0.0f)
+			*pFade = 0.0f;
+	}
+	return pFade;
+}
+
 int CMenus::DoButton_Icon(int ImageId, int SpriteId, const CUIRect *pRect)
 {
 	Graphics()->TextureSet(g_pData->m_aImages[ImageId].m_Id);
@@ -98,8 +129,13 @@ int CMenus::DoButton_Toggle(const void *pID, int Checked, const CUIRect *pRect, 
 {
 	Graphics()->TextureSet(g_pData->m_aImages[IMAGE_GUIBUTTONS].m_Id);
 	Graphics()->QuadsBegin();
-	if(!Active)
-		Graphics()->SetColor(1.0f, 1.0f, 1.0f, 0.5f);
+	
+	float *pFade = ButtonFade(pID, 0.6f, Checked);
+	float FadeVal = *pFade/0.6f;
+	
+	vec4 Color = mix(vec4(1.0f, 1.0f, 1.0f, 0.4f), vec4(1.0f, 1.0f, 1.0f, 0.8f), FadeVal);
+	
+	Graphics()->SetColor(Color.r, Color.g, Color.b, Color.a);
 	RenderTools()->SelectSprite(Checked?SPRITE_GUIBUTTON_ON:SPRITE_GUIBUTTON_OFF);
 	IGraphics::CQuadItem QuadItem(pRect->x, pRect->y, pRect->w, pRect->h);
 	Graphics()->QuadsDrawTL(&QuadItem, 1);
@@ -116,7 +152,11 @@ int CMenus::DoButton_Toggle(const void *pID, int Checked, const CUIRect *pRect, 
 
 int CMenus::DoButton_Menu(const void *pID, const char *pText, int Checked, const CUIRect *pRect)
 {
-	RenderTools()->DrawUIRect(pRect, vec4(1,1,1,0.5f)*ButtonColorMul(pID), CUI::CORNER_ALL, 5.0f);
+	float *pFade = ButtonFade(pID, 0.6f, Checked);
+	float FadeVal = *pFade/0.6f;
+	
+	vec4 Color = mix(vec4(1.0f, 1.0f, 1.0f, 0.4f), vec4(1.0f, 1.0f, 1.0f, 0.8f), FadeVal);
+	RenderTools()->DrawUIRect(pRect, Color, CUI::CORNER_ALL, 5.0f);
 	CUIRect Temp;
 	pRect->HMargin(pRect->h>=20.0f?2.0f:1.0f, &Temp);
 	UI()->DoLabel(&Temp, pText, Temp.h*ms_FontmodHeight, 0);
@@ -124,8 +164,13 @@ int CMenus::DoButton_Menu(const void *pID, const char *pText, int Checked, const
 }
 
 void CMenus::DoButton_KeySelect(const void *pID, const char *pText, int Checked, const CUIRect *pRect)
-{
-	RenderTools()->DrawUIRect(pRect, vec4(1,1,1,0.5f)*ButtonColorMul(pID), CUI::CORNER_ALL, 5.0f);
+{	
+	float *pFade = ButtonFade(pID, 0.6f, Checked);
+	float FadeVal = *pFade/0.6f;
+	
+	vec4 Color = mix(vec4(1.0f, 1.0f, 1.0f, 0.4f), vec4(1.0f, 1.0f, 1.0f, 0.75f), FadeVal);
+
+	RenderTools()->DrawUIRect(pRect, Color, CUI::CORNER_ALL, 5.0f);
 	CUIRect Temp;
 	pRect->HMargin(1.0f, &Temp);
 	UI()->DoLabel(&Temp, pText, Temp.h*ms_FontmodHeight, 0);
@@ -133,10 +178,13 @@ void CMenus::DoButton_KeySelect(const void *pID, const char *pText, int Checked,
 
 int CMenus::DoButton_MenuTab(const void *pID, const char *pText, int Checked, const CUIRect *pRect, int Corners)
 {
-	if(Checked)
-		RenderTools()->DrawUIRect(pRect, ms_ColorTabbarActive, Corners, 10.0f);
-	else
-		RenderTools()->DrawUIRect(pRect, ms_ColorTabbarInactive, Corners, 10.0f);
+	float *pFade = ButtonFade(pID, 0.6f, Checked);
+	float FadeVal = *pFade/0.6f;
+	
+	vec4 Color = mix(ms_ColorTabbarInactive, ms_ColorTabbarActive, FadeVal);
+	
+	RenderTools()->DrawUIRect(pRect, Color, Corners, 10.0f);
+
 	CUIRect Temp;
 	pRect->HMargin(2.0f, &Temp);
 	UI()->DoLabel(&Temp, pText, Temp.h*ms_FontmodHeight, 0);
