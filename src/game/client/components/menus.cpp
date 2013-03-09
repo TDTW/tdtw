@@ -81,9 +81,9 @@ vec4 CMenus::ButtonColorMul(const void *pID)
 	return vec4(1,1,1,1);
 }
 
-float *CMenus::ButtonFade(const void *pID, const void *pValue, float Seconds, int Checked)
+float *CMenus::ButtonFade(const void *pID, const void *pValueFade, float Seconds, int Checked)
 {
-	float *pFade = (float*)pValue;
+	float *pFade = (float*)pValueFade;
 
 	if(UI()->ActiveItem() == pID)
 	{
@@ -245,7 +245,7 @@ int CMenus::DoButton_CheckBox_Number(const void *pID, const void *s_CheckBox, co
 	return DoButton_CheckBox_Common(pID, s_CheckBox, pText, aBuf, pRect);
 }
 
-int CMenus::DoEditBox(void *pID, const CUIRect *pRect, char *pStr, unsigned StrSize, float FontSize, float *Offset, bool Hidden, int Corners)
+int CMenus::DoEditBox(void *pID, const void *pValueFade, const CUIRect *pRect, char *pStr, unsigned StrSize, float FontSize, float *Offset, bool Hidden, int Corners)
 {
 	int Inside = UI()->MouseInside(pRect);
 	bool ReturnValue = false;
@@ -331,7 +331,12 @@ int CMenus::DoEditBox(void *pID, const CUIRect *pRect, char *pStr, unsigned StrS
 		UI()->SetHotItem(pID);
 
 	CUIRect Textbox = *pRect;
-	RenderTools()->DrawUIRect(&Textbox, vec4(1, 1, 1, 0.5f), Corners, 3.0f);
+	float *pFade = ButtonFade(pID, pValueFade, 0.6f, Inside);
+	float FadeVal = *pFade/0.6f;
+	
+	vec4 Color = mix(vec4(1.0f, 1.0f, 1.0f, 0.25f), vec4(1.0f, 1.0f, 1.0f, 0.5f), FadeVal);
+
+	RenderTools()->DrawUIRect(&Textbox, Color, Corners, 3.0f);
 	Textbox.VMargin(2.0f, &Textbox);
 	Textbox.HMargin(2.0f, &Textbox);
 
@@ -1074,7 +1079,8 @@ int CMenus::Render()
 			TextBox.VSplitRight(60.0f, &TextBox, 0);
 			UI()->DoLabel(&Label, Localize("Password"), 18.0f, -1);
 			static float Offset = 0.0f;
-			DoEditBox(&g_Config.m_Password, &TextBox, g_Config.m_Password, sizeof(g_Config.m_Password), 12.0f, &Offset, true);
+			static int s_FadePassword = 0;
+			DoEditBox(&g_Config.m_Password, &s_FadePassword, &TextBox, g_Config.m_Password, sizeof(g_Config.m_Password), 12.0f, &Offset, true);
 		}
 		else if(m_Popup == POPUP_CONNECTING)
 		{
@@ -1305,7 +1311,8 @@ int CMenus::Render()
 			TextBox.VSplitRight(60.0f, &TextBox, 0);
 			UI()->DoLabel(&Label, Localize("New name:"), 18.0f, -1);
 			static float Offset = 0.0f;
-			DoEditBox(&Offset, &TextBox, m_aCurrentDemoFile, sizeof(m_aCurrentDemoFile), 12.0f, &Offset);
+			static int s_FadeCurrentDemoFile = 0;
+			DoEditBox(&Offset, &s_FadeCurrentDemoFile, &TextBox, m_aCurrentDemoFile, sizeof(m_aCurrentDemoFile), 12.0f, &Offset);
 		}
 		else if(m_Popup == POPUP_REMOVE_FRIEND)
 		{
@@ -1358,7 +1365,8 @@ int CMenus::Render()
 			TextBox.VSplitRight(60.0f, &TextBox, 0);
 			UI()->DoLabel(&Label, Localize("Nickname"), 18.0f, -1);
 			static float Offset = 0.0f;
-			DoEditBox(&g_Config.m_PlayerName, &TextBox, g_Config.m_PlayerName, sizeof(g_Config.m_PlayerName), 12.0f, &Offset);
+			static int s_FadePlayerName = 0;
+			DoEditBox(&g_Config.m_PlayerName, &s_FadePlayerName, &TextBox, g_Config.m_PlayerName, sizeof(g_Config.m_PlayerName), 12.0f, &Offset);
 		}
 		else
 		{

@@ -509,7 +509,8 @@ void CMenus::RenderServerControl(CUIRect MainView)
 		float w = TextRender()->TextWidth(0, 14.0f, pLabel, -1);
 		Reason.VSplitLeft(w+10.0f, 0, &Reason);
 		static float s_Offset = 0.0f;
-		DoEditBox(&m_aCallvoteReason, &Reason, m_aCallvoteReason, sizeof(m_aCallvoteReason), 14.0f, &s_Offset, false, CUI::CORNER_ALL);
+		static int s_FadeReason = 0;
+		DoEditBox(&m_aCallvoteReason, &s_FadeReason, &Reason, m_aCallvoteReason, sizeof(m_aCallvoteReason), 14.0f, &s_Offset, false, CUI::CORNER_ALL);
 
 		// extended features (only available when authed in rcon)
 		if(Client()->RconAuthed())
@@ -577,14 +578,15 @@ void CMenus::RenderServerControl(CUIRect MainView)
 					if(s_aVoteDescription[0] != 0 && s_aVoteCommand[0] != 0)
 						m_pClient->m_pVoting->AddvoteOption(s_aVoteDescription, s_aVoteCommand);
 
+				static int s_Fade[2] = {0};
 				Bottom.VSplitLeft(5.0f, 0, &Bottom);
 				Bottom.VSplitLeft(250.0f, &Button, &Bottom);
 				static float s_OffsetDesc = 0.0f;
-				DoEditBox(&s_aVoteDescription, &Button, s_aVoteDescription, sizeof(s_aVoteDescription), 14.0f, &s_OffsetDesc, false, CUI::CORNER_ALL);
+				DoEditBox(&s_aVoteDescription, &s_Fade[0], &Button, s_aVoteDescription, sizeof(s_aVoteDescription), 14.0f, &s_OffsetDesc, false, CUI::CORNER_ALL);
 
 				Bottom.VMargin(20.0f, &Button);
 				static float s_OffsetCmd = 0.0f;
-				DoEditBox(&s_aVoteCommand, &Button, s_aVoteCommand, sizeof(s_aVoteCommand), 14.0f, &s_OffsetCmd, false, CUI::CORNER_ALL);
+				DoEditBox(&s_aVoteCommand, &s_Fade[1], &Button, s_aVoteCommand, sizeof(s_aVoteCommand), 14.0f, &s_OffsetCmd, false, CUI::CORNER_ALL);
 			}
 		}
 	}

@@ -443,7 +443,8 @@ void CMenus::RenderServerbrowserServerList(CUIRect View)
 	QuickSearch.VSplitLeft(5.0f, 0, &QuickSearch);
 	QuickSearch.VSplitLeft(240.0f-w-22.0f, &QuickSearch, &Button);
 	static float Offset = 0.0f;
-	if(DoEditBox(&g_Config.m_BrFilterString, &QuickSearch, g_Config.m_BrFilterString, sizeof(g_Config.m_BrFilterString), 12.0f, &Offset, false, CUI::CORNER_L))
+	static int s_FadeFilterString = 0;
+	if(DoEditBox(&g_Config.m_BrFilterString, &s_FadeFilterString, &QuickSearch, g_Config.m_BrFilterString, sizeof(g_Config.m_BrFilterString), 12.0f, &Offset, false, CUI::CORNER_L))
 		Client()->ServerBrowserUpdate();
 
 	// clear button
@@ -525,12 +526,13 @@ void CMenus::RenderServerbrowserFilters(CUIRect View)
 
 	ServerFilter.HSplitTop(5.0f, 0, &ServerFilter);
 
+	static int s_Fade[3] = {0};
 	ServerFilter.HSplitTop(19.0f, &Button, &ServerFilter);
 	UI()->DoLabelScaled(&Button, Localize("Game types:"), FontSize, -1);
 	Button.VSplitRight(60.0f, 0, &Button);
 	ServerFilter.HSplitTop(3.0f, 0, &ServerFilter);
 	static float Offset = 0.0f;
-	if(DoEditBox(&g_Config.m_BrFilterGametype, &Button, g_Config.m_BrFilterGametype, sizeof(g_Config.m_BrFilterGametype), FontSize, &Offset))
+	if(DoEditBox(&g_Config.m_BrFilterGametype, &s_Fade[0], &Button, g_Config.m_BrFilterGametype, sizeof(g_Config.m_BrFilterGametype), FontSize, &Offset))
 		Client()->ServerBrowserUpdate();
 
 	{
@@ -543,7 +545,7 @@ void CMenus::RenderServerbrowserFilters(CUIRect View)
 		char aBuf[5];
 		str_format(aBuf, sizeof(aBuf), "%d", g_Config.m_BrFilterPing);
 		static float Offset = 0.0f;
-		DoEditBox(&g_Config.m_BrFilterPing, &EditBox, aBuf, sizeof(aBuf), FontSize, &Offset);
+		DoEditBox(&g_Config.m_BrFilterPing, &s_Fade[1], &EditBox, aBuf, sizeof(aBuf), FontSize, &Offset);
 		g_Config.m_BrFilterPing = clamp(str_toint(aBuf), 0, 999);
 	}
 
@@ -553,7 +555,7 @@ void CMenus::RenderServerbrowserFilters(CUIRect View)
 	UI()->DoLabelScaled(&Button, Localize("Server address:"), FontSize, -1);
 	Button.VSplitRight(60.0f, 0, &Button);
 	static float OffsetAddr = 0.0f;
-	if(DoEditBox(&g_Config.m_BrFilterServerAddress, &Button, g_Config.m_BrFilterServerAddress, sizeof(g_Config.m_BrFilterServerAddress), FontSize, &OffsetAddr))
+	if(DoEditBox(&g_Config.m_BrFilterServerAddress, &s_Fade[2], &Button, g_Config.m_BrFilterServerAddress, sizeof(g_Config.m_BrFilterServerAddress), FontSize, &OffsetAddr))
 		Client()->ServerBrowserUpdate();
 
 	// player country
@@ -880,6 +882,7 @@ void CMenus::RenderServerbrowserFriends(CUIRect View)
 	// add friend
 	if(m_pClient->Friends()->NumFriends() < IFriends::MAX_FRIENDS)
 	{
+		static int s_Fade[2] = {0};
 		ServerFriends.HSplitTop(10.0f, 0, &ServerFriends);
 		ServerFriends.HSplitTop(19.0f, &Button, &ServerFriends);
 		char aBuf[64];
@@ -888,7 +891,7 @@ void CMenus::RenderServerbrowserFriends(CUIRect View)
 		Button.VSplitLeft(80.0f, 0, &Button);
 		static char s_aName[MAX_NAME_LENGTH] = {0};
 		static float s_OffsetName = 0.0f;
-		DoEditBox(&s_aName, &Button, s_aName, sizeof(s_aName), FontSize, &s_OffsetName);
+		DoEditBox(&s_aName, &s_Fade[0], &Button, s_aName, sizeof(s_aName), FontSize, &s_OffsetName);
 
 		ServerFriends.HSplitTop(3.0f, 0, &ServerFriends);
 		ServerFriends.HSplitTop(19.0f, &Button, &ServerFriends);
@@ -897,7 +900,7 @@ void CMenus::RenderServerbrowserFriends(CUIRect View)
 		Button.VSplitLeft(80.0f, 0, &Button);
 		static char s_aClan[MAX_CLAN_LENGTH] = {0};
 		static float s_OffsetClan = 0.0f;
-		DoEditBox(&s_aClan, &Button, s_aClan, sizeof(s_aClan), FontSize, &s_OffsetClan);
+		DoEditBox(&s_aClan, &s_Fade[1], &Button, s_aClan, sizeof(s_aClan), FontSize, &s_OffsetClan);
 
 		ServerFriends.HSplitTop(3.0f, 0, &ServerFriends);
 		ServerFriends.HSplitTop(20.0f, &Button, &ServerFriends);
@@ -1040,7 +1043,8 @@ void CMenus::RenderServerbrowser(CUIRect MainView)
 		UI()->DoLabelScaled(&Button, Localize("Host address"), 14.0f, -1);
 		StatusBox.HSplitTop(20.0f, &Button, 0);
 		static float Offset = 0.0f;
-		DoEditBox(&g_Config.m_UiServerAddress, &Button, g_Config.m_UiServerAddress, sizeof(g_Config.m_UiServerAddress), 14.0f, &Offset);
+		static int s_FadeServerAdress = 0;
+		DoEditBox(&g_Config.m_UiServerAddress, &s_FadeServerAdress, &Button, g_Config.m_UiServerAddress, sizeof(g_Config.m_UiServerAddress), 14.0f, &Offset);
 	}
 }
 

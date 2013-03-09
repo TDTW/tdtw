@@ -185,6 +185,7 @@ void CMenus::RenderSettingsPlayer(CUIRect MainView)
 	CUIRect Button, Label;
 	MainView.HSplitTop(10.0f, 0, &MainView);
 
+	static int s_Fade[2] = {0};
 	// player name
 	MainView.HSplitTop(20.0f, &Button, &MainView);
 	Button.VSplitLeft(80.0f, &Label, &Button);
@@ -193,7 +194,7 @@ void CMenus::RenderSettingsPlayer(CUIRect MainView)
 	str_format(aBuf, sizeof(aBuf), "%s:", Localize("Name"));
 	UI()->DoLabelScaled(&Label, aBuf, 14.0, -1);
 	static float s_OffsetName = 0.0f;
-	if(DoEditBox(g_Config.m_PlayerName, &Button, g_Config.m_PlayerName, sizeof(g_Config.m_PlayerName), 14.0f, &s_OffsetName))
+	if(DoEditBox(g_Config.m_PlayerName, &s_Fade[0], &Button, g_Config.m_PlayerName, sizeof(g_Config.m_PlayerName), 14.0f, &s_OffsetName))
 		m_NeedSendinfo = true;
 
 	// player clan
@@ -204,7 +205,7 @@ void CMenus::RenderSettingsPlayer(CUIRect MainView)
 	str_format(aBuf, sizeof(aBuf), "%s:", Localize("Clan"));
 	UI()->DoLabelScaled(&Label, aBuf, 14.0, -1);
 	static float s_OffsetClan = 0.0f;
-	if(DoEditBox(g_Config.m_PlayerClan, &Button, g_Config.m_PlayerClan, sizeof(g_Config.m_PlayerClan), 14.0f, &s_OffsetClan))
+	if(DoEditBox(g_Config.m_PlayerClan, &s_Fade[1], &Button, g_Config.m_PlayerClan, sizeof(g_Config.m_PlayerClan), 14.0f, &s_OffsetClan))
 		m_NeedSendinfo = true;
 
 	// country flag selector
@@ -843,7 +844,8 @@ void CMenus::RenderSettingsSound(CUIRect MainView)
 		UI()->DoLabelScaled(&Button, Localize("Sample rate"), 14.0f, -1);
 		Button.VSplitLeft(190.0f, 0, &Button);
 		static float Offset = 0.0f;
-		DoEditBox(&g_Config.m_SndRate, &Button, aBuf, sizeof(aBuf), 14.0f, &Offset);
+		static int s_FadeSoundRate = 0;
+		DoEditBox(&g_Config.m_SndRate, &s_FadeSoundRate, &Button, aBuf, sizeof(aBuf), 14.0f, &Offset);
 		g_Config.m_SndRate = max(1, str_toint(aBuf));
 		m_NeedRestartSound = !s_SndEnable || s_SndRate != g_Config.m_SndRate;
 	}
