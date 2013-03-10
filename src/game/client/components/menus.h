@@ -38,6 +38,7 @@ class CMenus : public CComponent
 	vec4 ButtonColorMul(const void *pID);
 
 	float *ButtonFade(const void *pID, const void *pValue, float Seconds, int Checked=0);
+	float *ButtonFade(const void *pID, const void *pValue, const CUIRect *pRect, float Seconds);
 
 	int DoButton_DemoPlayer(const void *pID, const char *pText, int Checked, const CUIRect *pRect);
 	int DoButton_Sprite(const void *pID, int ImageID, int SpriteID, int Checked, const CUIRect *pRect, int Corners);

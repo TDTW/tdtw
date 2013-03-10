@@ -112,6 +112,25 @@ float *CMenus::ButtonFade(const void *pID, const void *pValueFade, float Seconds
 	return pFade;
 }
 
+float *CMenus::ButtonFade(const void *pID, const void *pValueFade, const CUIRect *pRect, float Seconds)
+{
+	float *pFade = (float*)pValueFade;
+
+	if(UI()->MouseInside(pRect) || UI()->ActiveItem() == pID)
+	{
+		*pFade += Client()->RenderFrameTime()*2;
+		if(*pFade > Seconds)
+			*pFade = Seconds;
+	}
+	else if(*pFade > 0.0f)
+	{
+		*pFade -= Client()->RenderFrameTime();
+		if(*pFade < 0.0f)
+			*pFade = 0.0f;
+	}
+	return pFade;
+}
+
 int CMenus::DoButton_Icon(int ImageId, int SpriteId, const CUIRect *pRect)
 {
 	Graphics()->TextureSet(g_pData->m_aImages[ImageId].m_Id);
@@ -434,21 +453,33 @@ float CMenus::DoScrollbarV(const void *pID, const CUIRect *pRect, float Current)
 
 	if(Inside)
 		UI()->SetHotItem(pID);
-
+		
+ 	static int s_RailFade = 0;
+	float *pRailFade = ButtonFade(pID, &s_RailFade, pRect, 0.6f);
+	float RailFadeVal = *pRailFade/0.6f;
+	
+	vec4 RailColor = mix(vec4(1.0f, 1.0f, 1.0f, 0.0f), vec4(1.0f, 1.0f, 1.0f, 0.25f), RailFadeVal);
+		 				
 	// render
 	CUIRect Rail;
 	pRect->VMargin(5.0f, &Rail);
-	RenderTools()->DrawUIRect(&Rail, vec4(1,1,1,0.25f), 0, 0.0f);
+	RenderTools()->DrawUIRect(&Rail, RailColor, 0, 0.0f);
 
 	CUIRect Slider = Handle;
 	Slider.w = Rail.x-Slider.x;
-	RenderTools()->DrawUIRect(&Slider, vec4(1,1,1,0.25f), CUI::CORNER_L, 2.5f);
+	RenderTools()->DrawUIRect(&Slider, RailColor, CUI::CORNER_L, 2.5f);
 	Slider.x = Rail.x+Rail.w;
-	RenderTools()->DrawUIRect(&Slider, vec4(1,1,1,0.25f), CUI::CORNER_R, 2.5f);
+	RenderTools()->DrawUIRect(&Slider, RailColor, CUI::CORNER_R, 2.5f);
 
+	static int s_ButtFade = 0;
+	float *pButtFade = ButtonFade(pID, &s_ButtFade, 0.6f);
+	float ButtFadeVal = *pButtFade/0.6f;
+	
+	vec4 ButtColor = mix(vec4(1.0f, 1.0f, 1.0f, 0.25f), vec4(1.0f, 1.0f, 1.0f, 0.75f), ButtFadeVal);
+	
 	Slider = Handle;
 	Slider.Margin(5.0f, &Slider);
-	RenderTools()->DrawUIRect(&Slider, vec4(1,1,1,0.25f)*ButtonColorMul(pID), CUI::CORNER_ALL, 2.5f);
+	RenderTools()->DrawUIRect(&Slider, ButtColor, CUI::CORNER_ALL, 2.5f);
 
 	return ReturnValue;
 }
