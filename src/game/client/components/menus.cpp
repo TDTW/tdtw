@@ -198,7 +198,7 @@ int CMenus::DoButton_GridHeader(const void *pID, const char *pText, int Checked,
 	float *pFade = ButtonFade(pID, pID, 0.6f, Checked);
 	float FadeVal = *pFade/0.6f;
 	
-	vec4 Color = mix(vec4(1.0f, 1.0f, 1.0f, 0.3f), vec4(1.0f, 1.0f, 1.0f, 0.65f), FadeVal);
+	vec4 Color = mix(vec4(1.0f, 1.0f, 1.0f, 0.0f), vec4(1.0f, 1.0f, 1.0f, 0.5f), FadeVal);
 
 	if(Sort != -1)
 		RenderTools()->DrawUIRect(pRect, Color, CUI::CORNER_T, 5.0f);
