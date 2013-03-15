@@ -149,8 +149,9 @@ void CMenus::RenderServerbrowserServerList(CUIRect View)
 	static int s_ScrollBar = 0;
 	static float s_ScrollValue = 0;
 
+	static float s_FadeValue[2] = {0};
 	Scroll.HMargin(5.0f, &Scroll);
-	s_ScrollValue = DoScrollbarV(&s_ScrollBar, &Scroll, s_ScrollValue);
+	s_ScrollValue = DoScrollbarV(&s_ScrollBar, &s_FadeValue[0], &Scroll, s_ScrollValue);
 
 	int ScrollNum = NumServers-Num+1;
 	if(ScrollNum > 0)
@@ -811,7 +812,8 @@ void CMenus::RenderServerbrowserFriends(CUIRect View)
 
 	// friends list(remove friend)
 	static float s_ScrollValue = 0;
-	UiDoListboxStart(&m_lFriends, &List, 30.0f, "", "", m_lFriends.size(), 1, m_FriendlistSelectedIndex, s_ScrollValue);
+	static float s_Fade[2] = {0};
+	UiDoListboxStart(&m_lFriends, &s_Fade[0], &List, 30.0f, "", "", m_lFriends.size(), 1, m_FriendlistSelectedIndex, s_ScrollValue);
 
 	m_lFriends.sort_range();
 	for(int i = 0; i < m_lFriends.size(); ++i)

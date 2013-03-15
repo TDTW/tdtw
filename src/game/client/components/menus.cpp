@@ -418,7 +418,7 @@ int CMenus::DoEditBox(void *pID, const void *pValueFade, const CUIRect *pRect, c
 	return ReturnValue;
 }
 
-float CMenus::DoScrollbarV(const void *pID, const CUIRect *pRect, float Current)
+float CMenus::DoScrollbarV(const void *pID, const float *pFade, const CUIRect *pRect, float Current)
 {
 	CUIRect Handle;
 	static float OffsetY;
@@ -454,8 +454,7 @@ float CMenus::DoScrollbarV(const void *pID, const CUIRect *pRect, float Current)
 	if(Inside)
 		UI()->SetHotItem(pID);
 		
- 	static int s_RailFade = 0;
-	float *pRailFade = ButtonFade(pID, &s_RailFade, pRect, 0.6f);
+	float *pRailFade = ButtonFade(pID, &pFade[0], pRect, 0.6f);
 	float RailFadeVal = *pRailFade/0.6f;
 	
 	vec4 RailColor = mix(vec4(1.0f, 1.0f, 1.0f, 0.0f), vec4(1.0f, 1.0f, 1.0f, 0.25f), RailFadeVal);
@@ -471,8 +470,7 @@ float CMenus::DoScrollbarV(const void *pID, const CUIRect *pRect, float Current)
 	Slider.x = Rail.x+Rail.w;
 	RenderTools()->DrawUIRect(&Slider, RailColor, CUI::CORNER_R, 2.5f);
 
-	static int s_ButtFade = 0;
-	float *pButtFade = ButtonFade(pID, &s_ButtFade, 0.6f);
+	float *pButtFade = ButtonFade(pID, &pFade[1], 0.6f);
 	float ButtFadeVal = *pButtFade/0.6f;
 	
 	vec4 ButtColor = mix(vec4(1.0f, 1.0f, 1.0f, 0.25f), vec4(1.0f, 1.0f, 1.0f, 0.75f), ButtFadeVal);
@@ -1230,7 +1228,8 @@ int CMenus::Render()
 				ActSelection = g_Config.m_BrFilterCountryIndex;
 			static float s_ScrollValue = 0.0f;
 			int OldSelected = -1;
-			UiDoListboxStart(&s_ScrollValue, &Box, 50.0f, Localize("Country"), "", m_pClient->m_pCountryFlags->Num(), 6, OldSelected, s_ScrollValue);
+			static float s_Fade[2] = {0};
+			UiDoListboxStart(&s_ScrollValue, &s_Fade[0], &Box, 50.0f, Localize("Country"), "", m_pClient->m_pCountryFlags->Num(), 6, OldSelected, s_ScrollValue);
 
 			for(int i = 0; i < m_pClient->m_pCountryFlags->Num(); ++i)
 			{
