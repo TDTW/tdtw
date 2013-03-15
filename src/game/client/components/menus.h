@@ -70,7 +70,7 @@ class CMenus : public CComponent
 	//static int ui_do_edit_box(void *id, const CUIRect *rect, char *str, unsigned str_size, float font_size, bool hidden=false);
 
 	float DoScrollbarV(const void *pID, const float *pFade, const CUIRect *pRect, float Current);
-	float DoScrollbarH(const void *pID, const void *pValueFade, const CUIRect *pRect, float Current);
+	float DoScrollbarH(const void *pID, const float *pFade, const CUIRect *pRect, float Current);
 	void DoButton_KeySelect(const void *pID, const char *pText, int Checked, const CUIRect *pRect);
 	int DoKeyReader(void *pID, const CUIRect *pRect, int Key);
 

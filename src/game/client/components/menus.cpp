@@ -484,7 +484,7 @@ float CMenus::DoScrollbarV(const void *pID, const float *pFade, const CUIRect *p
 
 
 
-float CMenus::DoScrollbarH(const void *pID, const void *pValueFade, const CUIRect *pRect, float Current)
+float CMenus::DoScrollbarH(const void *pID, const float *pFade, const CUIRect *pRect, float Current)
 {
 	CUIRect Handle;
 	static float OffsetX;
@@ -520,17 +520,11 @@ float CMenus::DoScrollbarH(const void *pID, const void *pValueFade, const CUIRec
 	if(Inside)
 		UI()->SetHotItem(pID);
 		
-	float *pRailFade = ButtonFade(pID, pValueFade, pRect, 0.6f);
+	float *pRailFade = ButtonFade(pID, &pFade[0], pRect, 0.6f);
 	float RailFadeVal = *pRailFade/0.6f;
 	
 	vec4 RailColor = mix(vec4(1.0f, 1.0f, 1.0f, 0.0f), vec4(1.0f, 1.0f, 1.0f, 0.25f), RailFadeVal);
-			
-	// char aBuf[512];
-	// str_format(aBuf, sizeof(aBuf), "%.2f %.2f", RailFadeVal, *pRailFade);
-	// CTextCursor Cursor;
-	// TextRender()->SetCursor(&Cursor, 10, 10, 10, TEXTFLAG_RENDER);
-	// TextRender()->TextEx(&Cursor, aBuf, -1);
-	
+		
 	// render
 	CUIRect Rail;
 	pRect->HMargin(5.0f, &Rail);
@@ -542,8 +536,7 @@ float CMenus::DoScrollbarH(const void *pID, const void *pValueFade, const CUIRec
 	Slider.y = Rail.y+Rail.h;
 	RenderTools()->DrawUIRect(&Slider, RailColor, CUI::CORNER_B, 2.5f);
 	
-	static int s_ButtFade = 0;
-	float *pButtFade = ButtonFade(pID, &s_ButtFade, 0.6f);
+	float *pButtFade = ButtonFade(pID, &pFade[1], 0.6f);
 	float ButtFadeVal = *pButtFade/0.6f;
 	
 	vec4 ButtColor = mix(vec4(1.0f, 1.0f, 1.0f, 0.25f), vec4(1.0f, 1.0f, 1.0f, 0.75f), ButtFadeVal);

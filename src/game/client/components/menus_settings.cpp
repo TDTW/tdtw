@@ -122,8 +122,8 @@ void CMenus::RenderSettingsGeneral(CUIRect MainView)
 			str_format(aBuf, sizeof(aBuf), "%s: %i", Localize("Name plates size"), g_Config.m_ClNameplatesSize);
 			UI()->DoLabelScaled(&Label, aBuf, 13.0f, -1);
 			Button.HMargin(2.0f, &Button);
-			static int s_NameSize = 0;
-			g_Config.m_ClNameplatesSize = (int)(DoScrollbarH(&g_Config.m_ClNameplatesSize, &s_NameSize, &Button, g_Config.m_ClNameplatesSize/100.0f)*100.0f+0.1f);
+			static float s_NameSize[2] = {0};
+			g_Config.m_ClNameplatesSize = (int)(DoScrollbarH(&g_Config.m_ClNameplatesSize, &s_NameSize[0], &Button, g_Config.m_ClNameplatesSize/100.0f)*100.0f+0.1f);
 
 			Right.HSplitTop(20.0f, &Button, &Right);
 			if(DoButton_CheckBox(&g_Config.m_ClNameplatesTeamcolors, &s_SettingsFade[6], Localize("Use team colors for name plates"), g_Config.m_ClNameplatesTeamcolors, &Button))
@@ -143,7 +143,7 @@ void CMenus::RenderSettingsGeneral(CUIRect MainView)
 
 		// auto demo settings
 		{
-			static int s_Auto[2] = {0};
+			static float s_Auto[2][2] = {{0}};
 			Left.HSplitTop(20.0f, &Button, &Left);
 			if(DoButton_CheckBox(&g_Config.m_ClAutoDemoRecord, &s_SettingsFade[7], Localize("Automatically record demos"), g_Config.m_ClAutoDemoRecord, &Button))
 				g_Config.m_ClAutoDemoRecord ^= 1;
@@ -164,7 +164,7 @@ void CMenus::RenderSettingsGeneral(CUIRect MainView)
 			UI()->DoLabelScaled(&Label, aBuf, 13.0f, -1);
 			Left.HSplitTop(20.0f, &Button, 0);
 			Button.HMargin(2.0f, &Button);
-			g_Config.m_ClAutoDemoMax = static_cast<int>(DoScrollbarH(&g_Config.m_ClAutoDemoMax, &s_Auto[0], &Button, g_Config.m_ClAutoDemoMax/1000.0f)*1000.0f+0.1f);
+			g_Config.m_ClAutoDemoMax = static_cast<int>(DoScrollbarH(&g_Config.m_ClAutoDemoMax, &s_Auto[0][0], &Button, g_Config.m_ClAutoDemoMax/1000.0f)*1000.0f+0.1f);
 
 			Right.HSplitTop(10.0f, 0, &Right);
 			Right.VSplitLeft(20.0f, 0, &Right);
@@ -177,7 +177,7 @@ void CMenus::RenderSettingsGeneral(CUIRect MainView)
 			UI()->DoLabelScaled(&Label, aBuf, 13.0f, -1);
 			Right.HSplitTop(20.0f, &Button, 0);
 			Button.HMargin(2.0f, &Button);
-			g_Config.m_ClAutoScreenshotMax = static_cast<int>(DoScrollbarH(&g_Config.m_ClAutoScreenshotMax, &s_Auto[1], &Button, g_Config.m_ClAutoScreenshotMax/1000.0f)*1000.0f+0.1f);
+			g_Config.m_ClAutoScreenshotMax = static_cast<int>(DoScrollbarH(&g_Config.m_ClAutoScreenshotMax, &s_Auto[1][0], &Button, g_Config.m_ClAutoScreenshotMax/1000.0f)*1000.0f+0.1f);
 		}
 	}
 }
@@ -315,7 +315,7 @@ void CMenus::RenderSettingsTee(CUIRect MainView)
 			Localize("Hue"),
 			Localize("Sat."),
 			Localize("Lht.")};
-		static int s_aColorSlider[2][3] = {{0}};
+		static float s_aColorSlider[2][3][2] = {{{0}}};
 
 		for(int i = 0; i < 2; i++)
 		{
@@ -333,7 +333,7 @@ void CMenus::RenderSettingsTee(CUIRect MainView)
 				Button.HMargin(2.0f, &Button);
 
 				float k = ((PrevColor>>((2-s)*8))&0xff) / 255.0f;
-				k = DoScrollbarH(&s_aColorSlider[i][s], &s_aColorSlider[i][s], &Button, k);
+				k = DoScrollbarH(&s_aColorSlider[i][s], &s_aColorSlider[i][s][0], &Button, k);
 				Color <<= 8;
 				Color += clamp((int)(k*255), 0, 255);
 				UI()->DoLabelScaled(&Label, paLabels[s], 14.0f, -1);
@@ -535,8 +535,8 @@ void CMenus::RenderSettingsControls(CUIRect MainView)
 			Button.VSplitLeft(135.0f, &Label, &Button);
 			UI()->DoLabel(&Label, Localize("Mouse sens."), 14.0f*UI()->Scale(), -1);
 			Button.HMargin(2.0f, &Button);
-			static int s_InpMouse = 0;
-			g_Config.m_InpMousesens = (int)(DoScrollbarH(&g_Config.m_InpMousesens, &s_InpMouse, &Button, (g_Config.m_InpMousesens-5)/500.0f)*500.0f)+5;
+			static float s_InpMouse[2] = {0};
+			g_Config.m_InpMousesens = (int)(DoScrollbarH(&g_Config.m_InpMousesens, &s_InpMouse[0], &Button, (g_Config.m_InpMousesens-5)/500.0f)*500.0f)+5;
 			//*key.key = ui_do_key_reader(key.key, &Button, *key.key);
 			MovementSettings.HSplitTop(20.0f, 0, &MovementSettings);
 		}
@@ -780,7 +780,7 @@ void CMenus::RenderSettingsGraphics(CUIRect MainView)
 		Localize("Lht."),
 		Localize("Alpha")};
 	int *pColorSlider[4] = {&g_Config.m_UiColorHue, &g_Config.m_UiColorSat, &g_Config.m_UiColorLht, &g_Config.m_UiColorAlpha};
-	static int s_ColorSlider[4] = {0};
+	static float s_ColorSlider[4][2] = {{0}};
 	for(int s = 0; s < 4; s++)
 	{
 		CUIRect Text;
@@ -791,7 +791,7 @@ void CMenus::RenderSettingsGraphics(CUIRect MainView)
 		Button.HSplitTop(4.0f, 0, &Button);
 
 		float k = (*pColorSlider[s]) / 255.0f;
-		k = DoScrollbarH(pColorSlider[s], &s_ColorSlider[s], &Button, k);
+		k = DoScrollbarH(pColorSlider[s], &s_ColorSlider[s][0], &Button, k);
 		*pColorSlider[s] = (int)(k*255.0f);
 		UI()->DoLabelScaled(&Text, paLabels[s], 15.0f, -1);
 	}
@@ -865,8 +865,8 @@ void CMenus::RenderSettingsSound(CUIRect MainView)
 		Button.VSplitLeft(190.0f, &Label, &Button);
 		Button.HMargin(2.0f, &Button);
 		UI()->DoLabelScaled(&Label, Localize("Sound volume"), 14.0f, -1);
-		static int s_Volume = 0;
-		g_Config.m_SndVolume = (int)(DoScrollbarH(&g_Config.m_SndVolume, &s_Volume, &Button, g_Config.m_SndVolume/100.0f)*100.0f);
+		static float s_Volume[2] = {0};
+		g_Config.m_SndVolume = (int)(DoScrollbarH(&g_Config.m_SndVolume, &s_Volume[0], &Button, g_Config.m_SndVolume/100.0f)*100.0f);
 		MainView.HSplitTop(20.0f, 0, &MainView);
 	}
 }
