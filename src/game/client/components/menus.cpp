@@ -1036,7 +1036,6 @@ int CMenus::Render()
 		{
 			pTitle = Localize("Quit");
 			pExtraText = Localize("Are you sure that you want to quit?");
-			ExtraAlign = -1;
 		}
 		else if(m_Popup == POPUP_FIRST_LAUNCH)
 		{
