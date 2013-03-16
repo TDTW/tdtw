@@ -228,7 +228,9 @@ int CMenus::DoButton_GridHeader(const void *pID, const char *pText, int Checked,
 		
 	CUIRect t;
 	pRect->VSplitLeft(5.0f, 0, &t);
+	TextRender()->TextColor(1.0f, 1.0f, 1.0f, 0.7f+0.3f*FadeVal);
 	UI()->DoLabel(&t, pText, pRect->h*ms_FontmodHeight, -1);
+	TextRender()->TextColor(1.0f, 1.0f, 1.0f, 1.0f);
 	return UI()->DoButtonLogic(pID, pText, Checked, pRect);
 }
 
