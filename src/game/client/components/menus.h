@@ -46,7 +46,7 @@ class CMenus : public CComponent
 	int DoButton_Menu(const void *pID, const char *pText, int Checked, const CUIRect *pRect);
 	int DoButton_MenuTab(const void *pID, const char *pText, int Checked, const CUIRect *pRect, int Corners);
 
-	int DoButton_CheckBox_Common(const void *pID, const void *s_CheckBox, const char *pText, const char *pBoxText, const CUIRect *pRect);
+	int DoButton_CheckBox_Common(const void *pID, const void *s_CheckBox, const char *pText, const char *pBoxText, int Checked, const CUIRect *pRect);
 	int DoButton_CheckBox(const void *pID, const void *s_CheckBox, const char *pText, int Checked, const CUIRect *pRect);
 	int DoButton_CheckBox_Number(const void *pID, const void *s_CheckBox, const char *pText, int Checked, const CUIRect *pRect);
 

@@ -228,7 +228,7 @@ int CMenus::DoButton_GridHeader(const void *pID, const char *pText, int Checked,
 	return UI()->DoButtonLogic(pID, pText, Checked, pRect);
 }
 
-int CMenus::DoButton_CheckBox_Common(const void *pID, const void *s_CheckBox, const char *pText, const char *pBoxText, const CUIRect *pRect)
+int CMenus::DoButton_CheckBox_Common(const void *pID, const void *s_CheckBox, const char *pText, const char *pBoxText, int Checked, const CUIRect *pRect)
 //void CMenus::ui_draw_checkbox_common(const void *id, const char *text, const char *boxtext, const CUIRect *r, const void *extra)
 {
 	CUIRect c = *pRect;
@@ -238,11 +238,21 @@ int CMenus::DoButton_CheckBox_Common(const void *pID, const void *s_CheckBox, co
 	t.w -= c.w;
 	t.VSplitLeft(5.0f, 0, &t);
 
+	if(Checked)
+	{
+		Graphics()->TextureSet(g_pData->m_aImages[IMAGE_GUIOK].m_Id);
+		Graphics()->QuadsBegin();
+		Graphics()->SetColor(1,1,1,1);
+		IGraphics::CQuadItem QuadItem(c.x, c.y, 22, 22);
+		Graphics()->QuadsDrawTL(&QuadItem, 1);
+		Graphics()->QuadsEnd();
+	}
+
 	float *pFade = ButtonFade(pID, s_CheckBox, 0.6f);
 	float FadeVal = *pFade/0.6f;
-	
+
 	vec4 Color = mix(vec4(1.0f, 1.0f, 1.0f, 0.4f), vec4(1.0f, 1.0f, 1.0f, 0.75f), FadeVal);
-	
+
 	c.Margin(2.0f, &c);
 	RenderTools()->DrawUIRect(&c, Color, CUI::CORNER_ALL, 3.0f);
 	c.y += 2;
@@ -253,7 +263,7 @@ int CMenus::DoButton_CheckBox_Common(const void *pID, const void *s_CheckBox, co
 
 int CMenus::DoButton_CheckBox(const void *pID, const void *s_CheckBox, const char *pText, int Checked, const CUIRect *pRect)
 {
-	return DoButton_CheckBox_Common(pID, s_CheckBox, pText, Checked?"X":"", pRect);
+	return DoButton_CheckBox_Common(pID, s_CheckBox, pText, "", Checked, pRect);
 }
 
 
@@ -261,7 +271,7 @@ int CMenus::DoButton_CheckBox_Number(const void *pID, const void *s_CheckBox, co
 {
 	char aBuf[16];
 	str_format(aBuf, sizeof(aBuf), "%d", Checked);
-	return DoButton_CheckBox_Common(pID, s_CheckBox, pText, aBuf, pRect);
+	return DoButton_CheckBox_Common(pID, s_CheckBox, pText, aBuf, 0, pRect);
 }
 
 int CMenus::DoEditBox(void *pID, const void *pValueFade, const CUIRect *pRect, char *pStr, unsigned StrSize, float FontSize, float *Offset, bool Hidden, int Corners)
