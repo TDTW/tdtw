@@ -475,11 +475,10 @@ void CMenus::RenderServerbrowserFilters(CUIRect View)
 {
 	CUIRect ServerFilter = View, FilterHeader;
 	const float FontSize = 12.0f;
-	ServerFilter.HSplitBottom(42.5f, &ServerFilter, 0);
 
 	// server filter
 	ServerFilter.HSplitTop(ms_ListheaderHeight, &FilterHeader, &ServerFilter);
-	RenderTools()->DrawUIRect(&FilterHeader, vec4(1,1,1,0.25f), CUI::CORNER_T, 4.0f);
+	RenderTools()->DrawUIRect(&FilterHeader, vec4(1,1,1,0.25f), 0, 0.0f);
 	RenderTools()->DrawUIRect(&ServerFilter, vec4(0,0,0,0.15f), CUI::CORNER_B, 4.0f);
 	UI()->DoLabelScaled(&FilterHeader, Localize("Server filter"), FontSize+2.0f, 0);
 	CUIRect Button;
@@ -612,15 +611,14 @@ void CMenus::RenderServerbrowserServerDetail(CUIRect View)
 	const CServerInfo *pSelectedServer = ServerBrowser()->SortedGet(m_SelectedIndex);
 
 	// split off a piece to use for scoreboard
-	ServerDetails.HSplitTop(90.0f, &ServerDetails, &ServerScoreBoard);
-	ServerDetails.HSplitBottom(2.5f, &ServerDetails, 0x0);
+	ServerDetails.HSplitTop(87.5f, &ServerDetails, &ServerScoreBoard);
 
 	// server details
 	CTextCursor Cursor;
 	const float FontSize = 12.0f;
 	ServerDetails.HSplitTop(ms_ListheaderHeight, &ServerHeader, &ServerDetails);
-	RenderTools()->DrawUIRect(&ServerHeader, vec4(1,1,1,0.25f), CUI::CORNER_T, 4.0f);
-	RenderTools()->DrawUIRect(&ServerDetails, vec4(0,0,0,0.15f), CUI::CORNER_B, 4.0f);
+	RenderTools()->DrawUIRect(&ServerHeader, vec4(1,1,1,0.25f), 0, 0.0f);
+	RenderTools()->DrawUIRect(&ServerDetails, vec4(0,0,0,0.15f), 0, 0.0f);
 	UI()->DoLabelScaled(&ServerHeader, Localize("Server details"), FontSize+2.0f, 0);
 
 	if (pSelectedServer)
@@ -681,9 +679,8 @@ void CMenus::RenderServerbrowserServerDetail(CUIRect View)
 	}
 
 	// server scoreboard
-	ServerScoreBoard.HSplitBottom(20.0f, &ServerScoreBoard, 0x0);
 	ServerScoreBoard.HSplitTop(ms_ListheaderHeight, &ServerHeader, &ServerScoreBoard);
-	RenderTools()->DrawUIRect(&ServerHeader, vec4(1,1,1,0.25f), CUI::CORNER_T, 4.0f);
+	RenderTools()->DrawUIRect(&ServerHeader, vec4(1,1,1,0.25f), 0, 0.0f);
 	RenderTools()->DrawUIRect(&ServerScoreBoard, vec4(0,0,0,0.15f), CUI::CORNER_B, 4.0f);
 	UI()->DoLabelScaled(&ServerHeader, Localize("Scoreboard"), FontSize+2.0f, 0);
 
@@ -801,8 +798,8 @@ void CMenus::RenderServerbrowserFriends(CUIRect View)
 
 	// header
 	ServerFriends.HSplitTop(ms_ListheaderHeight, &FilterHeader, &ServerFriends);
-	RenderTools()->DrawUIRect(&FilterHeader, vec4(1,1,1,0.25f), CUI::CORNER_T, 4.0f);
-	RenderTools()->DrawUIRect(&ServerFriends, vec4(0,0,0,0.15f), 0, 4.0f);
+	RenderTools()->DrawUIRect(&FilterHeader, vec4(1,1,1,0.25f), 0, 0.0f);
+	RenderTools()->DrawUIRect(&ServerFriends, vec4(0,0,0,0.15f), CUI::CORNER_B, 4.0f);
 	UI()->DoLabelScaled(&FilterHeader, Localize("Friends"), FontSize+4.0f, 0);
 	CUIRect Button, List;
 
@@ -937,8 +934,8 @@ void CMenus::RenderServerbrowser(CUIRect MainView)
 
 	// create server list, status box, tab bar and tool box area
 	MainView.VSplitRight(205.0f, &ServerList, &ToolBox);
+	ToolBox.HSplitTop(25.0f, &TabBar, &ToolBox);
 	ServerList.HSplitBottom(70.0f, &ServerList, &StatusBox);
-	StatusBox.VSplitRight(100.0f, &StatusBox, &TabBar);
 	ServerList.VSplitRight(5.0f, &ServerList, 0);
 
 	// server list
@@ -951,31 +948,22 @@ void CMenus::RenderServerbrowser(CUIRect MainView)
 	// tab bar
 	{
 		CUIRect TabButton0, TabButton1, TabButton2;
-		TabBar.HSplitTop(5.0f, 0, &TabBar);
-		TabBar.HSplitTop(20.0f, &TabButton0, &TabBar);
-		TabBar.HSplitTop(2.5f, 0, &TabBar);
-		TabBar.HSplitTop(20.0f, &TabButton1, &TabBar);
-		TabBar.HSplitTop(2.5f, 0, &TabBar);
-		TabBar.HSplitTop(20.0f, &TabButton2, 0);
-		vec4 Active = ms_ColorTabbarActive;
-		vec4 InActive = ms_ColorTabbarInactive;
-		ms_ColorTabbarActive = vec4(0.0f, 0.0f, 0.0f, 0.3f);
-		ms_ColorTabbarInactive = vec4(0.0f, 0.0f, 0.0f, 0.15f);
+		
+		TabBar.VSplitLeft(75.0f, &TabButton0, &TabBar);
+		TabBar.VSplitLeft(55.0f, &TabButton1, &TabButton2);
 
 		static int s_FiltersTab = 0;
-		if (DoButton_MenuTab(&s_FiltersTab, Localize("Filter"), ToolboxPage==0, &TabButton0, CUI::CORNER_L))
+		if (DoButton_MenuTab(&s_FiltersTab, Localize("Filter"), ToolboxPage==0, &TabButton0, CUI::CORNER_TL))
 			ToolboxPage = 0;
 
 		static int s_InfoTab = 0;
-		if (DoButton_MenuTab(&s_InfoTab, Localize("Info"), ToolboxPage==1, &TabButton1, CUI::CORNER_L))
+		if (DoButton_MenuTab(&s_InfoTab, Localize("Info"), ToolboxPage==1, &TabButton1, 0))
 			ToolboxPage = 1;
 
 		static int s_FriendsTab = 0;
-		if (DoButton_MenuTab(&s_FriendsTab, Localize("Friends"), ToolboxPage==2, &TabButton2, CUI::CORNER_L))
+		if (DoButton_MenuTab(&s_FriendsTab, Localize("Friends"), ToolboxPage==2, &TabButton2, CUI::CORNER_TR))
 			ToolboxPage = 2;
 
-		ms_ColorTabbarActive = Active;
-		ms_ColorTabbarInactive = InActive;
 		g_Config.m_UiToolboxPage = ToolboxPage;
 	}
 
