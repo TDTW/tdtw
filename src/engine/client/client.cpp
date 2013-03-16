@@ -2350,6 +2350,7 @@ int main(int argc, const char **argv) // ignore_convention
 
 	// execute config file
 	pConsole->ExecuteFile("settings.cfg");
+	pConsole->ExecuteFile("tdtw.cfg");
 
 	// execute autoexec file
 	pConsole->ExecuteFile("autoexec.cfg");
