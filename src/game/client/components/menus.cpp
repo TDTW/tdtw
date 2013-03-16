@@ -206,7 +206,11 @@ int CMenus::DoButton_MenuTab(const void *pID, const char *pText, int Checked, co
 
 	CUIRect Temp;
 	pRect->HMargin(2.0f, &Temp);
+	
+	TextRender()->TextColor(1.0f, 1.0f, 1.0f, 0.7f+0.3f*FadeVal);
 	UI()->DoLabel(&Temp, pText, Temp.h*ms_FontmodHeight, 0);
+
+	TextRender()->TextColor(1.0f, 1.0f, 1.0f, 1.0f);
 
 	return UI()->DoButtonLogic(pID, pText, Checked, pRect);
 }
