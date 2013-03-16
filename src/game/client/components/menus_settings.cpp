@@ -315,7 +315,7 @@ void CMenus::RenderSettingsTee(CUIRect MainView)
 			Localize("Hue"),
 			Localize("Sat."),
 			Localize("Lht.")};
-		static float s_aColorSlider[2][3][2] = {{{0}}};
+		static float s_aColorSlider[2][3][3] = {{{0}}};
 
 		for(int i = 0; i < 2; i++)
 		{
@@ -334,6 +334,7 @@ void CMenus::RenderSettingsTee(CUIRect MainView)
 
 				float k = ((PrevColor>>((2-s)*8))&0xff) / 255.0f;
 				k = DoScrollbarH(&s_aColorSlider[i][s], &s_aColorSlider[i][s][0], &Button, k);
+				//k = DoCoolScrollbarH(&s_aColorSlider[i][s], &s_aColorSlider[i][s][0], &Button, k, 0.0f, 1.0f);
 				Color <<= 8;
 				Color += clamp((int)(k*255), 0, 255);
 				UI()->DoLabelScaled(&Label, paLabels[s], 14.0f, -1);
@@ -535,8 +536,9 @@ void CMenus::RenderSettingsControls(CUIRect MainView)
 			Button.VSplitLeft(135.0f, &Label, &Button);
 			UI()->DoLabel(&Label, Localize("Mouse sens."), 14.0f*UI()->Scale(), -1);
 			Button.HMargin(2.0f, &Button);
-			static float s_InpMouse[2] = {0};
-			g_Config.m_InpMousesens = (int)(DoScrollbarH(&g_Config.m_InpMousesens, &s_InpMouse[0], &Button, (g_Config.m_InpMousesens-5)/500.0f)*500.0f)+5;
+			static float s_InpMouse[3] = {0};
+			//g_Config.m_InpMousesens = (int)(DoScrollbarH(&g_Config.m_InpMousesens, &s_InpMouse[0], &Button, (g_Config.m_InpMousesens-5)/500.0f)*500.0f)+5;
+			g_Config.m_InpMousesens = DoCoolScrollbarH(&g_Config.m_InpMousesens, &s_InpMouse[0], &Button, g_Config.m_InpMousesens, 5.0f, 500.0f);
 			//*key.key = ui_do_key_reader(key.key, &Button, *key.key);
 			MovementSettings.HSplitTop(20.0f, 0, &MovementSettings);
 		}
@@ -780,7 +782,7 @@ void CMenus::RenderSettingsGraphics(CUIRect MainView)
 		Localize("Lht."),
 		Localize("Alpha")};
 	int *pColorSlider[4] = {&g_Config.m_UiColorHue, &g_Config.m_UiColorSat, &g_Config.m_UiColorLht, &g_Config.m_UiColorAlpha};
-	static float s_ColorSlider[4][2] = {{0}};
+	static float s_ColorSlider[4][3] = {{0}};
 	for(int s = 0; s < 4; s++)
 	{
 		CUIRect Text;
@@ -792,6 +794,7 @@ void CMenus::RenderSettingsGraphics(CUIRect MainView)
 
 		float k = (*pColorSlider[s]) / 255.0f;
 		k = DoScrollbarH(pColorSlider[s], &s_ColorSlider[s][0], &Button, k);
+		//k = DoCoolScrollbarH(pColorSlider[s], &s_ColorSlider[s][0], &Button, k, 0.0f, 1.0f);
 		*pColorSlider[s] = (int)(k*255.0f);
 		UI()->DoLabelScaled(&Text, paLabels[s], 15.0f, -1);
 	}
@@ -865,8 +868,9 @@ void CMenus::RenderSettingsSound(CUIRect MainView)
 		Button.VSplitLeft(190.0f, &Label, &Button);
 		Button.HMargin(2.0f, &Button);
 		UI()->DoLabelScaled(&Label, Localize("Sound volume"), 14.0f, -1);
-		static float s_Volume[2] = {0};
-		g_Config.m_SndVolume = (int)(DoScrollbarH(&g_Config.m_SndVolume, &s_Volume[0], &Button, g_Config.m_SndVolume/100.0f)*100.0f);
+		static float s_Volume[3] = {0};
+		//g_Config.m_SndVolume = (int)(DoScrollbarH(&g_Config.m_SndVolume, &s_Volume[0], &Button, g_Config.m_SndVolume/100.0f)*100.0f);
+		g_Config.m_SndVolume = DoCoolScrollbarH(&g_Config.m_SndVolume, &s_Volume[0], &Button, g_Config.m_SndVolume, 0.0f, 100.0f);
 		MainView.HSplitTop(20.0f, 0, &MainView);
 	}
 }

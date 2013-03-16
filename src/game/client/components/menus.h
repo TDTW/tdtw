@@ -39,6 +39,7 @@ class CMenus : public CComponent
 
 	float *ButtonFade(const void *pID, const void *pValue, float Seconds, int Checked=0);
 	float *ButtonFade(const void *pID, const void *pValue, const CUIRect *pRect, float Seconds);
+	float *ButtonFadeActive(const void *pID, const void *pValueFade, float Seconds, int Checked=0);
 
 	int DoButton_DemoPlayer(const void *pID, const char *pText, int Checked, const CUIRect *pRect);
 	int DoButton_Sprite(const void *pID, int ImageID, int SpriteID, int Checked, const CUIRect *pRect, int Corners);
@@ -71,6 +72,7 @@ class CMenus : public CComponent
 
 	float DoScrollbarV(const void *pID, const float *pFade, const CUIRect *pRect, float Current);
 	float DoScrollbarH(const void *pID, const float *pFade, const CUIRect *pRect, float Current);
+	int DoCoolScrollbarH(const void *pID, const float *pFade, const CUIRect *pRect, int Real, float Min, float Max);
 	void DoButton_KeySelect(const void *pID, const char *pText, int Checked, const CUIRect *pRect);
 	int DoKeyReader(void *pID, const CUIRect *pRect, int Key);
 
