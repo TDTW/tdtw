@@ -463,6 +463,8 @@ public:
 	virtual CFont *LoadFont(const char *pFilename)
 	{
 		CFont *pFont = (CFont *)mem_alloc(sizeof(CFont), 1);
+		
+		mem_free(m_pDefaultFont);
 
 		mem_zero(pFont, sizeof(*pFont));
 		str_copy(pFont->m_aFilename, pFilename, sizeof(pFont->m_aFilename));
