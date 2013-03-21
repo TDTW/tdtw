@@ -197,7 +197,7 @@ void CMenus::RenderSettingsCountry(CUIRect MainView)
 	static float s_ScrollValue = 0.0f;
 	static float s_FadeScroll[2] = {0};
 	int OldSelected = -1;
-	UiDoListboxStart(&s_ScrollValue, &s_FadeScroll[0], &MainView, 50.0f, Localize("Country"), "", m_pClient->m_pCountryFlags->Num(), 6, OldSelected, s_ScrollValue);
+	UiDoListboxStart(&s_ScrollValue, &s_FadeScroll[0], &MainView, 50.0f, Localize("Country"), "", m_pClient->m_pCountryFlags->Num(), 8, OldSelected, s_ScrollValue);
 
 	for(int i = 0; i < m_pClient->m_pCountryFlags->Num(); ++i)
 	{
@@ -396,7 +396,7 @@ void CMenus::RenderSettingsTee(CUIRect MainView)
 	}
 
 	int OldSelected = -1;
-	UiDoListboxStart(&s_InitSkinlist, &s_Fade[2], &MainView, 50.0f, Localize("Skins"), "", s_paSkinList.size(), 4, OldSelected, s_ScrollValue);
+	UiDoListboxStart(&s_InitSkinlist, &s_Fade[2], &MainView, 50.0f, Localize("Skins"), "", s_paSkinList.size(), 8, OldSelected, s_ScrollValue);
 
 	for(int i = 0; i < s_paSkinList.size(); ++i)
 	{
