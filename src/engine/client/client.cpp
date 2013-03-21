@@ -2370,6 +2370,7 @@ int main(int argc, const char **argv) // ignore_convention
 
 	// write down the config and quit
 	pConfig->Save();
-
+	pConfig->SaveTDTW();
+	
 	return 0;
 }
