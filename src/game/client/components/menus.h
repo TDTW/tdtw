@@ -72,7 +72,7 @@ class CMenus : public CComponent
 
 	float DoScrollbarV(const void *pID, const float *pFade, const CUIRect *pRect, float Current);
 	float DoScrollbarH(const void *pID, const float *pFade, const CUIRect *pRect, float Current);
-	int DoCoolScrollbarH(const void *pID, const float *pFade, const CUIRect *pRect, int Real, float Min, float Max);
+	int DoCoolScrollbarH(const void *pID, const float *pFade, const CUIRect *pRect, int Real, float Min, float Max, int ShowNumber = 1);
 	void DoButton_KeySelect(const void *pID, const char *pText, int Checked, const CUIRect *pRect);
 	int DoKeyReader(void *pID, const CUIRect *pRect, int Key);
 
@@ -158,6 +158,8 @@ class CMenus : public CComponent
 	static float ms_ButtonHeight;
 	static float ms_ListheaderHeight;
 	static float ms_FontmodHeight;
+	
+	float TempSens;
 
 	// for settings
 	bool m_NeedRestartGraphics;

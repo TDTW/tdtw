@@ -70,6 +70,7 @@ CMenus::CMenus()
 	m_aCallvoteReason[0] = 0;
 
 	m_FriendlistSelectedIndex = -1;
+	TempSens = 0.0f;
 }
 
 vec4 CMenus::ButtonColorMul(const void *pID)
@@ -523,13 +524,13 @@ float CMenus::DoScrollbarV(const void *pID, const float *pFade, const CUIRect *p
 	return ReturnValue;
 }
 
-int CMenus::DoCoolScrollbarH(const void *pID, const float *pFade, const CUIRect *pRect, int Real, float Min, float Max)
+int CMenus::DoCoolScrollbarH(const void *pID, const float *pFade, const CUIRect *pRect, int Real, float Min, float Max, int ShowNumber)
 {
 	CUIRect Handle;
 	static float OffsetX;
 	pRect->VSplitLeft(33, &Handle, 0);
-	float Current = (Real - Min)/(Max - Min);
-
+	float Current = (clamp(Real, int(Min), int(Max)) - Min)/(Max - Min);
+	
 	Handle.x += (pRect->w-Handle.w)*Current;
 
 	// logic
@@ -560,28 +561,31 @@ int CMenus::DoCoolScrollbarH(const void *pID, const float *pFade, const CUIRect 
 		}
 	}
 
-	// Text under button
-	CUIRect Number = Handle;
-	Number.y = Handle.y-Handle.h-2;
-	Number.h = Handle.h+2;
-	
-	char aBuf[128];
-	str_format(aBuf, sizeof(aBuf), "%d", Real);
-
-	float *pTextFade = ButtonFadeActive(pID, &pFade[2], 0.6f, MovedNow);
-	float TextFadeVal = *pTextFade/0.6f;
-	
-	CUIRect Background = Number;
-	Background.HMargin(2.0f, &Background);
-	RenderTools()->DrawUIRect(&Background, vec4(1.0f, 1.0f, 1.0f, 0.5f*TextFadeVal), CUI::CORNER_ALL, 4.0f);
-	
-	Number.HMargin(4.0f, &Number);
-	float tw = TextRender()->TextWidth(0, 14, aBuf, -1);
-	
-	TextRender()->TextColor(1.0f, 1.0f, 1.0f, 1.0f*TextFadeVal);
-	TextRender()->Text(0, Number.x + Number.w/2-tw/2, Number.y-Number.h/2, 14, aBuf, -1);
-		TextRender()->TextColor(1.0f, 1.0f, 1.0f, 1.0f);
+	if(ShowNumber)
+	{
+		// Text under button
+		CUIRect Number = Handle;
+		Number.y = Handle.y-Handle.h-2;
+		Number.h = Handle.h+2;
 		
+		char aBuf[128];
+		str_format(aBuf, sizeof(aBuf), "%d", Real);
+
+		float *pTextFade = ButtonFadeActive(pID, &pFade[2], 0.6f, MovedNow);
+		float TextFadeVal = *pTextFade/0.6f;
+		
+		CUIRect Background = Number;
+		Background.HMargin(2.0f, &Background);
+		RenderTools()->DrawUIRect(&Background, vec4(1.0f, 1.0f, 1.0f, 0.5f*TextFadeVal), CUI::CORNER_ALL, 4.0f);
+		
+		Number.HMargin(4.0f, &Number);
+		float tw = TextRender()->TextWidth(0, 14, aBuf, -1);
+		
+		TextRender()->TextColor(1.0f, 1.0f, 1.0f, 1.0f*TextFadeVal);
+		TextRender()->Text(0, Number.x + Number.w/2-tw/2, Number.y-Number.h/2, 14, aBuf, -1);
+		TextRender()->TextColor(1.0f, 1.0f, 1.0f, 1.0f);
+	}
+
 	if(Inside)
 		UI()->SetHotItem(pID);
 		
@@ -606,11 +610,9 @@ int CMenus::DoCoolScrollbarH(const void *pID, const float *pFade, const CUIRect 
 	
 	vec4 ButtColor = mix(vec4(1.0f, 1.0f, 1.0f, 0.25f), vec4(1.0f, 1.0f, 1.0f, 0.75f), ButtFadeVal);
 	
-
 	Slider = Handle;
 	Slider.Margin(5.0f, &Slider);
 	RenderTools()->DrawUIRect(&Slider, ButtColor, CUI::CORNER_ALL, 2.5f);
-
 
 	ReturnValue = ReturnValue*(Max-Min) + Min;
 	return (int)ReturnValue;

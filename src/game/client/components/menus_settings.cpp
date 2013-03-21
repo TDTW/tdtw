@@ -520,7 +520,7 @@ void CMenus::UiDoGetButtons(int Start, int Stop, CUIRect View)
 			if(NewId != 0)
 				m_pClient->m_pBinds->Bind(NewId, gs_aKeys[i].m_pCommand);
 		}
-		View.HSplitTop(5.0f, 0, &View);
+		View.HSplitTop(4.0f, 0, &View);
 	}
 }
 
@@ -549,52 +549,121 @@ void CMenus::RenderSettingsControls(CUIRect MainView)
 
 	// movement settings
 	{
-		MovementSettings.VMargin(5.0f, &MovementSettings);
+		CUIRect Label;
 		MovementSettings.HSplitTop(MainView.h/3+60.0f, &MovementSettings, &WeaponSettings);
-		RenderTools()->DrawUIRect(&MovementSettings, vec4(1,1,1,0.25f), CUI::CORNER_ALL, 10.0f);
-		MovementSettings.Margin(10.0f, &MovementSettings);
+		RenderTools()->DrawUIRect(&MovementSettings, vec4(1,1,1,0.25f), CUI::CORNER_TL, 5.0f);
+		MovementSettings.VMargin(10.0f, &MovementSettings);
+		MovementSettings.HMargin(5.0f, &MovementSettings);
 
-		TextRender()->Text(0, MovementSettings.x, MovementSettings.y, 14.0f*UI()->Scale(), Localize("Movement"), -1);
+		MovementSettings.HSplitTop(16.0f, &Label, &MovementSettings);
+		UI()->DoLabel(&Label, Localize("Movement"), 16.0f*UI()->Scale(), 0);	
 
-		MovementSettings.HSplitTop(14.0f+5.0f+10.0f, 0, &MovementSettings);
+		//TextRender()->Text(0, MovementSettings.x, MovementSettings.y, 14.0f*UI()->Scale(), Localize("Movement"), 0);
 
+		MovementSettings.HSplitTop(10.0f, 0, &MovementSettings);
+		static float s_Fades[2][2] = {{0}};
 		{
-			CUIRect Button, Label;
-			MovementSettings.HSplitTop(20.0f, &Button, &MovementSettings);
+			CUIRect Temp, Button, Scroll, Label;
+			MovementSettings.HSplitTop(35.0f, &Button, &MovementSettings);
 			Button.VSplitLeft(135.0f, &Label, &Button);
-			UI()->DoLabel(&Label, Localize("Mouse sens."), 14.0f*UI()->Scale(), -1);
-			Button.HMargin(2.0f, &Button);
-			static float s_InpMouse[3] = {0};
-			//g_Config.m_InpMousesens = (int)(DoScrollbarH(&g_Config.m_InpMousesens, &s_InpMouse[0], &Button, (g_Config.m_InpMousesens-5)/500.0f)*500.0f)+5;
-			g_Config.m_InpMousesens = DoCoolScrollbarH(&g_Config.m_InpMousesens, &s_InpMouse[0], &Button, g_Config.m_InpMousesens, 5.0f, 500.0f);
-			//*key.key = ui_do_key_reader(key.key, &Button, *key.key);
-			MovementSettings.HSplitTop(20.0f, 0, &MovementSettings);
+			UI()->DoLabel(&Label, Localize("Ingame sens:"), 14.0f*UI()->Scale(), -1);
+			Button.HSplitBottom(15.0f, &Label, &Scroll);
+
+			Label.HSplitBottom(2.0f, &Label, 0);
+
+			Label.VSplitLeft((Label.w-10)/3, &Button, &Label);
+
+			Button.VSplitRight(42.0f, 0, &Button);
+			Button.VSplitLeft(20.0f, &Button, &Temp);
+
+			static int s_Button1 = 0;
+			if(DoButton_Menu((void*)&s_Button1, "<<", 0, &Button, CUI::CORNER_L))
+				g_Config.m_InpMousesens -= 500;
+
+			Temp.VSplitLeft(2.0f, 0, &Button);
+
+			static int s_Button2 = 0;
+			if(DoButton_Menu((void*)&s_Button2, "<", 0, &Button, 0))
+				g_Config.m_InpMousesens -= 100;
+
+			Label.VSplitRight(Label.w/3+20.0f, &Label, &Button);
+
+			Button.VSplitLeft(42.0f, &Button, 0);
+			Button.VSplitRight(20.0f, &Temp, &Button);
+
+			static int s_Button3 = 0;
+			if(DoButton_Menu((void*)&s_Button3, ">>", 0, &Button, CUI::CORNER_R))
+				g_Config.m_InpMousesens += 500;
+
+			Temp.VSplitRight(2.0f, &Button, 0);
+
+			static int s_Button4 = 0;
+			if(DoButton_Menu((void*)&s_Button4, ">", 0, &Button, 0))
+				g_Config.m_InpMousesens += 100;
+
+			Label.VMargin(2.0f, &Label);
+
+			char aBuf[10];
+			str_format(aBuf, sizeof(aBuf), "%d", g_Config.m_InpMousesens);
+			static float Offset = 0.0f;
+			static int s_Fade = 0;
+			DoEditBox(&aBuf, &s_Fade, &Label, aBuf, sizeof(aBuf), 12.0f, &Offset, false, 0);
+			g_Config.m_InpMousesens = clamp(atoi(aBuf), 5, 10000);
+
+			if (UI()->ActiveItem() != &g_Config.m_InpMousesens)
+				TempSens = g_Config.m_InpMousesens;
+
+			float Max = TempSens + 50.0f;
+			float Min = TempSens - 50.0f;
+			if (Max > 10000.0f)
+				Max = 10000.0f;
+			if (Min < 5.0f)
+				Min = 5.0f;
+
+			g_Config.m_InpMousesens = DoCoolScrollbarH(&g_Config.m_InpMousesens, &s_Fades[0][0], &Scroll, g_Config.m_InpMousesens, Min, Max, 0);
+			MovementSettings.HSplitTop(8.0f, 0, &MovementSettings);
 		}
 
+		{			
+			CUIRect Button, Label;			
+			
+			MovementSettings.HSplitTop(20.0f, &Button, &MovementSettings);			
+			Button.VSplitLeft(135.0f, &Label, &Button);			
+			UI()->DoLabel(&Label, Localize("Menu sens:"), 14.0f*UI()->Scale(), -1);	
+
+			Button.HSplitBottom(15.0f, 0, &Button);			
+			g_Config.m_UiMousesens = DoCoolScrollbarH(&g_Config.m_UiMousesens, &s_Fades[1][0], &Button, g_Config.m_UiMousesens ,5,500.0f);		
+
+			MovementSettings.HSplitTop(4.0f, 0, &MovementSettings);		
+		}		
 		UiDoGetButtons(0, 5, MovementSettings);
 
 	}
 
 	// weapon settings
 	{
+		CUIRect Label;
 		WeaponSettings.HSplitTop(10.0f, 0, &WeaponSettings);
 		WeaponSettings.HSplitTop(MainView.h/3+50.0f, &WeaponSettings, &ResetButton);
-		RenderTools()->DrawUIRect(&WeaponSettings, vec4(1,1,1,0.25f), CUI::CORNER_ALL, 10.0f);
-		WeaponSettings.Margin(10.0f, &WeaponSettings);
+		RenderTools()->DrawUIRect(&WeaponSettings, vec4(1,1,1,0.25f), 0, 0.0f);
+		WeaponSettings.VMargin(10.0f, &WeaponSettings);
+		WeaponSettings.HMargin(5.0f, &WeaponSettings);
 
-		TextRender()->Text(0, WeaponSettings.x, WeaponSettings.y, 14.0f*UI()->Scale(), Localize("Weapon"), -1);
+		WeaponSettings.HSplitTop(16.0f, &Label, &WeaponSettings);
+		UI()->DoLabel(&Label, Localize("Weapon"), 16.0f*UI()->Scale(), 0);	
 
-		WeaponSettings.HSplitTop(14.0f+5.0f+10.0f, 0, &WeaponSettings);
+		//TextRender()->Text(0, WeaponSettings.x, WeaponSettings.y, 14.0f*UI()->Scale(), Localize("Weapon"), 0);
+
+		WeaponSettings.HSplitTop(10.0f, 0, &WeaponSettings);
 		UiDoGetButtons(5, 12, WeaponSettings);
 	}
 
 	// defaults
 	{
 		ResetButton.HSplitTop(10.0f, 0, &ResetButton);
-		RenderTools()->DrawUIRect(&ResetButton, vec4(1,1,1,0.25f), CUI::CORNER_ALL, 10.0f);
+		RenderTools()->DrawUIRect(&ResetButton, vec4(1,1,1,0.25f), CUI::CORNER_BL, 5.0f);
 		ResetButton.HMargin(10.0f, &ResetButton);
 		ResetButton.VMargin(30.0f, &ResetButton);
-		ResetButton.HSplitTop(20.0f, &ResetButton, 0);
 		static int s_DefaultButton = 0;
 		if(DoButton_Menu((void*)&s_DefaultButton, Localize("Reset to defaults"), 0, &ResetButton))
 			m_pClient->m_pBinds->SetDefaults();
@@ -602,42 +671,56 @@ void CMenus::RenderSettingsControls(CUIRect MainView)
 
 	// voting settings
 	{
-		VotingSettings.VMargin(5.0f, &VotingSettings);
-		VotingSettings.HSplitTop(MainView.h/3-75.0f, &VotingSettings, &ChatSettings);
-		RenderTools()->DrawUIRect(&VotingSettings, vec4(1,1,1,0.25f), CUI::CORNER_ALL, 10.0f);
-		VotingSettings.Margin(10.0f, &VotingSettings);
+		CUIRect Label;
+		VotingSettings.VSplitLeft(10.0f, 0, &VotingSettings);
+		VotingSettings.HSplitTop(MainView.h/3-80.0f, &VotingSettings, &ChatSettings);
+		RenderTools()->DrawUIRect(&VotingSettings, vec4(1,1,1,0.25f), CUI::CORNER_TR, 5.0f);
+		VotingSettings.VMargin(10.0f, &VotingSettings);
+		VotingSettings.HMargin(5.0f, &VotingSettings);
 
-		TextRender()->Text(0, VotingSettings.x, VotingSettings.y, 14.0f*UI()->Scale(), Localize("Voting"), -1);
+		VotingSettings.HSplitTop(16.0f, &Label, &VotingSettings);
+		UI()->DoLabel(&Label, Localize("Voting"), 16.0f*UI()->Scale(), 0);	
 
-		VotingSettings.HSplitTop(14.0f+5.0f+10.0f, 0, &VotingSettings);
+		//TextRender()->Text(0, VotingSettings.x, VotingSettings.y, 14.0f*UI()->Scale(), Localize("Voting"), 0);
+
+		VotingSettings.HSplitTop(10.0f, 0, &VotingSettings);
 		UiDoGetButtons(12, 14, VotingSettings);
 	}
 
 	// chat settings
 	{
+		CUIRect Label;
 		ChatSettings.HSplitTop(10.0f, 0, &ChatSettings);
-		ChatSettings.HSplitTop(MainView.h/3-45.0f, &ChatSettings, &MiscSettings);
-		RenderTools()->DrawUIRect(&ChatSettings, vec4(1,1,1,0.25f), CUI::CORNER_ALL, 10.0f);
-		ChatSettings.Margin(10.0f, &ChatSettings);
+		ChatSettings.HSplitTop(MainView.h/3-50.0f, &ChatSettings, &MiscSettings);
+		RenderTools()->DrawUIRect(&ChatSettings, vec4(1,1,1,0.25f), 0, 0.0f);
+		ChatSettings.VMargin(10.0f, &ChatSettings);
+		ChatSettings.HMargin(5.0f, &ChatSettings);
 
-		TextRender()->Text(0, ChatSettings.x, ChatSettings.y, 14.0f*UI()->Scale(), Localize("Chat"), -1);
+		ChatSettings.HSplitTop(16.0f, &Label, &ChatSettings);
+		UI()->DoLabel(&Label, Localize("Chat"), 16.0f*UI()->Scale(), 0);	
 
-		ChatSettings.HSplitTop(14.0f+5.0f+10.0f, 0, &ChatSettings);
+		//TextRender()->Text(0, ChatSettings.x, ChatSettings.y, 14.0f*UI()->Scale(), Localize("Chat"), 0);
+
+		ChatSettings.HSplitTop(10.0f, 0, &ChatSettings);
 		UiDoGetButtons(14, 17, ChatSettings);
 	}
 
 	// misc settings
 	{
+		CUIRect Label;
 		MiscSettings.HSplitTop(10.0f, 0, &MiscSettings);
-		RenderTools()->DrawUIRect(&MiscSettings, vec4(1,1,1,0.25f), CUI::CORNER_ALL, 10.0f);
-		MiscSettings.Margin(10.0f, &MiscSettings);
+		RenderTools()->DrawUIRect(&MiscSettings, vec4(1,1,1,0.25f), CUI::CORNER_BR, 5.0f);
+		MiscSettings.VMargin(10.0f, &MiscSettings);
+		MiscSettings.HMargin(5.0f, &MiscSettings);
 
-		TextRender()->Text(0, MiscSettings.x, MiscSettings.y, 14.0f*UI()->Scale(), Localize("Miscellaneous"), -1);
+		MiscSettings.HSplitTop(16.0f, &Label, &MiscSettings);
+		UI()->DoLabel(&Label, Localize("Miscellaneous"), 16.0f*UI()->Scale(), 0);
 
-		MiscSettings.HSplitTop(14.0f+5.0f+10.0f, 0, &MiscSettings);
-		UiDoGetButtons(17, 26, MiscSettings);
+		//TextRender()->Text(0, MiscSettings.x, MiscSettings.y, 14.0f*UI()->Scale(), Localize("Miscellaneous"), 0);
+
+		MiscSettings.HSplitTop(10.0f, 0, &MiscSettings);
+		UiDoGetButtons(17, 27, MiscSettings);
 	}
-
 }
 
 void CMenus::RenderSettingsGraphics(CUIRect MainView)
