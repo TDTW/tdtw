@@ -194,13 +194,13 @@ int CMenus::DoButton_Toggle(const void *pID, int Checked, const CUIRect *pRect, 
 	return Active ? UI()->DoButtonLogic(pID, "", Checked, pRect) : 0;
 }
 
-int CMenus::DoButton_Menu(const void *pID, const char *pText, int Checked, const CUIRect *pRect)
+int CMenus::DoButton_Menu(const void *pID, const char *pText, int Checked, const CUIRect *pRect, int Corners)
 {
 	float *pFade = ButtonFade(pID, pID, 0.6f, Checked);
 	float FadeVal = *pFade/0.6f;
 	
 	vec4 Color = mix(vec4(1.0f, 1.0f, 1.0f, 0.4f), vec4(1.0f, 1.0f, 1.0f, 0.8f), FadeVal);
-	RenderTools()->DrawUIRect(pRect, Color, CUI::CORNER_ALL, 5.0f);
+	RenderTools()->DrawUIRect(pRect, Color, Corners, 5.0f);
 	CUIRect Temp;
 	pRect->HMargin(pRect->h>=20.0f?2.0f:1.0f, &Temp);
 	UI()->DoLabel(&Temp, pText, Temp.h*ms_FontmodHeight, 0);
