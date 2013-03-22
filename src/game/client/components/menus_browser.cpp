@@ -943,7 +943,8 @@ void CMenus::RenderServerbrowserFriends(CUIRect View)
 		ServerFriends.HSplitTop(3.0f, 0, &ServerFriends);
 		ServerFriends.HSplitTop(20.0f, &Button, &ServerFriends);
 		static int s_AddButton = 0;
-		if(DoButton_Menu(&s_AddButton, Localize("Add Friend"), 0, &Button))
+		
+		if(DoButton_Menu(&s_AddButton, Localize("Add Friend"), 0, &Button) || (m_EnterPressed && ((UI()->LastActiveItem() == &s_aName) || (UI()->LastActiveItem() == &s_aClan))))
 		{
 			m_pClient->Friends()->AddFriend(s_aName, s_aClan);
 			FriendlistOnUpdate();
@@ -1062,7 +1063,8 @@ void CMenus::RenderServerbrowser(CUIRect MainView)
 		Button.VMargin(2.0f, &Button);
 
 		static int s_JoinButton = 0;
-		if(DoButton_Menu(&s_JoinButton, Localize("Connect"), 0, &Button) || m_EnterPressed)
+		if(DoButton_Menu(&s_JoinButton, Localize("Connect"), 0, &Button) || (m_EnterPressed && ((UI()->LastActiveItem() != &s_aName) && (UI()->LastActiveItem() != &s_aClan))))
+
 		{
 			Client()->Connect(g_Config.m_UiServerAddress);
 			m_EnterPressed = false;
