@@ -561,7 +561,7 @@ void CMenus::RenderSettingsControls(CUIRect MainView)
 		//TextRender()->Text(0, MovementSettings.x, MovementSettings.y, 14.0f*UI()->Scale(), Localize("Movement"), 0);
 
 		MovementSettings.HSplitTop(10.0f, 0, &MovementSettings);
-		static float s_Fades[2][2] = {{0}};
+		static float s_Fades[2][3] = {{0}};
 		{
 			CUIRect Temp, Button, Scroll, Label;
 			MovementSettings.HSplitTop(35.0f, &Button, &MovementSettings);
@@ -719,7 +719,7 @@ void CMenus::RenderSettingsControls(CUIRect MainView)
 		//TextRender()->Text(0, MiscSettings.x, MiscSettings.y, 14.0f*UI()->Scale(), Localize("Miscellaneous"), 0);
 
 		MiscSettings.HSplitTop(10.0f, 0, &MiscSettings);
-		UiDoGetButtons(17, 27, MiscSettings);
+		UiDoGetButtons(17, 26, MiscSettings);
 	}
 }
 
