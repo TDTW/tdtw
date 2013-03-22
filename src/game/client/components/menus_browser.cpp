@@ -1041,9 +1041,9 @@ void CMenus::RenderServerbrowser(CUIRect MainView)
 		TextRender()->TextColor(1.0f, 1.0f, 1.0f, 1.0f);
 
 		// button area
-		StatusBox.VSplitRight(80.0f, &StatusBox, 0);
 		StatusBox.VSplitRight(170.0f, &StatusBox, &ButtonArea);
-		ButtonArea.VSplitRight(150.0f, 0, &ButtonArea);
+		StatusBox.VSplitRight(150.0f, &StatusBox, 0);
+		ButtonArea.VSplitRight(5.0f, &ButtonArea, 0);
 		ButtonArea.HSplitTop(20.0f, &Button, &ButtonArea);
 		Button.VMargin(2.0f, &Button);
 
@@ -1069,7 +1069,16 @@ void CMenus::RenderServerbrowser(CUIRect MainView)
 			Client()->Connect(g_Config.m_UiServerAddress);
 			m_EnterPressed = false;
 		}
-
+		
+		ButtonArea.HSplitTop(5.0f, 0, &ButtonArea);		
+		ButtonArea.HSplitTop(20.0f, &Button, &ButtonArea);
+		
+		static int s_FriendButton = 0;
+		if(DoButton_MenuTab(&s_FriendButton, Localize("Show friends"), g_Config.m_BrFilterFriends, &Button, CUI::CORNER_ALL))
+		{
+			g_Config.m_BrFilterFriends ^= 1;
+		}
+		
 		// address info
 		StatusBox.VSplitLeft(20.0f, 0, &StatusBox);
 		StatusBox.HSplitTop(20.0f, &Button, &StatusBox);
