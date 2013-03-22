@@ -836,22 +836,18 @@ void CMenus::RenderServerbrowserFriends(CUIRect View)
 	const float FontSize = 10.0f;
 
 	// header
-	ServerFriends.HSplitTop(ms_ListheaderHeight, &FilterHeader, &ServerFriends);
-	RenderTools()->DrawUIRect(&FilterHeader, vec4(1,1,1,0.25f), 0, 0.0f);
 	RenderTools()->DrawUIRect(&ServerFriends, vec4(0,0,0,0.15f), CUI::CORNER_B, 4.0f);
-	UI()->DoLabelScaled(&FilterHeader, Localize("Friends"), FontSize+4.0f, 0);
 	CUIRect Button, List;
 
-	ServerFriends.Margin(3.0f, &ServerFriends);
-	ServerFriends.VMargin(3.0f, &ServerFriends);
 	ServerFriends.HSplitBottom(100.0f, &List, &ServerFriends);
+	ServerFriends.Margin(3.0f, &ServerFriends);
 
 	// friends list(remove friend)
 	static float s_ScrollValue = 0;
 	static float s_Fade[2] = {0};
 	if(m_FriendlistSelectedIndex >= m_lFriends.size())
 		m_FriendlistSelectedIndex = m_lFriends.size()-1;
-	UiDoListboxStart(&m_lFriends, &s_Fade[0], &List, 30.0f, "", "", m_lFriends.size(), 1, m_FriendlistSelectedIndex, s_ScrollValue);
+	UiDoListboxStart(&m_lFriends, &s_Fade[0], &List, 30.0f, Localize("Friends"), "", m_lFriends.size(), 1, m_FriendlistSelectedIndex, s_ScrollValue, 0, 0);
 
 	m_lFriends.sort_range();
 	for(int i = 0; i < m_lFriends.size(); ++i)
