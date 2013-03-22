@@ -390,19 +390,51 @@ void CMenus::RenderServerbrowserServerList(CUIRect View)
 					DoButton_Icon(IMAGE_BROWSEICONS, SPRITE_BROWSE_HEART, &Icon);
 				}
 
+				float perc = 0.0f;
 				if(g_Config.m_BrFilterSpectators)
+				{
 					str_format(aTemp, sizeof(aTemp), "%i/%i", pItem->m_NumPlayers, pItem->m_MaxPlayers);
+					perc = pItem->m_NumPlayers * 100.0f / pItem->m_MaxPlayers;
+				}
 				else
+				{
 					str_format(aTemp, sizeof(aTemp), "%i/%i", pItem->m_NumClients, pItem->m_MaxClients);
+					perc = pItem->m_NumPlayers * 100.0f / pItem->m_MaxClients;
+				}
+				//if(g_Config.m_ClHighlightPlayer == 1) #TODO: Config
+				{
+					float perc = pItem->m_NumClients * 100.0f / pItem->m_MaxClients;  
+					if (perc >= 0.0f && perc <= 50.0f)
+						TextRender()->TextColor(perc*2/50.0f,1.0f,0.2f,1);
+					else if(perc > 50.0f)
+						TextRender()->TextColor(1.0f,1.0f-perc/2/100.0f,0.2f,1);
+					else
+						TextRender()->TextColor(1,1,1,1);			
+				}
+					
 				if(g_Config.m_BrFilterString[0] && (pItem->m_QuickSearchHit&IServerBrowser::QUICK_PLAYER))
 					TextRender()->TextColor(0.4f,0.4f,1.0f,1);
 				UI()->DoLabelScaled(&Button, aTemp, 12.0f, 1);
 				TextRender()->TextColor(1,1,1,1);
 			}
 			else if(ID == COL_PING)
-			{
+			{				
+				//if(g_Config.m_ClHighlightPing == 1) #TODO: Config
+				{
+					float ping = pItem->m_Latency;						
+				
+					float perc = (ping - 20)*100/180;
+					if (perc >= 0.0f && perc <= 50.0f)
+						TextRender()->TextColor(perc*2/50.0f,1.0f,0.2f,1);
+					else if(perc > 50.0f)
+						TextRender()->TextColor(1.0f,1.0f-perc/2/100.0f,0.2f,1);
+					else
+						TextRender()->TextColor(1,1,1,1);	
+				}
+
 				str_format(aTemp, sizeof(aTemp), "%i", pItem->m_Latency);
 				UI()->DoLabelScaled(&Button, aTemp, 12.0f, 1);
+				TextRender()->TextColor(1,1,1,1);
 			}
 			else if(ID == COL_VERSION)
 			{
@@ -414,9 +446,16 @@ void CMenus::RenderServerbrowserServerList(CUIRect View)
 				CTextCursor Cursor;
 				TextRender()->SetCursor(&Cursor, Button.x, Button.y, 12.0f*UI()->Scale(), TEXTFLAG_RENDER|TEXTFLAG_STOP_AT_END);
 				Cursor.m_LineWidth = Button.w;
+				//if(g_Config.m_ClHighlightGametypes == 1) #TODO: Config
+				{
+					if (str_comp(pItem->m_aGameType, "DM") == 0 || str_comp(pItem->m_aGameType, "TDM") == 0 || str_comp(pItem->m_aGameType, "CTF") == 0) 
+						TextRender()->TextColor(0.5f,1,0.5f,1);
+					else 
+						TextRender()->TextColor(1,1,1,1);
+				}
 				TextRender()->TextEx(&Cursor, pItem->m_aGameType, -1);
+				TextRender()->TextColor(1,1,1,1);
 			}
-
 		}
 	}
 
@@ -890,7 +929,6 @@ void CMenus::RenderServerbrowserFriends(CUIRect View)
 		str_format(aBuf, sizeof(aBuf), "%s:", Localize("Name"));
 		UI()->DoLabelScaled(&Button, aBuf, FontSize, -1);
 		Button.VSplitLeft(80.0f, 0, &Button);
-		static char s_aName[MAX_NAME_LENGTH] = {0};
 		static float s_OffsetName = 0.0f;
 		DoEditBox(&s_aName, &s_Fade[0], &Button, s_aName, sizeof(s_aName), FontSize, &s_OffsetName);
 
@@ -899,7 +937,6 @@ void CMenus::RenderServerbrowserFriends(CUIRect View)
 		str_format(aBuf, sizeof(aBuf), "%s:", Localize("Clan"));
 		UI()->DoLabelScaled(&Button, aBuf, FontSize, -1);
 		Button.VSplitLeft(80.0f, 0, &Button);
-		static char s_aClan[MAX_CLAN_LENGTH] = {0};
 		static float s_OffsetClan = 0.0f;
 		DoEditBox(&s_aClan, &s_Fade[1], &Button, s_aClan, sizeof(s_aClan), FontSize, &s_OffsetClan);
 
@@ -911,6 +948,8 @@ void CMenus::RenderServerbrowserFriends(CUIRect View)
 			m_pClient->Friends()->AddFriend(s_aName, s_aClan);
 			FriendlistOnUpdate();
 			Client()->ServerBrowserUpdate();
+			s_aName[0] = 0;
+			s_aClan[0] = 0;
 		}
 	}
 }
