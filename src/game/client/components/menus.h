@@ -88,7 +88,7 @@ class CMenus : public CComponent
 	};
 
 	void UiDoListboxStart(const void *pID, const float *pFade, const CUIRect *pRect, float RowHeight, const char *pTitle, const char *pBottomText, int NumItems,
-						int ItemsPerRow, int SelectedIndex, float ScrollValue);
+						int ItemsPerRow, int SelectedIndex, float ScrollValue, int TopCorners = CUI::CORNER_T, int BottomCorners = CUI::CORNER_B);
 	CListboxItem UiDoListboxNextItem(const void *pID, bool Selected = false);
 	CListboxItem UiDoListboxNextRow();
 	int UiDoListboxEnd(float *pScrollValue, bool *pItemActivated);
@@ -135,7 +135,9 @@ class CMenus : public CComponent
 	bool m_MenuActive;
 	bool m_UseMouseButtons;
 	vec2 m_MousePos;
-
+	
+	char s_aName[MAX_NAME_LENGTH];
+	char s_aClan[MAX_CLAN_LENGTH];
 	int64 m_LastInput;
 
 	// loading

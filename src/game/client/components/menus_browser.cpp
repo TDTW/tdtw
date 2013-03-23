@@ -390,19 +390,51 @@ void CMenus::RenderServerbrowserServerList(CUIRect View)
 					DoButton_Icon(IMAGE_BROWSEICONS, SPRITE_BROWSE_HEART, &Icon);
 				}
 
+				float perc = 0.0f;
 				if(g_Config.m_BrFilterSpectators)
+				{
 					str_format(aTemp, sizeof(aTemp), "%i/%i", pItem->m_NumPlayers, pItem->m_MaxPlayers);
+					perc = pItem->m_NumPlayers * 100.0f / pItem->m_MaxPlayers;
+				}
 				else
+				{
 					str_format(aTemp, sizeof(aTemp), "%i/%i", pItem->m_NumClients, pItem->m_MaxClients);
+					perc = pItem->m_NumPlayers * 100.0f / pItem->m_MaxClients;
+				}
+				//if(g_Config.m_ClHighlightPlayer == 1) #TODO: Config
+				{
+					float perc = pItem->m_NumClients * 100.0f / pItem->m_MaxClients;  
+					if (perc >= 0.0f && perc <= 50.0f)
+						TextRender()->TextColor(perc*2/50.0f,1.0f,0.2f,1);
+					else if(perc > 50.0f)
+						TextRender()->TextColor(1.0f,1.0f-perc/2/100.0f,0.2f,1);
+					else
+						TextRender()->TextColor(1,1,1,1);			
+				}
+					
 				if(g_Config.m_BrFilterString[0] && (pItem->m_QuickSearchHit&IServerBrowser::QUICK_PLAYER))
 					TextRender()->TextColor(0.4f,0.4f,1.0f,1);
 				UI()->DoLabelScaled(&Button, aTemp, 12.0f, 1);
 				TextRender()->TextColor(1,1,1,1);
 			}
 			else if(ID == COL_PING)
-			{
+			{				
+				//if(g_Config.m_ClHighlightPing == 1) #TODO: Config
+				{
+					float ping = pItem->m_Latency;						
+				
+					float perc = (ping - 20)*100/180;
+					if (perc >= 0.0f && perc <= 50.0f)
+						TextRender()->TextColor(perc*2/50.0f,1.0f,0.2f,1);
+					else if(perc > 50.0f)
+						TextRender()->TextColor(1.0f,1.0f-perc/2/100.0f,0.2f,1);
+					else
+						TextRender()->TextColor(1,1,1,1);	
+				}
+
 				str_format(aTemp, sizeof(aTemp), "%i", pItem->m_Latency);
 				UI()->DoLabelScaled(&Button, aTemp, 12.0f, 1);
+				TextRender()->TextColor(1,1,1,1);
 			}
 			else if(ID == COL_VERSION)
 			{
@@ -414,9 +446,16 @@ void CMenus::RenderServerbrowserServerList(CUIRect View)
 				CTextCursor Cursor;
 				TextRender()->SetCursor(&Cursor, Button.x, Button.y, 12.0f*UI()->Scale(), TEXTFLAG_RENDER|TEXTFLAG_STOP_AT_END);
 				Cursor.m_LineWidth = Button.w;
+				//if(g_Config.m_ClHighlightGametypes == 1) #TODO: Config
+				{
+					if (str_comp(pItem->m_aGameType, "DM") == 0 || str_comp(pItem->m_aGameType, "TDM") == 0 || str_comp(pItem->m_aGameType, "CTF") == 0) 
+						TextRender()->TextColor(0.5f,1,0.5f,1);
+					else 
+						TextRender()->TextColor(1,1,1,1);
+				}
 				TextRender()->TextEx(&Cursor, pItem->m_aGameType, -1);
+				TextRender()->TextColor(1,1,1,1);
 			}
-
 		}
 	}
 
@@ -797,22 +836,18 @@ void CMenus::RenderServerbrowserFriends(CUIRect View)
 	const float FontSize = 10.0f;
 
 	// header
-	ServerFriends.HSplitTop(ms_ListheaderHeight, &FilterHeader, &ServerFriends);
-	RenderTools()->DrawUIRect(&FilterHeader, vec4(1,1,1,0.25f), 0, 0.0f);
 	RenderTools()->DrawUIRect(&ServerFriends, vec4(0,0,0,0.15f), CUI::CORNER_B, 4.0f);
-	UI()->DoLabelScaled(&FilterHeader, Localize("Friends"), FontSize+4.0f, 0);
 	CUIRect Button, List;
 
-	ServerFriends.Margin(3.0f, &ServerFriends);
-	ServerFriends.VMargin(3.0f, &ServerFriends);
 	ServerFriends.HSplitBottom(100.0f, &List, &ServerFriends);
+	ServerFriends.Margin(3.0f, &ServerFriends);
 
 	// friends list(remove friend)
 	static float s_ScrollValue = 0;
 	static float s_Fade[2] = {0};
 	if(m_FriendlistSelectedIndex >= m_lFriends.size())
 		m_FriendlistSelectedIndex = m_lFriends.size()-1;
-	UiDoListboxStart(&m_lFriends, &s_Fade[0], &List, 30.0f, "", "", m_lFriends.size(), 1, m_FriendlistSelectedIndex, s_ScrollValue);
+	UiDoListboxStart(&m_lFriends, &s_Fade[0], &List, 30.0f, Localize("Friends"), "", m_lFriends.size(), 1, m_FriendlistSelectedIndex, s_ScrollValue, 0, 0);
 
 	m_lFriends.sort_range();
 	for(int i = 0; i < m_lFriends.size(); ++i)
@@ -890,7 +925,6 @@ void CMenus::RenderServerbrowserFriends(CUIRect View)
 		str_format(aBuf, sizeof(aBuf), "%s:", Localize("Name"));
 		UI()->DoLabelScaled(&Button, aBuf, FontSize, -1);
 		Button.VSplitLeft(80.0f, 0, &Button);
-		static char s_aName[MAX_NAME_LENGTH] = {0};
 		static float s_OffsetName = 0.0f;
 		DoEditBox(&s_aName, &s_Fade[0], &Button, s_aName, sizeof(s_aName), FontSize, &s_OffsetName);
 
@@ -899,18 +933,20 @@ void CMenus::RenderServerbrowserFriends(CUIRect View)
 		str_format(aBuf, sizeof(aBuf), "%s:", Localize("Clan"));
 		UI()->DoLabelScaled(&Button, aBuf, FontSize, -1);
 		Button.VSplitLeft(80.0f, 0, &Button);
-		static char s_aClan[MAX_CLAN_LENGTH] = {0};
 		static float s_OffsetClan = 0.0f;
 		DoEditBox(&s_aClan, &s_Fade[1], &Button, s_aClan, sizeof(s_aClan), FontSize, &s_OffsetClan);
 
 		ServerFriends.HSplitTop(3.0f, 0, &ServerFriends);
 		ServerFriends.HSplitTop(20.0f, &Button, &ServerFriends);
 		static int s_AddButton = 0;
-		if(DoButton_Menu(&s_AddButton, Localize("Add Friend"), 0, &Button))
+		
+		if(DoButton_Menu(&s_AddButton, Localize("Add Friend"), 0, &Button) || (m_EnterPressed && ((UI()->LastActiveItem() == &s_aName) || (UI()->LastActiveItem() == &s_aClan))))
 		{
 			m_pClient->Friends()->AddFriend(s_aName, s_aClan);
 			FriendlistOnUpdate();
 			Client()->ServerBrowserUpdate();
+			s_aName[0] = 0;
+			s_aClan[0] = 0;
 		}
 	}
 }
@@ -1001,9 +1037,9 @@ void CMenus::RenderServerbrowser(CUIRect MainView)
 		TextRender()->TextColor(1.0f, 1.0f, 1.0f, 1.0f);
 
 		// button area
-		StatusBox.VSplitRight(80.0f, &StatusBox, 0);
 		StatusBox.VSplitRight(170.0f, &StatusBox, &ButtonArea);
-		ButtonArea.VSplitRight(150.0f, 0, &ButtonArea);
+		StatusBox.VSplitRight(150.0f, &StatusBox, 0);
+		ButtonArea.VSplitRight(5.0f, &ButtonArea, 0);
 		ButtonArea.HSplitTop(20.0f, &Button, &ButtonArea);
 		Button.VMargin(2.0f, &Button);
 
@@ -1023,12 +1059,22 @@ void CMenus::RenderServerbrowser(CUIRect MainView)
 		Button.VMargin(2.0f, &Button);
 
 		static int s_JoinButton = 0;
-		if(DoButton_Menu(&s_JoinButton, Localize("Connect"), 0, &Button) || m_EnterPressed)
+		if(DoButton_Menu(&s_JoinButton, Localize("Connect"), 0, &Button) || (m_EnterPressed && ((UI()->LastActiveItem() != &s_aName) && (UI()->LastActiveItem() != &s_aClan))))
+
 		{
 			Client()->Connect(g_Config.m_UiServerAddress);
 			m_EnterPressed = false;
 		}
-
+		
+		ButtonArea.HSplitTop(5.0f, 0, &ButtonArea);		
+		ButtonArea.HSplitTop(20.0f, &Button, &ButtonArea);
+		
+		static int s_FriendButton = 0;
+		if(DoButton_MenuTab(&s_FriendButton, Localize("Show friends"), g_Config.m_BrFilterFriends, &Button, CUI::CORNER_ALL))
+		{
+			g_Config.m_BrFilterFriends ^= 1;
+		}
+		
 		// address info
 		StatusBox.VSplitLeft(20.0f, 0, &StatusBox);
 		StatusBox.HSplitTop(20.0f, &Button, &StatusBox);
