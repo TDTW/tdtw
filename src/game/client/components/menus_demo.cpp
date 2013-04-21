@@ -444,6 +444,86 @@ CMenus::CListboxItem CMenus::UiDoListboxNextItem(const void *pId, bool Selected)
 	return Item;
 }
 
+CMenus::CListboxItem CMenus::UiDoListboxNextItem(const void *pId, const float *pFadeValue, bool Selected)
+{
+	int ThisItemIndex = gs_ListBoxItemIndex;
+	if(Selected)
+	{
+		if(gs_ListBoxSelectedIndex == gs_ListBoxNewSelected)
+			gs_ListBoxNewSelected = ThisItemIndex;
+		gs_ListBoxSelectedIndex = ThisItemIndex;
+	}
+
+	CListboxItem Item = UiDoListboxNextRow();
+
+	if(Item.m_Visible && UI()->DoButtonLogic(pId, "", gs_ListBoxSelectedIndex == gs_ListBoxItemIndex, &Item.m_HitRect))
+		gs_ListBoxNewSelected = ThisItemIndex;
+
+	// process input, regard selected index
+	if(gs_ListBoxSelectedIndex == ThisItemIndex)
+	{
+		if(!gs_ListBoxDoneEvents)
+		{
+			gs_ListBoxDoneEvents = 1;
+
+			if(m_EnterPressed || (UI()->ActiveItem() == pId && Input()->MouseDoubleClick()))
+			{
+				gs_ListBoxItemActivated = true;
+				UI()->SetActiveItem(0);
+			}
+			else
+			{
+				for(int i = 0; i < m_NumInputEvents; i++)
+				{
+					int NewIndex = -1;
+					if(m_aInputEvents[i].m_Flags&IInput::FLAG_PRESS)
+					{
+						if(m_aInputEvents[i].m_Key == KEY_DOWN) NewIndex = gs_ListBoxNewSelected + 1;
+						if(m_aInputEvents[i].m_Key == KEY_UP) NewIndex = gs_ListBoxNewSelected - 1;
+					}
+					if(NewIndex > -1 && NewIndex < gs_ListBoxNumItems)
+					{
+						// scroll
+						float Offset = (NewIndex/gs_ListBoxItemsPerRow-gs_ListBoxNewSelected/gs_ListBoxItemsPerRow)*gs_ListBoxRowHeight;
+						int Scroll = gs_ListBoxOriginalView.y > Item.m_Rect.y+Offset ? -1 :
+										gs_ListBoxOriginalView.y+gs_ListBoxOriginalView.h < Item.m_Rect.y+Item.m_Rect.h+Offset ? 1 : 0;
+						if(Scroll)
+						{
+							int NumViewable = (int)(gs_ListBoxOriginalView.h/gs_ListBoxRowHeight) + 1;
+							int ScrollNum = (gs_ListBoxNumItems+gs_ListBoxItemsPerRow-1)/gs_ListBoxItemsPerRow-NumViewable+1;
+							if(Scroll < 0)
+							{
+								int Num = (gs_ListBoxOriginalView.y-Item.m_Rect.y-Offset+gs_ListBoxRowHeight-1.0f)/gs_ListBoxRowHeight;
+								gs_ListBoxScrollValue -= (1.0f/ScrollNum)*Num;
+							}
+							else
+							{
+								int Num = (Item.m_Rect.y+Item.m_Rect.h+Offset-(gs_ListBoxOriginalView.y+gs_ListBoxOriginalView.h)+gs_ListBoxRowHeight-1.0f)/
+									gs_ListBoxRowHeight;
+								gs_ListBoxScrollValue += (1.0f/ScrollNum)*Num;
+							}
+							if(gs_ListBoxScrollValue < 0.0f) gs_ListBoxScrollValue = 0.0f;
+							if(gs_ListBoxScrollValue > 1.0f) gs_ListBoxScrollValue = 1.0f;
+						}
+
+						gs_ListBoxNewSelected = NewIndex;
+					}
+				}
+			}
+		}
+	}
+	float *pFade = ButtonFade(pId, pFadeValue, 0.6f, gs_ListBoxSelectedIndex == ThisItemIndex);
+	float FadeVal = *pFade/0.6f;
+	
+	vec4 Color = mix(vec4(1.0f, 1.0f, 1.0f, 0.0f), vec4(1.0f, 1.0f, 1.0f, 0.35f), FadeVal);
+	
+	CUIRect r = Item.m_Rect;
+	r.Margin(1.5f, &r);
+	RenderTools()->DrawUIRect(&r, Color, CUI::CORNER_ALL, 4.0f);
+		
+	return Item;
+}
+
 int CMenus::UiDoListboxEnd(float *pScrollValue, bool *pItemActivated)
 {
 	UI()->ClipDisable();
@@ -617,10 +697,22 @@ void CMenus::RenderDemoList(CUIRect MainView)
 	static int s_DemoListId = 0;
 	static float s_ScrollValue = 0;
 	static float s_Fade[2] = {0};
+	
+	static int NumDemos = 0;
+	static sorted_array<float> m_Fade;
+	
+	if(NumDemos != m_lDemos.size())
+	{
+		m_Fade.clear();
+		for(int i=0; i<m_lDemos.size(); i++)
+			m_Fade.add(0.0f);
+		NumDemos = m_lDemos.size();
+	}
+
 	UiDoListboxStart(&s_DemoListId, &s_Fade[0], &ListBox, 17.0f, Localize("Demos"), aFooterLabel, m_lDemos.size(), 1, m_DemolistSelectedIndex, s_ScrollValue);
 	for(sorted_array<CDemoItem>::range r = m_lDemos.all(); !r.empty(); r.pop_front())
 	{
-		CListboxItem Item = UiDoListboxNextItem((void*)(&r.front()));
+		CListboxItem Item = UiDoListboxNextItem((void*)(&r.front()), &m_Fade[r.size()-1]);
 		if(Item.m_Visible)
 		{
 			Item.m_Rect.VSplitLeft(Item.m_Rect.h, &FileIcon, &Item.m_Rect);

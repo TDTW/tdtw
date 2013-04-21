@@ -1356,6 +1356,17 @@ int CMenus::Render()
 			static float s_ScrollValue = 0.0f;
 			int OldSelected = -1;
 			static float s_Fade[2] = {0};
+			
+			static int NumFlags = 0;
+			static sorted_array<float> m_Fade;
+			
+			if(NumFlags != m_pClient->m_pCountryFlags->Num())
+			{
+				m_Fade.clear();
+				for(int i=0; i<m_pClient->m_pCountryFlags->Num(); i++)
+					m_Fade.add(0.0f);
+				NumFlags = m_pClient->m_pCountryFlags->Num();
+			}
 			UiDoListboxStart(&s_ScrollValue, &s_Fade[0], &Box, 50.0f, Localize("Country"), "", m_pClient->m_pCountryFlags->Num(), 6, OldSelected, s_ScrollValue);
 
 			for(int i = 0; i < m_pClient->m_pCountryFlags->Num(); ++i)
@@ -1364,7 +1375,7 @@ int CMenus::Render()
 				if(pEntry->m_CountryCode == ActSelection)
 					OldSelected = i;
 
-				CListboxItem Item = UiDoListboxNextItem(&pEntry->m_CountryCode, OldSelected == i);
+				CListboxItem Item = UiDoListboxNextItem(&pEntry->m_CountryCode, &m_Fade[i], OldSelected == i);
 				if(Item.m_Visible)
 				{
 					CUIRect Label;

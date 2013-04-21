@@ -199,13 +199,24 @@ void CMenus::RenderSettingsCountry(CUIRect MainView)
 	int OldSelected = -1;
 	UiDoListboxStart(&s_ScrollValue, &s_FadeScroll[0], &MainView, 50.0f, Localize("Country"), "", m_pClient->m_pCountryFlags->Num(), 8, OldSelected, s_ScrollValue);
 
+	static bool InitialFade = false;
+	static sorted_array<float> m_Fade;
+	
+	if(!InitialFade)
+	{
+		m_Fade.clear();
+		for(int i=0; i< m_pClient->m_pCountryFlags->Num(); i++)
+			m_Fade.add(0.0f);
+		InitialFade = true;
+	}	
+	
 	for(int i = 0; i < m_pClient->m_pCountryFlags->Num(); ++i)
 	{
 		const CCountryFlags::CCountryFlag *pEntry = m_pClient->m_pCountryFlags->GetByIndex(i);
 		if(pEntry->m_CountryCode == g_Config.m_PlayerCountry)
 			OldSelected = i;
 
-		CListboxItem Item = UiDoListboxNextItem(&pEntry->m_CountryCode, OldSelected == i);
+		CListboxItem Item = UiDoListboxNextItem(&pEntry->m_CountryCode, &m_Fade[i], OldSelected == i);
 		if(Item.m_Visible)
 		{
 			CUIRect Label;
@@ -376,10 +387,12 @@ void CMenus::RenderSettingsTee(CUIRect MainView)
 	MainView.HSplitTop(10.0f, 0, &MainView);
 	static bool s_InitSkinlist = true;
 	static sorted_array<const CSkins::CSkin *> s_paSkinList;
+	static sorted_array<float> m_Fade;
 	static float s_ScrollValue = 0.0f;
 	if(s_InitSkinlist)
 	{
 		s_paSkinList.clear();
+		m_Fade.clear();
 		for(int i = 0; i < m_pClient->m_pSkins->Num(); ++i)
 		{
 			const CSkins::CSkin *s = m_pClient->m_pSkins->Get(i);
@@ -391,6 +404,7 @@ void CMenus::RenderSettingsTee(CUIRect MainView)
 				continue;
 
 			s_paSkinList.add(s);
+			m_Fade.add(0.0f);
 		}
 		s_InitSkinlist = false;
 	}
@@ -407,7 +421,7 @@ void CMenus::RenderSettingsTee(CUIRect MainView)
 		if(str_comp(s->m_aName, g_Config.m_PlayerSkin) == 0)
 			OldSelected = i;
 
-		CListboxItem Item = UiDoListboxNextItem(&s_paSkinList[i], OldSelected == i);
+		CListboxItem Item = UiDoListboxNextItem(&s_paSkinList[i], &m_Fade[i], OldSelected == i);
 		if(Item.m_Visible)
 		{
 			CTeeRenderInfo Info;
@@ -746,6 +760,9 @@ void CMenus::RenderSettingsGraphics(CUIRect MainView)
 	CUIRect ModeList;
 	MainView.VSplitLeft(300.0f, &MainView, &ModeList);
 
+	static bool InitialFade = false;
+	static sorted_array<float> m_Fade;
+	
 	static int s_SettingsFade[10] = {0};
 	// draw allmodes switch
 	ModeList.HSplitTop(20, &Button, &ModeList);
@@ -753,6 +770,15 @@ void CMenus::RenderSettingsGraphics(CUIRect MainView)
 	{
 		g_Config.m_GfxDisplayAllModes ^= 1;
 		s_NumNodes = Graphics()->GetVideoModes(s_aModes, MAX_RESOLUTIONS);
+		InitialFade = false;
+	}
+
+	if(!InitialFade)
+	{
+		m_Fade.clear();
+		for(int i=0; i<s_NumNodes; i++)
+			m_Fade.add(0.0f);
+		InitialFade = true;
 	}
 
 	// display mode list
@@ -773,7 +799,7 @@ void CMenus::RenderSettingsGraphics(CUIRect MainView)
 			OldSelected = i;
 		}
 
-		CListboxItem Item = UiDoListboxNextItem(&s_aModes[i], OldSelected == i);
+		CListboxItem Item = UiDoListboxNextItem(&s_aModes[i], &m_Fade[i], OldSelected == i);
 		if(Item.m_Visible)
 		{
 			int G = gcd(s_aModes[i].m_Width, s_aModes[i].m_Height);
@@ -1032,17 +1058,19 @@ void CMenus::RenderFontSelection(CUIRect MainView)
 	static int s_FontList  = 0;	
 	static int s_SelectedFont = 0;	
 	static sorted_array<CFontFile> s_Fonts;	
+	static sorted_array<float> m_Fade;
 	static float s_ScrollValue = 0;	
 	
 	if(s_Fonts.size() == 0)	
 	{		
 		Storage()->ListDirectory(IStorage::TYPE_ALL, "fonts", GatherFonts, &s_Fonts);		
-		for(int i = 0; i < s_Fonts.size(); i++)			
+		for(int i = 0; i < s_Fonts.size(); i++)		
+		{
+			m_Fade.clear();		
 			if(str_comp(s_Fonts[i].m_FileName, g_Config.m_ClFontfile) == 0)			
-			{				
-				s_SelectedFont = i;				
-				break;			
-			}	
+				s_SelectedFont = i;		
+			m_Fade.add(0.0f);
+		}
 	}	
 	
 	int OldSelectedFont = s_SelectedFont;	
@@ -1050,7 +1078,7 @@ void CMenus::RenderFontSelection(CUIRect MainView)
 	UiDoListboxStart(&s_FontList, &s_Fade[0], &MainView, 24.0f, Localize("Fonts"), "", s_Fonts.size(), 1, s_SelectedFont, s_ScrollValue);	
 	for(sorted_array<CFontFile>::range r = s_Fonts.all(); !r.empty(); r.pop_front())	
 	{		
-		CListboxItem Item = UiDoListboxNextItem(&r.front());		
+		CListboxItem Item = UiDoListboxNextItem(&r.front(), &m_Fade[r.size()-1]);		
 		if(Item.m_Visible)			
 			UI()->DoLabelScaled(&Item.m_Rect, r.front().m_Name, 16.0f, -1);	
 	}	
@@ -1150,6 +1178,7 @@ void CMenus::RenderLanguageSelection(CUIRect MainView)
 	static int s_LanguageList = 0;
 	static int s_SelectedLanguage = 0;
 	static sorted_array<CLanguage> s_Languages;
+	static sorted_array<float> m_Fade;
 	static float s_ScrollValue = 0;
 
 	if(s_Languages.size() == 0)
@@ -1157,11 +1186,12 @@ void CMenus::RenderLanguageSelection(CUIRect MainView)
 		s_Languages.add(CLanguage("English", "", 826));
 		LoadLanguageIndexfile(Storage(), Console(), &s_Languages);
 		for(int i = 0; i < s_Languages.size(); i++)
+		{
+			m_Fade.clear();
 			if(str_comp(s_Languages[i].m_FileName, g_Config.m_ClLanguagefile) == 0)
-			{
 				s_SelectedLanguage = i;
-				break;
-			}
+			m_Fade.add(0.0f);
+		}
 	}
 
 	int OldSelected = s_SelectedLanguage;
@@ -1171,7 +1201,7 @@ void CMenus::RenderLanguageSelection(CUIRect MainView)
 
 	for(sorted_array<CLanguage>::range r = s_Languages.all(); !r.empty(); r.pop_front())
 	{
-		CListboxItem Item = UiDoListboxNextItem(&r.front());
+		CListboxItem Item = UiDoListboxNextItem(&r.front(), &m_Fade[r.size()-1]);
 
 		if(Item.m_Visible)
 		{

@@ -223,6 +223,17 @@ void CMenus::RenderServerbrowserServerList(CUIRect View)
 	// reset friend counter
 	for(int i = 0; i < m_lFriends.size(); m_lFriends[i++].m_NumFound = 0);
 
+	static int NumServersFade = 0;
+	static sorted_array<float> m_Fade;
+	
+	if(NumServersFade != NumServers)
+	{
+		m_Fade.clear();
+		for(int k=0; k<NumServers; k++)
+			m_Fade.add(0.0f);					
+		NumServersFade = NumServers;
+	}
+
 	for (int i = 0; i < NumServers; i++)
 	{
 		int ItemIndex = i;
@@ -265,13 +276,15 @@ void CMenus::RenderServerbrowserServerList(CUIRect View)
 		// make sure that only those in view can be selected
 		if(Row.y+Row.h > OriginalView.y && Row.y < OriginalView.y+OriginalView.h)
 		{
-			if(Selected)
-			{
-				CUIRect r = Row;
-				r.Margin(1.5f, &r);
-				RenderTools()->DrawUIRect(&r, vec4(1,1,1,0.5f), CUI::CORNER_ALL, 4.0f);
-			}
-
+			float *pSerFade = ButtonFade(pItem, &m_Fade[i], 0.6f, Selected);
+			float SerFadeVal = *pSerFade/0.6f;
+			
+			vec4 SerColor = mix(vec4(1.0f, 1.0f, 1.0f, 0.0f), vec4(1.0f, 1.0f, 1.0f, 0.35f), SerFadeVal);
+	
+			CUIRect r = Row;
+			r.Margin(1.5f, &r);
+			RenderTools()->DrawUIRect(&r, SerColor, CUI::CORNER_ALL, 4.0f);
+			
 			// clip the selection
 			if(SelectHitBox.y < OriginalView.y) // top
 			{
@@ -849,10 +862,21 @@ void CMenus::RenderServerbrowserFriends(CUIRect View)
 		m_FriendlistSelectedIndex = m_lFriends.size()-1;
 	UiDoListboxStart(&m_lFriends, &s_Fade[0], &List, 30.0f, Localize("Friends"), "", m_lFriends.size(), 1, m_FriendlistSelectedIndex, s_ScrollValue, 0, 0);
 
+	static int NumFriends = 0;
+	static sorted_array<float> m_Fade;
+	
+	if(NumFriends != m_lFriends.size())
+	{
+		m_Fade.clear();
+		for(int i=0; i<m_lFriends.size(); i++)
+			m_Fade.add(0.0f);
+		NumFriends = m_lFriends.size();
+	}
+	
 	m_lFriends.sort_range();
 	for(int i = 0; i < m_lFriends.size(); ++i)
 	{
-		CListboxItem Item = UiDoListboxNextItem(&m_lFriends[i]);
+		CListboxItem Item = UiDoListboxNextItem(&m_lFriends[i], &m_Fade[i]);
 
 		if(Item.m_Visible)
 		{

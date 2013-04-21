@@ -375,12 +375,29 @@ void CMenus::RenderServerControlServer(CUIRect MainView)
 	CUIRect List = MainView;
 	UiDoListboxStart(&s_VoteList, &s_Fade[0], &List, 24.0f, "", "", m_pClient->m_pVoting->m_NumVoteOptions, 1, m_CallvoteSelectedOption, s_ScrollValue);
 
-	for(CVoteOptionClient *pOption = m_pClient->m_pVoting->m_pFirst; pOption; pOption = pOption->m_pNext)
+	static int NumVotes = 0;
+	static sorted_array<float> m_Fade;
+	
+	if(NumVotes != m_pClient->m_pVoting->m_NumVoteOptions)
 	{
-		CListboxItem Item = UiDoListboxNextItem(pOption);
+		m_Fade.clear();
+		for(int i=0; i<m_pClient->m_pVoting->m_NumVoteOptions; i++)
+			m_Fade.add(0.0f);
+		NumVotes = m_pClient->m_pVoting->m_NumVoteOptions;
+	}
+	
+	CVoteOptionClient *pOption = m_pClient->m_pVoting->m_pFirst;
+	for(int i=0; i<m_pClient->m_pVoting->m_NumVoteOptions; i++)
+	{
+		if(!pOption)
+			break;
+			
+		CListboxItem Item = UiDoListboxNextItem(pOption, &m_Fade[i]);
 
 		if(Item.m_Visible)
 			UI()->DoLabelScaled(&Item.m_Rect, pOption->m_aDescription, 16.0f, -1);
+			
+		pOption = pOption->m_pNext;
 	}
 
 	m_CallvoteSelectedOption = UiDoListboxEnd(&s_ScrollValue, 0);
@@ -407,12 +424,13 @@ void CMenus::RenderServerControlKick(CUIRect MainView, bool FilterSpectators)
 	static int s_VoteList = 0;
 	static float s_ScrollValue = 0;
 	static float s_Fade[2] = {0};
+	static float m_Fade[MAX_CLIENTS] = {0};
 	CUIRect List = MainView;
 	UiDoListboxStart(&s_VoteList, &s_Fade[0], &List, 24.0f, "", "", NumOptions, 1, Selected, s_ScrollValue);
 
 	for(int i = 0; i < NumOptions; i++)
 	{
-		CListboxItem Item = UiDoListboxNextItem(&aPlayerIDs[i]);
+		CListboxItem Item = UiDoListboxNextItem(&aPlayerIDs[i], &m_Fade[i]);
 
 		if(Item.m_Visible)
 		{
