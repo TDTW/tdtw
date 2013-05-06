@@ -23,6 +23,7 @@ class CHud : public CComponent
 	void RenderSpectatorHud();
 	void RenderWarmupTimer();
 
+	const CNetObj_Character *pTempCharacter;
 	void MapscreenToGroup(float CenterX, float CenterY, struct CMapItemGroup *PGroup);
 public:
 	CHud();

@@ -73,11 +73,11 @@ class CMenus : public CComponent
 	float DoScrollbarV(const void *pID, const float *pFade, const CUIRect *pRect, float Current);
 	float DoScrollbarH(const void *pID, const float *pFade, const CUIRect *pRect, float Current);
 	int DoCoolScrollbarH(const void *pID, const float *pFade, const CUIRect *pRect, int Real, float Min, float Max, int ShowNumber = 1);
-	void DoButton_KeySelect(const void *pID, const char *pText, int Checked, const CUIRect *pRect);
-	int DoKeyReader(void *pID, const CUIRect *pRect, int Key);
+	void DoButton_KeySelect(const void *pID, const char *pText, int Checked, const CUIRect *pRect, int Corners=CUI::CORNER_ALL);
+	int DoKeyReader(void *pID, const CUIRect *pRect, int Key, int Corners=CUI::CORNER_ALL);
 
 	//static int ui_do_key_reader(void *id, const CUIRect *rect, int key);
-	void UiDoGetButtons(int Start, int Stop, CUIRect View);
+	void UiDoGetButtons(int Start, int Stop, CUIRect View, bool SpecButton = false);
 
 	struct CListboxItem
 	{
@@ -90,7 +90,7 @@ class CMenus : public CComponent
 	void UiDoListboxStart(const void *pID, const float *pFade, const CUIRect *pRect, float RowHeight, const char *pTitle, const char *pBottomText, int NumItems,
 						int ItemsPerRow, int SelectedIndex, float ScrollValue, int TopCorners = CUI::CORNER_T, int BottomCorners = CUI::CORNER_B);
 	CListboxItem UiDoListboxNextItem(const void *pID, bool Selected = false);
-	CListboxItem UiDoListboxNextItem(const void *pID, const float *pFadeValue, bool Selected = false);
+	CListboxItem UiDoListboxNextItem(const void *pID, const float *pFadeValue, bool Selected = false, vec3 BloodColor = vec3(1.0f,1.0f,1.0f));
 	CListboxItem UiDoListboxNextRow();
 	int UiDoListboxEnd(float *pScrollValue, bool *pItemActivated);
 
@@ -128,11 +128,13 @@ class CMenus : public CComponent
 		PAGE_DEMOS,
 		PAGE_SETTINGS,
 		PAGE_SYSTEM,
+		PAGE_BROWSER,
 	};
 
 	int m_GamePage;
 	int m_Popup;
 	int m_ActivePage;
+	int m_ActivePage2;
 	bool m_MenuActive;
 	bool m_UseMouseButtons;
 	vec2 m_MousePos;
@@ -238,6 +240,7 @@ class CMenus : public CComponent
 
 	sorted_array<CFriendItem> m_lFriends;
 	int m_FriendlistSelectedIndex;
+	int64 _my_rtime;
 
 	void FriendlistOnUpdate();
 
@@ -259,7 +262,8 @@ class CMenus : public CComponent
 	void RenderServerControl(CUIRect MainView);
 	void RenderServerControlKick(CUIRect MainView, bool FilterSpectators);
 	void RenderServerControlServer(CUIRect MainView);
-
+	void RenderIngameServerbrowser(CUIRect MainView);
+	
 	// found in menus_browser.cpp
 	int m_SelectedIndex;
 	int m_ScrollOffset;
@@ -267,7 +271,7 @@ class CMenus : public CComponent
 	void RenderServerbrowserServerDetail(CUIRect View);
 	void RenderServerbrowserFilters(CUIRect View);
 	void RenderServerbrowserFriends(CUIRect View);
-	void RenderServerbrowser(CUIRect MainView);
+	void RenderServerbrowser(CUIRect MainView, bool Playing = false);
 	static void ConchainFriendlistUpdate(IConsole::IResult *pResult, void *pUserData, IConsole::FCommandCallback pfnCallback, void *pCallbackUserData);
 	static void ConchainServerbrowserUpdate(IConsole::IResult *pResult, void *pUserData, IConsole::FCommandCallback pfnCallback, void *pCallbackUserData);
 
@@ -283,7 +287,10 @@ class CMenus : public CComponent
 	void RenderSettingsSound(CUIRect MainView);
 	void RenderSettingsCountry(CUIRect View);
 	void RenderSettings(CUIRect MainView);
-
+	void RenderColFeat(CUIRect MainView);
+	void RenderColHud(CUIRect MainView);
+	void KeyBinder();
+	
 	void SetActive(bool Active);
 public:
 	void RenderBackground();

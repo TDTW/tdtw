@@ -20,7 +20,7 @@ CControls::CControls()
 
 void CControls::OnReset()
 {
-	m_LastData.m_Direction = 0;
+	m_LastData.m_Direction = 0; 
 	m_LastData.m_Hook = 0;
 	// simulate releasing the fire button
 	if((m_LastData.m_Fire&1) != 0)
@@ -40,6 +40,7 @@ void CControls::OnRelease()
 
 void CControls::OnPlayerDeath()
 {
+	for (int i = 0; i < 5; i++) m_pClient->m_AmmoCount[i] = -2;
 	m_LastData.m_WantedWeapon = m_InputData.m_WantedWeapon = 0;
 }
 
@@ -103,6 +104,7 @@ void CControls::OnMessage(int Msg, void *pRawMsg)
 		CNetMsg_Sv_WeaponPickup *pMsg = (CNetMsg_Sv_WeaponPickup *)pRawMsg;
 		if(g_Config.m_ClAutoswitchWeapons)
 			m_InputData.m_WantedWeapon = pMsg->m_Weapon+1;
+		m_pClient->m_AmmoCount[pMsg->m_Weapon] = 10;
 	}
 }
 
@@ -200,7 +202,20 @@ void CControls::OnRender()
 {
 	// update target pos
 	if(m_pClient->m_Snap.m_pGameInfoObj && !m_pClient->m_Snap.m_SpecInfo.m_Active)
-		m_TargetPos = m_pClient->m_LocalCharacterPos + m_MousePos;
+	{
+		if(g_Config.m_ShowGhost == 2)
+		{
+			CNetObj_Character & Prev = m_pClient->m_Snap.m_aCharacters[m_pClient->m_Snap.m_LocalClientID].m_Prev;
+			CNetObj_Character & Player = m_pClient->m_Snap.m_aCharacters[m_pClient->m_Snap.m_LocalClientID].m_Cur;
+			vec2 Position = mix(vec2(Prev.m_X, Prev.m_Y), vec2(Player.m_X, Player.m_Y), Client()->IntraGameTick());
+
+			m_TargetPos = Position + m_MousePos;
+		}
+		else
+		{		
+			m_TargetPos = m_pClient->m_LocalCharacterPos + m_MousePos;
+		}
+	}
 	else if(m_pClient->m_Snap.m_SpecInfo.m_Active && m_pClient->m_Snap.m_SpecInfo.m_UsePosition)
 		m_TargetPos = m_pClient->m_Snap.m_SpecInfo.m_Position + m_MousePos;
 	else

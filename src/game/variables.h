@@ -8,9 +8,11 @@
 // client
 MACRO_CONFIG_INT(ClPredict, cl_predict, 1, 0, 1, CFGFLAG_CLIENT|CFGFLAG_SAVE, "Predict client movements")
 MACRO_CONFIG_INT(ClNameplates, cl_nameplates, 1, 0, 1, CFGFLAG_CLIENT|CFGFLAG_SAVE, "Show name plates")
+MACRO_CONFIG_INT(ClClanplates, cl_clanplates, 1, 0, 1, CFGFLAG_CLIENT|CFGFLAG_SAVE, "Show clan plates")
 MACRO_CONFIG_INT(ClNameplatesAlways, cl_nameplates_always, 1, 0, 1, CFGFLAG_CLIENT|CFGFLAG_SAVE, "Always show name plates disregarding of distance")
 MACRO_CONFIG_INT(ClNameplatesTeamcolors, cl_nameplates_teamcolors, 1, 0, 1, CFGFLAG_CLIENT|CFGFLAG_SAVE, "Use team colors for name plates")
 MACRO_CONFIG_INT(ClNameplatesSize, cl_nameplates_size, 50, 0, 100, CFGFLAG_CLIENT|CFGFLAG_SAVE, "Size of the name plates from 0 to 100%")
+MACRO_CONFIG_INT(ClClanplatesScale, cl_clanplates_scale, 70, 0, 100, CFGFLAG_CLIENT|CFGFLAG_SAVE, "Scale factor of the clan plates from 0 to 100%")
 MACRO_CONFIG_INT(ClAutoswitchWeapons, cl_autoswitch_weapons, 0, 0, 1, CFGFLAG_CLIENT|CFGFLAG_SAVE, "Auto switch weapon on pickup")
 
 MACRO_CONFIG_INT(ClShowhud, cl_showhud, 1, 0, 1, CFGFLAG_CLIENT|CFGFLAG_SAVE, "Show ingame HUD")
@@ -85,6 +87,55 @@ MACRO_CONFIG_INT(SvVoteKickBantime, sv_vote_kick_bantime, 5, 0, 1440, CFGFLAG_SE
 
 // TDTW
 MACRO_CONFIG_STR(ClFontfile, cl_fontfile, 255, "DejaVu Sans Condensed.ttf", CFGFLAG_SAVETDTW|CFGFLAG_CLIENT, "What font file to use")
+MACRO_CONFIG_INT(ZoomMax, zoom_max, 160, 110, 500, CFGFLAG_CLIENT|CFGFLAG_SAVETDTW, "Zoom maximum")
+MACRO_CONFIG_INT(ZoomMin, zoom_min, 40, 20, 90, CFGFLAG_CLIENT|CFGFLAG_SAVETDTW, "Zoom minimum")
+
+MACRO_CONFIG_INT(ReconnectEnable, reconnect_enable, 0, 0, 1, CFGFLAG_SAVETDTW|CFGFLAG_CLIENT, "Reconnect")
+MACRO_CONFIG_INT(ReconnectBanTimeout, reconnect_ban_timeout, 10, 1, 120, CFGFLAG_CLIENT|CFGFLAG_SAVETDTW, "How many seconds to wait before reconnecting (when banned)")
+MACRO_CONFIG_INT(ReconnectFullTimeout, reconnect_full_timeout, 3, 1, 120, CFGFLAG_CLIENT|CFGFLAG_SAVETDTW, "How many seconds to wait before reconnecting (when server is full)")
+
+MACRO_CONFIG_INT(ShowGhost, cl_show_ghost, 0, 0, 2, CFGFLAG_CLIENT|CFGFLAG_SAVETDTW, "Show ghost")
+MACRO_CONFIG_INT(AntiPing, cl_antiping, 0, 0, 2, CFGFLAG_CLIENT|CFGFLAG_SAVETDTW, "Antiping")
+MACRO_CONFIG_INT(AntiPingTeeColor, cl_antiping_tee_color, 1, 0, 1, CFGFLAG_SAVETDTW|CFGFLAG_CLIENT, "Antiping")
+MACRO_CONFIG_INT(AntiPingGrenade, cl_antiping_grenade, 0, 0, 1, CFGFLAG_CLIENT|CFGFLAG_SAVETDTW, "Antiping")
+MACRO_CONFIG_INT(PlayerColorGhost, player_color_ghost, 65408, 0, 0xFFFFFF, CFGFLAG_SAVETDTW|CFGFLAG_CLIENT, "")
+MACRO_CONFIG_INT(PlayerColorGhostAlpha, player_color_ghost_alpha, 228, 0, 255, CFGFLAG_SAVETDTW|CFGFLAG_CLIENT, "")
+
+MACRO_CONFIG_INT(ClStandartHud, cl_standart_hud, 0, 0, 1, CFGFLAG_CLIENT|CFGFLAG_SAVETDTW, "standart hud")
+MACRO_CONFIG_INT(ClHudShowAmmo, cl_hud_show_ammo, 1, 0, 1, CFGFLAG_CLIENT|CFGFLAG_SAVETDTW, "Show ammo")
+MACRO_CONFIG_INT(ClHudShowWeapon, cl_hud_show_weapon, 1, 0, 1, CFGFLAG_CLIENT|CFGFLAG_SAVETDTW, "Show weapon")
+
+MACRO_CONFIG_INT(ClChatShowtime, cl_chat_showtime, 15, 5, 60, CFGFLAG_CLIENT|CFGFLAG_SAVETDTW, "Time to show message")
+MACRO_CONFIG_INT(ClChatHeightlimit, cl_chat_heightlimit, 80, 50, 184, CFGFLAG_CLIENT|CFGFLAG_SAVETDTW, "Chat height limit")
+
+MACRO_CONFIG_INT(ClEffectsFlagtrail, cl_effects_flagtrail, 1, 0, 1, CFGFLAG_CLIENT|CFGFLAG_SAVETDTW, "FlagTrail")
+MACRO_CONFIG_INT(ClEffectsWeapontrail, cl_effects_weapontrail, 1, 0, 1, CFGFLAG_CLIENT|CFGFLAG_SAVETDTW, "WeaponTrail")
+
+MACRO_CONFIG_INT(ClHighlightPlayer, cl_highlight_player, 1, 0, 1, CFGFLAG_SAVETDTW|CFGFLAG_CLIENT, "Highlight for number of players")
+MACRO_CONFIG_INT(ClHighlightPing, cl_highlight_ping, 1, 0, 1, CFGFLAG_SAVETDTW|CFGFLAG_CLIENT, "Highlight for ping")
+MACRO_CONFIG_INT(ClHighlightGametypes, cl_highlight_gametypes, 1, 0, 1, CFGFLAG_SAVETDTW|CFGFLAG_CLIENT, "Highlight for gametypes")
+MACRO_CONFIG_INT(ClHighlightWeaponBar, cl_highlight_weaponbar, 1, 0, 1, CFGFLAG_SAVETDTW|CFGFLAG_CLIENT, "Highlight for weapons bar")
+MACRO_CONFIG_INT(ClBulletWeaponBar, cl_bullet_weaponbar, 1, 0, 1, CFGFLAG_SAVETDTW|CFGFLAG_CLIENT, "Show num of bullets for weapons bar")
+
+MACRO_CONFIG_INT(ClLaserColorInner, cl_laser_color_inner, 11665217, 0, 16777215, CFGFLAG_SAVETDTW|CFGFLAG_CLIENT, "Laser color inner")
+MACRO_CONFIG_INT(ClLaserColorOuter, cl_laser_color_outer, 11665217, 0, 16777215, CFGFLAG_SAVETDTW|CFGFLAG_CLIENT, "Laser color outer")
+
+MACRO_CONFIG_INT(HudModHideAll, hudmod_hide_all, 0, 0, 1, CFGFLAG_CLIENT|CFGFLAG_SAVETDTW, "Hide all hud")
+MACRO_CONFIG_INT(HudModHideChat, hudmod_hide_chat, 0, 0, 1, CFGFLAG_CLIENT|CFGFLAG_SAVETDTW, "Hide chat")
+MACRO_CONFIG_INT(HudModHideKillMessages, hudmod_hide_kill_messages, 0, 0, 1, CFGFLAG_CLIENT|CFGFLAG_SAVETDTW, "Hide kill messages")
+MACRO_CONFIG_INT(HudModHideHealthAndAmmo, hudmod_hide_health_and_ammo, 0, 0, 1, CFGFLAG_CLIENT|CFGFLAG_SAVETDTW, "Hide health and ammo")
+MACRO_CONFIG_INT(HudModHideGameTimer, hudmod_hide_game_timer, 0, 0, 1, CFGFLAG_CLIENT|CFGFLAG_SAVETDTW, "Hide game timer")
+MACRO_CONFIG_INT(HudModHideSuddenDeath, hudmod_hide_sudden_death, 0, 0, 1, CFGFLAG_CLIENT|CFGFLAG_SAVETDTW, "Hide sudden death")
+MACRO_CONFIG_INT(HudModHideScoreHud, hudmod_hide_score_hud, 0, 0, 1, CFGFLAG_CLIENT|CFGFLAG_SAVETDTW, "Hide score hud")
+MACRO_CONFIG_INT(HudModHideWarmupTimer, hudmod_hide_warmup_timer, 0, 0, 1, CFGFLAG_CLIENT|CFGFLAG_SAVETDTW, "Hide warmup timer")
+MACRO_CONFIG_INT(HudModHideTeambalanceWarning, hudmod_hide_teambalance_warning, 0, 0, 1, CFGFLAG_CLIENT|CFGFLAG_SAVETDTW, "Hide teambalance warning")
+MACRO_CONFIG_INT(HudModHideVoting, hudmod_hide_voting, 0, 0, 1, CFGFLAG_CLIENT|CFGFLAG_SAVETDTW, "Hide voting")
+MACRO_CONFIG_INT(HudModHideCursor, hudmod_hide_cursor, 0, 0, 1, CFGFLAG_CLIENT|CFGFLAG_SAVETDTW, "Hide cursor")
+MACRO_CONFIG_INT(HudModHideBroadcast, hudmod_hide_broadcast, 0, 0, 1, CFGFLAG_CLIENT|CFGFLAG_SAVETDTW, "Hide broadcast")
+MACRO_CONFIG_INT(HudModHideSpectator, hudmod_hide_spectator, 0, 0, 1, CFGFLAG_CLIENT|CFGFLAG_SAVETDTW, "Hide spectator")
+
+MACRO_CONFIG_INT(UiPage2, ui_page2, 6, 0, 11, CFGFLAG_SAVETDTW|CFGFLAG_CLIENT, "Interface page2")
+
 
 // debug
 #ifdef CONF_DEBUG // this one can crash the server if not used correctly

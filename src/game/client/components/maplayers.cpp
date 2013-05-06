@@ -48,7 +48,7 @@ void CMapLayers::MapScreenToGroup(float CenterX, float CenterY, CMapItemGroup *p
 {
 	float Points[4];
 	RenderTools()->MapscreenToWorld(CenterX, CenterY, pGroup->m_ParallaxX/100.0f, pGroup->m_ParallaxY/100.0f,
-		pGroup->m_OffsetX, pGroup->m_OffsetY, Graphics()->ScreenAspect(), 1.0f, Points);
+		pGroup->m_OffsetX, pGroup->m_OffsetY, Graphics()->ScreenAspect(), m_pClient->m_pCamera->m_Zoom, Points);
 	Graphics()->MapScreen(Points[0], Points[1], Points[2], Points[3]);
 }
 
@@ -148,8 +148,24 @@ void CMapLayers::OnRender()
 			Graphics()->ClipEnable((int)(x0*Graphics()->ScreenWidth()), (int)(y0*Graphics()->ScreenHeight()),
 				(int)((x1-x0)*Graphics()->ScreenWidth()), (int)((y1-y0)*Graphics()->ScreenHeight()));
 		}
-
-		MapScreenToGroup(Center.x, Center.y, pGroup);
+		
+		bool IsAllQuads = true;		
+		for(int l = 0; l < pGroup->m_NumLayers; l++)
+		{
+			CMapItemLayer *pTempLayer = m_pLayers->GetLayer(pGroup->m_StartLayer+l);
+			if(pTempLayer->m_Type != LAYERTYPE_QUADS)
+				IsAllQuads = false;
+		}
+		
+		if(IsAllQuads)
+		{
+			float Points2[4];
+			RenderTools()->MapscreenToWorld(Center.x, Center.y, pGroup->m_ParallaxX/100.0f, pGroup->m_ParallaxY/100.0f,
+				pGroup->m_OffsetX, pGroup->m_OffsetY, Graphics()->ScreenAspect(), 1.0f, Points2);
+			Graphics()->MapScreen(Points2[0], Points2[1], Points2[2], Points2[3]);
+		}
+		else
+			MapScreenToGroup(Center.x, Center.y, pGroup);
 
 		for(int l = 0; l < pGroup->m_NumLayers; l++)
 		{

@@ -261,7 +261,7 @@ void CHud::MapscreenToGroup(float CenterX, float CenterY, CMapItemGroup *pGroup)
 {
 	float Points[4];
 	RenderTools()->MapscreenToWorld(CenterX, CenterY, pGroup->m_ParallaxX/100.0f, pGroup->m_ParallaxY/100.0f,
-		pGroup->m_OffsetX, pGroup->m_OffsetY, Graphics()->ScreenAspect(), 1.0f, Points);
+		pGroup->m_OffsetX, pGroup->m_OffsetY, Graphics()->ScreenAspect(), m_pClient->m_pCamera->m_Zoom, Points);
 	Graphics()->MapScreen(Points[0], Points[1], Points[2], Points[3]);
 }
 
@@ -302,7 +302,7 @@ void CHud::RenderTeambalanceWarning()
 				TextRender()->TextColor(1,1,0.5f,1);
 			else
 				TextRender()->TextColor(0.7f,0.7f,0.2f,1.0f);
-			TextRender()->Text(0x0, 5, 50, 6, pText, -1);
+			TextRender()->Text(0x0, 5, 60, 6, pText, -1);
 			TextRender()->TextColor(1,1,1,1);
 		}
 	}
@@ -317,7 +317,7 @@ void CHud::RenderVoting()
 	Graphics()->TextureSet(-1);
 	Graphics()->QuadsBegin();
 	Graphics()->SetColor(0,0,0,0.40f);
-	RenderTools()->DrawRoundRect(-10, 60-2, 100+10+4+5, 46, 5.0f);
+	RenderTools()->DrawRoundRect(-10, 70-2, 100+10+4+5, 46, 5.0f);
 	Graphics()->QuadsEnd();
 
 	TextRender()->TextColor(1,1,1,1);
@@ -329,18 +329,18 @@ void CHud::RenderVoting()
 	TextRender()->SetCursor(&Cursor, 5.0f+100.0f-tw, 60.0f, 6.0f, TEXTFLAG_RENDER);
 	TextRender()->TextEx(&Cursor, aBuf, -1);
 
-	TextRender()->SetCursor(&Cursor, 5.0f, 60.0f, 6.0f, TEXTFLAG_RENDER);
+	TextRender()->SetCursor(&Cursor, 5.0f, 70.0f, 6.0f, TEXTFLAG_RENDER);
 	Cursor.m_LineWidth = 100.0f-tw;
 	Cursor.m_MaxLines = 3;
 	TextRender()->TextEx(&Cursor, m_pClient->m_pVoting->VoteDescription(), -1);
 
 	// reason
 	str_format(aBuf, sizeof(aBuf), "%s %s", Localize("Reason:"), m_pClient->m_pVoting->VoteReason());
-	TextRender()->SetCursor(&Cursor, 5.0f, 79.0f, 6.0f, TEXTFLAG_RENDER|TEXTFLAG_STOP_AT_END);
+	TextRender()->SetCursor(&Cursor, 5.0f, 89.0f, 6.0f, TEXTFLAG_RENDER|TEXTFLAG_STOP_AT_END);
 	Cursor.m_LineWidth = 100.0f;
 	TextRender()->TextEx(&Cursor, aBuf, -1);
 
-	CUIRect Base = {5, 88, 100, 4};
+	CUIRect Base = {5, 98, 100, 4};
 	m_pClient->m_pVoting->RenderBars(Base, false);
 
 	const char *pYesKey = m_pClient->m_pBinds->GetKey("vote yes");
@@ -372,7 +372,13 @@ void CHud::RenderCursor()
 void CHud::RenderHealthAndAmmo(const CNetObj_Character *pCharacter)
 {
 	if(!pCharacter)
+	{
+		for (int i = 0; i < 5; i++) m_pClient->m_AmmoCount[i] = -2;
 		return;
+	}
+	if(pTempCharacter != pCharacter)
+		for (int i = 0; i < 5; i++) m_pClient->m_AmmoCount[i] = -2;
+	pTempCharacter = pCharacter;
 
 	//mapscreen_to_group(gacenter_x, center_y, layers_game_group());
 
@@ -382,7 +388,7 @@ void CHud::RenderHealthAndAmmo(const CNetObj_Character *pCharacter)
 	// render ammo count
 	// render gui stuff
 
-	Graphics()->TextureSet(g_pData->m_aImages[IMAGE_GAME].m_Id);
+	/*Graphics()->TextureSet(g_pData->m_aImages[IMAGE_GAME].m_Id);
 
 	Graphics()->QuadsBegin();
 
@@ -422,7 +428,175 @@ void CHud::RenderHealthAndAmmo(const CNetObj_Character *pCharacter)
 	for(; h < 10; h++)
 		Array[i++] = IGraphics::CQuadItem(x+h*12,y+12,10,10);
 	Graphics()->QuadsDrawTL(Array, i);
+	Graphics()->QuadsEnd(); */
+	
+	IGraphics::CQuadItem Weap[10];
+	char buf[32]; //Ammo indicators
+
+	Graphics()->MapScreen(0,0,m_Width,300);
+	Graphics()->BlendNormal();
+	if(g_Config.m_ClHudShowWeapon != 1)
+		Graphics()->TextureSet(g_pData->m_aImages[IMAGE_GAME].m_Id);
+	else
+		Graphics()->TextureSet(-1);
+	Graphics()->QuadsBegin();
+
+	// if weaponstage is active, put a "glow" around the stage ammo
+
+	float vis;
+	if(g_Config.m_ClHudShowWeapon == 1)
+	{
+		for (int i = 0; i < 5; i++)
+		{
+			if (pCharacter->m_Weapon%NUM_WEAPONS == i)
+				vis = 0.65f;
+			else
+				vis = 0.30f;
+			if (g_Config.m_ClHighlightWeaponBar == 1)
+			{
+				if ((m_pClient->m_AmmoCount[i] >= 8 && m_pClient->m_AmmoCount[i] <= 10) || i == 0)
+					Graphics()->SetColor(0.5f,1.0f,0.65f,vis);
+				else if (m_pClient->m_AmmoCount[i] >= 6 && m_pClient->m_AmmoCount[i] <= 7)
+					Graphics()->SetColor(0.75f,1.0f,0.65f,vis);
+				else if (m_pClient->m_AmmoCount[i] >= 4 && m_pClient->m_AmmoCount[i] <= 5)
+					Graphics()->SetColor(0.85f,0.85f,0.65f,vis);
+				else if (m_pClient->m_AmmoCount[i] >= 2 && m_pClient->m_AmmoCount[i] <= 3)
+					Graphics()->SetColor(0.95f,0.45f,0.45f,vis);
+				else if (m_pClient->m_AmmoCount[i] >= 0 && m_pClient->m_AmmoCount[i] <= 1)
+					Graphics()->SetColor(0.95f,0.25f,0.25f,vis);
+				else
+					Graphics()->SetColor(0,0,0,vis);
+			}
+			else if (pCharacter->m_Weapon%NUM_WEAPONS == i)
+				Graphics()->SetColor(1,1,1,0.25f);
+			else
+				Graphics()->SetColor(0,0,0,0.25f);
+
+			RenderTools()->DrawRoundRect(x-1+i*20+5*i, y+25, 20, 18, 2.0f);
+		}
+
+		Graphics()->QuadsEnd();
+
+		Graphics()->TextureSet(g_pData->m_aImages[IMAGE_GAME].m_Id);
+		Graphics()->QuadsBegin();
+
+		RenderTools()->SelectSprite(SPRITE_WEAPON_HAMMER_BODY);
+		Weap[0] = IGraphics::CQuadItem(x,y+27,18,13.5f);
+		Graphics()->QuadsDrawTL(Weap, 1);
+		
+		int Temp1 = 0;
+		if(g_Config.m_ClBulletWeaponBar != 1)
+			Temp1 = 31;
+		else
+			Temp1 = 27;
+		
+
+		RenderTools()->SelectSprite(SPRITE_WEAPON_GUN_BODY); 
+		Weap[0] = IGraphics::CQuadItem(x+22+5,y+Temp1-1,15,7.71f);
+		Graphics()->QuadsDrawTL(Weap, 1);
+
+		if (m_pClient->m_AmmoCount[2] != -2)
+		{
+			RenderTools()->SelectSprite(SPRITE_WEAPON_SHOTGUN_BODY); 
+			Weap[0] = IGraphics::CQuadItem(x+41+10,y+Temp1+1,18,5.14f);
+			Graphics()->QuadsDrawTL(Weap, 1);
+		}
+		if (m_pClient->m_AmmoCount[3] != -2)
+		{
+			RenderTools()->SelectSprite(SPRITE_WEAPON_GRENADE_BODY);  
+			Weap[0] = IGraphics::CQuadItem(x+60+15,y+Temp1,18,5.14f);
+			Graphics()->QuadsDrawTL(Weap, 1);
+		}
+		if (m_pClient->m_AmmoCount[4] != -2)
+		{
+			RenderTools()->SelectSprite(SPRITE_WEAPON_RIFLE_BODY);
+			Weap[0] = IGraphics::CQuadItem(x+80+20,y+Temp1-1,18,7.71f);
+			Graphics()->QuadsDrawTL(Weap, 1);
+		}
+	}
+
+	RenderTools()->SelectSprite(g_pData->m_Weapons.m_aId[pCharacter->m_Weapon%NUM_WEAPONS].m_pSpriteProj);
+	IGraphics::CQuadItem Array[10];
+	int i;
+	if(g_Config.m_ClHudShowAmmo == 1)
+	{
+		for (i = 0; i < min(pCharacter->m_AmmoCount, 10); i++)
+			if(g_Config.m_ClHudShowWeapon == 1)
+				Array[i] = IGraphics::CQuadItem(x+i*12,y+44,10,10);
+			else
+				Array[i] = IGraphics::CQuadItem(x+i*12,y+24,10,10);
+		Graphics()->QuadsDrawTL(Array, i);
+	}
 	Graphics()->QuadsEnd();
+	Graphics()->TextureSet(g_pData->m_aImages[IMAGE_GAME].m_Id);
+
+	Graphics()->QuadsBegin();
+	int h = 0;
+
+	// render health
+	RenderTools()->SelectSprite(SPRITE_HEALTH_FULL);
+	for(; h < min(pCharacter->m_Health, 10); h++)
+		Array[h] = IGraphics::CQuadItem(x+h*12,y,10,10);
+	Graphics()->QuadsDrawTL(Array, h);
+
+	i = 0;
+	RenderTools()->SelectSprite(SPRITE_HEALTH_EMPTY);
+	for(; h < 10; h++)
+		Array[i++] = IGraphics::CQuadItem(x+h*12,y,10,10);
+	Graphics()->QuadsDrawTL(Array, i);
+
+	// render armor meter
+	h = 0;
+	RenderTools()->SelectSprite(SPRITE_ARMOR_FULL);
+	for(; h < min(pCharacter->m_Armor, 10); h++)
+		Array[h] = IGraphics::CQuadItem(x+h*12,y+12,10,10);
+	Graphics()->QuadsDrawTL(Array, h);
+
+	i = 0;
+	RenderTools()->SelectSprite(SPRITE_ARMOR_EMPTY);
+	for(; h < 10; h++)
+		Array[i++] = IGraphics::CQuadItem(x+h*12,y+12,10,10);
+	Graphics()->QuadsDrawTL(Array, i);
+	Graphics()->QuadsEnd();
+
+	m_pClient->m_AmmoCount[pCharacter->m_Weapon] = pCharacter->m_AmmoCount;
+	if(g_Config.m_ClHudShowWeapon == 1 && g_Config.m_ClBulletWeaponBar == 1)
+	{
+		float w = TextRender()->TextWidth(0x0, 8, buf, -1);
+		for (int i = 1; i < 5; i++)
+		{
+			if (m_pClient->m_AmmoCount[i] == -2)
+			{
+				str_format(buf, sizeof(buf), " ");
+				w = TextRender()->TextWidth(0x0, 8, buf, -1);
+				TextRender()->Text(0, (x+39+(i-2)*20+(20-w)/2)+5*i, y+32, 8, buf, -1);
+			}
+			else if (m_pClient->m_AmmoCount[i] == -1)
+			{
+				str_format(buf, sizeof(buf), "inf");
+				w = TextRender()->TextWidth(0x0, 8, buf, -1);
+				TextRender()->Text(0, (x+39+(i-2)*20+(20-w)/2)+5*i, y+32, 8, buf, -1);
+			}
+			else if (m_pClient->m_AmmoCount[i] > 10)
+			{
+				str_format(buf, sizeof(buf), "+10");
+				w = TextRender()->TextWidth(0x0, 8, buf, -1);
+				TextRender()->Text(0, (x+39+(i-2)*20+(20-w)/2)+5*i, y+32, 8, buf, -1);
+			}
+			else if (m_pClient->m_AmmoCount[i] >= 0 && m_pClient->m_AmmoCount[i] <= 10)
+			{
+				str_format(buf, sizeof(buf), "%d", m_pClient->m_AmmoCount[i]);
+				w = TextRender()->TextWidth(0x0, 8, buf, -1);
+				TextRender()->Text(0, (x+39+(i-2)*20+(20-w)/2)+5*i, y+32, 8, buf, -1);
+			}
+			else
+			{
+				str_format(buf, sizeof(buf), "inf");
+				w = TextRender()->TextWidth(0x0, 8, buf, -1);
+				TextRender()->Text(0, (x+39+(i-2)*20+(20-w)/2)+5*i, y+32, 8, buf, -1);
+			}
+		}
+	}
 }
 
 void CHud::RenderSpectatorHud()
@@ -443,34 +617,55 @@ void CHud::RenderSpectatorHud()
 
 void CHud::OnRender()
 {
-	if(!m_pClient->m_Snap.m_pGameInfoObj)
+	if (g_Config.m_HudModHideAll)
 		return;
 
+	if(!m_pClient->m_Snap.m_pGameInfoObj)
+	{
+		for (int i = 0; i < 5; i++) m_pClient->m_AmmoCount[i] = -2;
+		return;
+	}
+	
 	m_Width = 300.0f*Graphics()->ScreenAspect();
 	m_Height = 300.0f;
 	Graphics()->MapScreen(0.0f, 0.0f, m_Width, m_Height);
 
 	if(g_Config.m_ClShowhud)
 	{
-		if(m_pClient->m_Snap.m_pLocalCharacter && !(m_pClient->m_Snap.m_pGameInfoObj->m_GameStateFlags&GAMESTATEFLAG_GAMEOVER))
+		if(!g_Config.m_HudModHideHealthAndAmmo && m_pClient->m_Snap.m_pLocalCharacter && !(m_pClient->m_Snap.m_pGameInfoObj->m_GameStateFlags&GAMESTATEFLAG_GAMEOVER))
 			RenderHealthAndAmmo(m_pClient->m_Snap.m_pLocalCharacter);
 		else if(m_pClient->m_Snap.m_SpecInfo.m_Active)
 		{
-			if(m_pClient->m_Snap.m_SpecInfo.m_SpectatorID != SPEC_FREEVIEW)
+			if(!g_Config.m_HudModHideHealthAndAmmo && m_pClient->m_Snap.m_SpecInfo.m_SpectatorID != SPEC_FREEVIEW)
 				RenderHealthAndAmmo(&m_pClient->m_Snap.m_aCharacters[m_pClient->m_Snap.m_SpecInfo.m_SpectatorID].m_Cur);
-			RenderSpectatorHud();
+			if(!g_Config.m_HudModHideSpectator)
+				RenderSpectatorHud();
 		}
 
-		RenderGameTimer();
-		RenderPauseNotification();
-		RenderSuddenDeath();
-		RenderScoreHud();
-		RenderWarmupTimer();
+		if (!g_Config.m_HudModHideGameTimer)
+			RenderGameTimer();
+			
+		if (!g_Config.m_HudModHideSuddenDeath)
+			RenderSuddenDeath();
+			
+		if (!g_Config.m_HudModHideScoreHud)
+			RenderScoreHud();
+			
+		if (!g_Config.m_HudModHideWarmupTimer)
+			RenderWarmupTimer();
+			
 		RenderFps();
-		if(Client()->State() != IClient::STATE_DEMOPLAYBACK)
+
+		if (Client()->State() != IClient::STATE_DEMOPLAYBACK)
 			RenderConnectionWarning();
-		RenderTeambalanceWarning();
-		RenderVoting();
+		
+		if (!g_Config.m_HudModHideTeambalanceWarning)
+			RenderTeambalanceWarning();
+			
+		if (!g_Config.m_HudModHideVoting)
+			RenderVoting();
+			
+		if (!g_Config.m_HudModHideCursor)
+			RenderCursor();
 	}
-	RenderCursor();
 }

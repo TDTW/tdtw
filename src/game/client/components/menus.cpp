@@ -69,6 +69,7 @@ CMenus::CMenus()
 	str_copy(m_aCurrentDemoFolder, "demos", sizeof(m_aCurrentDemoFolder));
 	m_aCallvoteReason[0] = 0;
 
+	int64 _my_rtime;
 	m_FriendlistSelectedIndex = -1;
 	TempSens = 0.0f;
 }
@@ -208,14 +209,14 @@ int CMenus::DoButton_Menu(const void *pID, const char *pText, int Checked, const
 	return UI()->DoButtonLogic(pID, pText, Checked, pRect);
 }
 
-void CMenus::DoButton_KeySelect(const void *pID, const char *pText, int Checked, const CUIRect *pRect)
+void CMenus::DoButton_KeySelect(const void *pID, const char *pText, int Checked, const CUIRect *pRect, int Corners)
 {	
 	float *pFade = ButtonFade(pID, pID, 0.6f, Checked);
 	float FadeVal = *pFade/0.6f;
 	
 	vec4 Color = mix(vec4(1.0f, 1.0f, 1.0f, 0.4f), vec4(1.0f, 1.0f, 1.0f, 0.75f), FadeVal);
 
-	RenderTools()->DrawUIRect(pRect, Color, CUI::CORNER_ALL, 5.0f);
+	RenderTools()->DrawUIRect(pRect, Color, Corners, 5.0f);
 	CUIRect Temp;
 	pRect->HMargin(1.0f, &Temp);
 	UI()->DoLabel(&Temp, pText, Temp.h*ms_FontmodHeight, 0);
@@ -593,7 +594,7 @@ int CMenus::DoCoolScrollbarH(const void *pID, const float *pFade, const CUIRect 
 	float *pRailFade = ButtonFade(pID, &pFade[0], pRect, 0.6f);
 	float RailFadeVal = *pRailFade/0.6f;
 	
-	vec4 RailColor = mix(vec4(1.0f, 1.0f, 1.0f, 0.0f), vec4(1.0f, 1.0f, 1.0f, 0.25f), RailFadeVal);
+	vec4 RailColor = mix(vec4(1.0f, 1.0f, 1.0f, 0.10f), vec4(1.0f, 1.0f, 1.0f, 0.35f), RailFadeVal);
 		
 	// render
 	CUIRect Rail;
@@ -658,7 +659,7 @@ float CMenus::DoScrollbarH(const void *pID, const float *pFade, const CUIRect *p
 	float *pRailFade = ButtonFade(pID, &pFade[0], pRect, 0.6f);
 	float RailFadeVal = *pRailFade/0.6f;
 	
-	vec4 RailColor = mix(vec4(1.0f, 1.0f, 1.0f, 0.0f), vec4(1.0f, 1.0f, 1.0f, 0.25f), RailFadeVal);
+	vec4 RailColor = mix(vec4(1.0f, 1.0f, 1.0f, 0.10f), vec4(1.0f, 1.0f, 1.0f, 0.35f), RailFadeVal);
 		
 	// render
 	CUIRect Rail;
@@ -683,7 +684,7 @@ float CMenus::DoScrollbarH(const void *pID, const float *pFade, const CUIRect *p
 	return ReturnValue;
 }
 
-int CMenus::DoKeyReader(void *pID, const CUIRect *pRect, int Key)
+int CMenus::DoKeyReader(void *pID, const CUIRect *pRect, int Key, int Corners)
 {
 	// process
 	static void *pGrabbedID = 0;
@@ -740,13 +741,13 @@ int CMenus::DoKeyReader(void *pID, const CUIRect *pRect, int Key)
 
 	// draw
 	if (UI()->ActiveItem() == pID && ButtonUsed == 0)
-		DoButton_KeySelect(pID, "???", 0, pRect);
+		DoButton_KeySelect(pID, "???", 0, pRect, Corners);
 	else
 	{
 		if(Key == 0)
-			DoButton_KeySelect(pID, "", 0, pRect);
+			DoButton_KeySelect(pID, "", 0, pRect, Corners);
 		else
-			DoButton_KeySelect(pID, Input()->KeyName(Key), 0, pRect);
+			DoButton_KeySelect(pID, Input()->KeyName(Key), 0, pRect, Corners);
 	}
 	return NewKey;
 }
@@ -813,26 +814,31 @@ int CMenus::RenderMenubar(CUIRect r)
 	else
 	{
 		// online menus
-		Box.VSplitLeft(90.0f, &Button, &Box);
+		Box.VSplitLeft(70.0f, &Button, &Box);
 		static int s_GameButton=0;
 		if(DoButton_MenuTab(&s_GameButton, Localize("Game"), m_ActivePage==PAGE_GAME, &Button, CUI::CORNER_TL))
 			NewPage = PAGE_GAME;
 
-		Box.VSplitLeft(90.0f, &Button, &Box);
+		Box.VSplitLeft(70.0f, &Button, &Box);
 		static int s_PlayersButton=0;
 		if(DoButton_MenuTab(&s_PlayersButton, Localize("Players"), m_ActivePage==PAGE_PLAYERS, &Button, 0))
 			NewPage = PAGE_PLAYERS;
 
-		Box.VSplitLeft(130.0f, &Button, &Box);
+		Box.VSplitLeft(110.0f, &Button, &Box);
 		static int s_ServerInfoButton=0;
 		if(DoButton_MenuTab(&s_ServerInfoButton, Localize("Server info"), m_ActivePage==PAGE_SERVER_INFO, &Button, 0))
 			NewPage = PAGE_SERVER_INFO;
 
-		Box.VSplitLeft(130.0f, &Button, &Box);
+		Box.VSplitLeft(110.0f, &Button, &Box);
 		static int s_CallVoteButton=0;
-		if(DoButton_MenuTab(&s_CallVoteButton, Localize("Call vote"), m_ActivePage==PAGE_CALLVOTE, &Button, CUI::CORNER_TR))
+		if(DoButton_MenuTab(&s_CallVoteButton, Localize("Call vote"), m_ActivePage==PAGE_CALLVOTE, &Button, 0))
 			NewPage = PAGE_CALLVOTE;
-	}
+					
+		Box.VSplitLeft(90.0f, &Button, &Box);
+		static int s_ServerBrowser=0;
+		if(DoButton_MenuTab(&s_ServerBrowser, Localize("Browser"), m_ActivePage==PAGE_BROWSER, &Button, CUI::CORNER_TR))
+			NewPage = PAGE_BROWSER;
+}
 
 	/*
 	box.VSplitRight(110.0f, &box, &button);
@@ -1069,7 +1075,10 @@ int CMenus::Render()
 			else if(m_GamePage == PAGE_CALLVOTE)
 				RenderServerControl(MainView);
 			else if(m_GamePage == PAGE_SETTINGS)
-				RenderSettings(MainView);
+				RenderSettings(MainView);			
+			else if(m_GamePage == PAGE_BROWSER)
+				RenderIngameServerbrowser(MainView);
+
 		}
 		else if(g_Config.m_UiPage == PAGE_NEWS)
 			RenderNews(MainView);
@@ -1114,10 +1123,35 @@ int CMenus::Render()
 		}
 		else if(m_Popup == POPUP_DISCONNECTED)
 		{
-			pTitle = Localize("Disconnected");
-			pExtraText = Client()->ErrorString();
+			pTitle = Client()->ErrorString();
 			pButtonText = Localize("Ok");
-			ExtraAlign = -1;
+			
+			if (g_Config.m_ReconnectEnable)
+			{
+				if ( str_find_nocase(Client()->ErrorString(), "full")  || str_find_nocase(Client()->ErrorString(), "reserved") ) 
+				{
+					if (_my_rtime == 0)
+						_my_rtime = time_get();
+					str_format(aBuf, sizeof(aBuf), Localize("\n\nReconnect in %d sec"), ((_my_rtime - time_get())/time_freq() + g_Config.m_ReconnectFullTimeout) );
+					pExtraText = aBuf;
+					pButtonText = Localize("Abort");
+				} 
+				else if ( str_find_nocase(Client()->ErrorString(), "ban") ) 
+				{
+					if (_my_rtime == 0)
+						_my_rtime = time_get();
+					str_format(aBuf, sizeof(aBuf), Localize("\n\nReconnect in %d sec"), ((_my_rtime - time_get())/time_freq() + g_Config.m_ReconnectBanTimeout) );
+					pExtraText = aBuf;
+					pButtonText = Localize("Abort");
+				}
+			}
+			else
+			{
+				pTitle = Localize("Disconnected");
+				pExtraText = Client()->ErrorString();
+			}
+
+			ExtraAlign = 0;
 		}
 		else if(m_Popup == POPUP_PURE)
 		{
@@ -1568,6 +1602,23 @@ int CMenus::Render()
 			UI()->SetActiveItem(0);
 	}
 
+	if (m_Popup == POPUP_DISCONNECTED && g_Config.m_ReconnectEnable) 
+	{
+		if ( ( str_find_nocase(Client()->ErrorString(), "full") || str_find_nocase(Client()->ErrorString(), "reserved") )
+					&& time_get() > _my_rtime + time_freq() * g_Config.m_ReconnectFullTimeout) 
+		{
+			Client()->Connect(g_Config.m_UiServerAddress);
+		} 
+		else if ( str_find_nocase(Client()->ErrorString(), "ban")
+					&& time_get() > _my_rtime + time_freq() * g_Config.m_ReconnectBanTimeout) 
+		{
+			Client()->Connect(g_Config.m_UiServerAddress);
+		}
+	} 
+	else if (_my_rtime != 0) 
+	{
+		_my_rtime = 0;
+	}
 	return 0;
 }
 

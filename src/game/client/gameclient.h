@@ -60,6 +60,7 @@ class CGameClient : public IGameClient
 
 	static void ConTeam(IConsole::IResult *pResult, void *pUserData);
 	static void ConKill(IConsole::IResult *pResult, void *pUserData);
+	static void ConDynCameraToggle(IConsole::IResult *pResult, void *pUserData);
 
 	static void ConchainSpecialInfoupdate(IConsole::IResult *pResult, void *pUserData, IConsole::FCommandCallback pfnCallback, void *pCallbackUserData);
 
@@ -175,6 +176,7 @@ public:
 		int m_Emoticon;
 		int m_EmoticonStart;
 		CCharacterCore m_Predicted;
+		CCharacterCore m_PrevPredicted;
 
 		CTeeRenderInfo m_SkinInfo; // this is what the server reports
 		CTeeRenderInfo m_RenderInfo; // this is what we use
@@ -187,6 +189,11 @@ public:
 		void UpdateRenderInfo();
 		void Reset();
 	};
+	
+	int m_AmmoCount[NUM_WEAPONS];
+	int m_Average_Prediction_Offset;
+	int m_Prediction_Offset_Summ;
+	int m_Prediction_Offset_Count;
 
 	CClientData m_aClients[MAX_CLIENTS];
 

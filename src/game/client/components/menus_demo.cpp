@@ -444,7 +444,7 @@ CMenus::CListboxItem CMenus::UiDoListboxNextItem(const void *pId, bool Selected)
 	return Item;
 }
 
-CMenus::CListboxItem CMenus::UiDoListboxNextItem(const void *pId, const float *pFadeValue, bool Selected)
+CMenus::CListboxItem CMenus::UiDoListboxNextItem(const void *pId, const float *pFadeValue, bool Selected, vec3 BloodColor)
 {
 	int ThisItemIndex = gs_ListBoxItemIndex;
 	if(Selected)
@@ -515,7 +515,7 @@ CMenus::CListboxItem CMenus::UiDoListboxNextItem(const void *pId, const float *p
 	float *pFade = ButtonFade(pId, pFadeValue, 0.6f, gs_ListBoxSelectedIndex == ThisItemIndex);
 	float FadeVal = *pFade/0.6f;
 	
-	vec4 Color = mix(vec4(1.0f, 1.0f, 1.0f, 0.0f), vec4(1.0f, 1.0f, 1.0f, 0.35f), FadeVal);
+	vec4 Color = mix(vec4(BloodColor.r, BloodColor.g, BloodColor.b, 0.0f), vec4(BloodColor.r, BloodColor.g, BloodColor.b, 0.35f), FadeVal);
 	
 	CUIRect r = Item.m_Rect;
 	r.Margin(1.5f, &r);

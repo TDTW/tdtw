@@ -414,7 +414,7 @@ void CMenus::RenderServerbrowserServerList(CUIRect View)
 					str_format(aTemp, sizeof(aTemp), "%i/%i", pItem->m_NumClients, pItem->m_MaxClients);
 					perc = pItem->m_NumPlayers * 100.0f / pItem->m_MaxClients;
 				}
-				//if(g_Config.m_ClHighlightPlayer == 1) #TODO: Config
+				if(g_Config.m_ClHighlightPlayer == 1)
 				{
 					float perc = pItem->m_NumClients * 100.0f / pItem->m_MaxClients;  
 					if (perc >= 0.0f && perc <= 50.0f)
@@ -432,7 +432,7 @@ void CMenus::RenderServerbrowserServerList(CUIRect View)
 			}
 			else if(ID == COL_PING)
 			{				
-				//if(g_Config.m_ClHighlightPing == 1) #TODO: Config
+				if(g_Config.m_ClHighlightPing == 1)
 				{
 					float ping = pItem->m_Latency;						
 				
@@ -459,7 +459,7 @@ void CMenus::RenderServerbrowserServerList(CUIRect View)
 				CTextCursor Cursor;
 				TextRender()->SetCursor(&Cursor, Button.x, Button.y, 12.0f*UI()->Scale(), TEXTFLAG_RENDER|TEXTFLAG_STOP_AT_END);
 				Cursor.m_LineWidth = Button.w;
-				//if(g_Config.m_ClHighlightGametypes == 1) #TODO: Config
+				if(g_Config.m_ClHighlightGametypes == 1)
 				{
 					if (str_comp(pItem->m_aGameType, "DM") == 0 || str_comp(pItem->m_aGameType, "TDM") == 0 || str_comp(pItem->m_aGameType, "CTF") == 0) 
 						TextRender()->TextColor(0.5f,1,0.5f,1);
@@ -975,7 +975,7 @@ void CMenus::RenderServerbrowserFriends(CUIRect View)
 	}
 }
 
-void CMenus::RenderServerbrowser(CUIRect MainView)
+void CMenus::RenderServerbrowser(CUIRect MainView, bool Playing)
 {
 	/*
 		+-----------------+	+-------+
@@ -990,12 +990,29 @@ void CMenus::RenderServerbrowser(CUIRect MainView)
 
 	CUIRect ServerList, ToolBox, StatusBox, TabBar;
 
-	// background
-	RenderTools()->DrawUIRect(&MainView, ms_ColorTabbarActive, CUI::CORNER_ALL, 10.0f);
-	MainView.Margin(10.0f, &MainView);
+	if(Playing)
+	{
+		// background
+		MainView.VSplitRight(225.0f, &ServerList, &ToolBox);
+		
+		ServerList.HSplitTop(35.0f, 0, &ServerList);
+		RenderTools()->DrawUIRect(&ServerList, ms_ColorTabbarActive, CUI::CORNER_BL, 10.0f);
+		ServerList.VMargin(10.0f, &ServerList);
+		ServerList.HSplitBottom(10.0f, &ServerList, 0);
+		RenderTools()->DrawUIRect(&ToolBox, ms_ColorTabbarActive, CUI::CORNER_R, 10.0f);
+		ToolBox.Margin(10.0f, &ToolBox);
 
+	}
+	else
+	{
+		// background
+		RenderTools()->DrawUIRect(&MainView, ms_ColorTabbarActive, CUI::CORNER_ALL, 10.0f);
+		MainView.Margin(10.0f, &MainView);
+
+		MainView.VSplitRight(205.0f, &ServerList, &ToolBox);
+	}
+	
 	// create server list, status box, tab bar and tool box area
-	MainView.VSplitRight(205.0f, &ServerList, &ToolBox);
 	ToolBox.HSplitTop(25.0f, &TabBar, &ToolBox);
 	ServerList.HSplitBottom(70.0f, &ServerList, &StatusBox);
 	ServerList.VSplitRight(5.0f, &ServerList, 0);
