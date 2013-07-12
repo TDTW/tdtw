@@ -361,6 +361,7 @@ container.sprites.Add(Sprite("tee_eye_pain", set_tee, 4,3,1,1))
 container.sprites.Add(Sprite("tee_eye_happy", set_tee, 5,3,1,1))
 container.sprites.Add(Sprite("tee_eye_dead", set_tee, 6,3,1,1))
 container.sprites.Add(Sprite("tee_eye_surprise", set_tee, 7,3,1,1))
+container.sprites.Add(Sprite("tee_author", set_tee, 0,3,2,1))
 
 container.sprites.Add(Sprite("oop", set_emoticons, 0, 0, 1, 1))
 container.sprites.Add(Sprite("exclamation", set_emoticons, 1, 0, 1, 1))

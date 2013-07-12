@@ -417,8 +417,11 @@ void CMenus::RenderSettingsTee(CUIRect MainView)
 		s_InitSkinlist = false;
 	}
 
+	char TextCount[128];
+	str_format(TextCount, sizeof(TextCount), "Skins: %d", s_paSkinList.size());
+	
 	int OldSelected = -1;
-	UiDoListboxStart(&s_InitSkinlist, &s_Fade[2], &MainView, 50.0f, Localize("Skins"), "", s_paSkinList.size(), 8, OldSelected, s_ScrollValue);
+	UiDoListboxStart(&s_InitSkinlist, &s_Fade[2], &MainView, 50.0f, Localize("Skins"), TextCount, s_paSkinList.size(), 4, OldSelected, s_ScrollValue);
 
 	for(int i = 0; i < s_paSkinList.size(); ++i)
 	{
@@ -449,8 +452,15 @@ void CMenus::RenderSettingsTee(CUIRect MainView)
 
 			Info.m_Size = UI()->Scale()*50.0f;
 			Item.m_Rect.HSplitTop(5.0f, 0, &Item.m_Rect); // some margin from the top
-			RenderTools()->RenderTee(CAnimState::GetIdle(), &Info, 0, vec2(1.0f, 0.0f), vec2(Item.m_Rect.x+Item.m_Rect.w/2, Item.m_Rect.y+Item.m_Rect.h/2));
+			RenderTools()->RenderTee(CAnimState::GetIdle(), &Info, 0, vec2(1.0f, 0.0f), vec2(Item.m_Rect.x+Info.m_Size/2, Item.m_Rect.y+Item.m_Rect.h/2));
 
+			Graphics()->TextureSet(Info.m_Texture);
+			Graphics()->QuadsBegin();
+			RenderTools()->SelectSprite(SPRITE_TEE_AUTHOR);
+			IGraphics::CQuadItem Tee_Author(Item.m_Rect.x+Info.m_Size, Item.m_Rect.y, 80.0f, 40.0f);
+			Graphics()->QuadsDrawTL(&Tee_Author, 1);
+			Graphics()->QuadsEnd();
+			
 			if(g_Config.m_Debug)
 			{
 				//vec3 BloodColor = g_Config.m_PlayerUseCustomColor ? m_pClient->m_pSkins->GetColorV3(g_Config.m_PlayerColorBody) : s->m_BloodColor;
