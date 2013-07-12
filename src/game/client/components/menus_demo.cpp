@@ -401,8 +401,10 @@ CMenus::CListboxItem CMenus::UiDoListboxNextItem(const void *pId, bool Selected)
 					int NewIndex = -1;
 					if(m_aInputEvents[i].m_Flags&IInput::FLAG_PRESS)
 					{
-						if(m_aInputEvents[i].m_Key == KEY_DOWN) NewIndex = gs_ListBoxNewSelected + 1;
-						if(m_aInputEvents[i].m_Key == KEY_UP) NewIndex = gs_ListBoxNewSelected - 1;
+						if(m_aInputEvents[i].m_Key == KEY_RIGHT) NewIndex = gs_ListBoxNewSelected + 1;
+						if(m_aInputEvents[i].m_Key == KEY_LEFT) NewIndex = gs_ListBoxNewSelected - 1;
+						if(m_aInputEvents[i].m_Key == KEY_DOWN) NewIndex = gs_ListBoxNewSelected + gs_ListBoxItemsPerRow;
+						if(m_aInputEvents[i].m_Key == KEY_UP) NewIndex = gs_ListBoxNewSelected - gs_ListBoxItemsPerRow;
 					}
 					if(NewIndex > -1 && NewIndex < gs_ListBoxNumItems)
 					{
@@ -478,8 +480,10 @@ CMenus::CListboxItem CMenus::UiDoListboxNextItem(const void *pId, const float *p
 					int NewIndex = -1;
 					if(m_aInputEvents[i].m_Flags&IInput::FLAG_PRESS)
 					{
-						if(m_aInputEvents[i].m_Key == KEY_DOWN) NewIndex = gs_ListBoxNewSelected + 1;
-						if(m_aInputEvents[i].m_Key == KEY_UP) NewIndex = gs_ListBoxNewSelected - 1;
+						if(m_aInputEvents[i].m_Key == KEY_RIGHT) NewIndex = gs_ListBoxNewSelected + 1;
+						if(m_aInputEvents[i].m_Key == KEY_LEFT) NewIndex = gs_ListBoxNewSelected - 1;
+						if(m_aInputEvents[i].m_Key == KEY_DOWN) NewIndex = gs_ListBoxNewSelected + gs_ListBoxItemsPerRow;
+						if(m_aInputEvents[i].m_Key == KEY_UP) NewIndex = gs_ListBoxNewSelected - gs_ListBoxItemsPerRow;
 					}
 					if(NewIndex > -1 && NewIndex < gs_ListBoxNumItems)
 					{
