@@ -8,7 +8,6 @@ src/game/generated
 SDL.dll
 freetype.dll
 autoexec.cfg
-
 crapnet*
 dilate*
 fake_server*
@@ -20,3 +19,7 @@ teeworlds*
 teeworlds_srv*
 tileset_border*
 versionsrv*
+/tee
+*.db
+*.bat
+*.rar
