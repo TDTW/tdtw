@@ -1843,7 +1843,7 @@ void CMenus::OnRender()
 		char aBuf[512];
 		str_format(aBuf, sizeof(aBuf), "%p %p %p", UI()->HotItem(), UI()->ActiveItem(), UI()->LastActiveItem());
 		CTextCursor Cursor;
-		TextRender()->SetCursor(&Cursor, 10, 10, 10, TEXTFLAG_RENDER);
+		TextRender()->SetCursor(&Cursor, 10, Screen.h-25, 10, TEXTFLAG_RENDER);
 		TextRender()->TextEx(&Cursor, aBuf, -1);
 	}
 
