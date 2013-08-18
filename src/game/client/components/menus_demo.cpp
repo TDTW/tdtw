@@ -261,6 +261,8 @@ static int gs_ListBoxNumItems;
 static int gs_ListBoxItemsPerRow;
 static float gs_ListBoxScrollValue;
 static bool gs_ListBoxItemActivated;
+static const void *CheckedID;
+static const void *MineID;
 
 void CMenus::UiDoListboxStart(const void *pID, const float *pFade, const CUIRect *pRect, float RowHeight, const char *pTitle, const char *pBottomText, int NumItems,
 								int ItemsPerRow, int SelectedIndex, float ScrollValue, int TopCorners, int BottomCorners)
@@ -293,6 +295,9 @@ void CMenus::UiDoListboxStart(const void *pID, const float *pFade, const CUIRect
 	gs_ListBoxDoneEvents = 0;
 	gs_ListBoxScrollValue = ScrollValue;
 	gs_ListBoxItemActivated = false;
+	MineID = pID;
+	if(!CheckedID)
+		CheckedID = pID;
 
 	// do the scrollbar
 	View.HSplitTop(gs_ListBoxRowHeight, &Row, 0);
@@ -380,7 +385,10 @@ CMenus::CListboxItem CMenus::UiDoListboxNextItem(const void *pId, bool Selected)
 	CListboxItem Item = UiDoListboxNextRow();
 
 	if(Item.m_Visible && UI()->DoButtonLogic(pId, "", gs_ListBoxSelectedIndex == gs_ListBoxItemIndex, &Item.m_HitRect))
+	{
 		gs_ListBoxNewSelected = ThisItemIndex;
+		CheckedID = MineID;		
+	}
 
 	// process input, regard selected index
 	if(gs_ListBoxSelectedIndex == ThisItemIndex)
@@ -399,7 +407,7 @@ CMenus::CListboxItem CMenus::UiDoListboxNextItem(const void *pId, bool Selected)
 				for(int i = 0; i < m_NumInputEvents; i++)
 				{
 					int NewIndex = -1;
-					if(m_aInputEvents[i].m_Flags&IInput::FLAG_PRESS)
+					if(m_aInputEvents[i].m_Flags&IInput::FLAG_PRESS && CheckedID == MineID)
 					{
 						if(m_aInputEvents[i].m_Key == KEY_RIGHT) NewIndex = gs_ListBoxNewSelected + 1;
 						if(m_aInputEvents[i].m_Key == KEY_LEFT) NewIndex = gs_ListBoxNewSelected - 1;
@@ -459,7 +467,10 @@ CMenus::CListboxItem CMenus::UiDoListboxNextItem(const void *pId, const float *p
 	CListboxItem Item = UiDoListboxNextRow();
 
 	if(Item.m_Visible && UI()->DoButtonLogic(pId, "", gs_ListBoxSelectedIndex == gs_ListBoxItemIndex, &Item.m_HitRect))
+	{
 		gs_ListBoxNewSelected = ThisItemIndex;
+		CheckedID = MineID;
+	}
 
 	// process input, regard selected index
 	if(gs_ListBoxSelectedIndex == ThisItemIndex)
@@ -478,7 +489,7 @@ CMenus::CListboxItem CMenus::UiDoListboxNextItem(const void *pId, const float *p
 				for(int i = 0; i < m_NumInputEvents; i++)
 				{
 					int NewIndex = -1;
-					if(m_aInputEvents[i].m_Flags&IInput::FLAG_PRESS)
+					if(m_aInputEvents[i].m_Flags&IInput::FLAG_PRESS && CheckedID == MineID)
 					{
 						if(m_aInputEvents[i].m_Key == KEY_RIGHT) NewIndex = gs_ListBoxNewSelected + 1;
 						if(m_aInputEvents[i].m_Key == KEY_LEFT) NewIndex = gs_ListBoxNewSelected - 1;
