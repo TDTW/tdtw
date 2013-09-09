@@ -7,6 +7,7 @@
 #include <game/client/gameclient.h>
 #include <game/client/components/camera.h>
 #include <game/client/components/menus.h>
+#include <game/client/components/test.h>
 #include "sounds.h"
 
 
@@ -187,7 +188,8 @@ void CSounds::PlayAt(int Chn, int SetId, float Vol, vec2 Pos)
 	int Flags = 0;
 	if(Chn == CHN_MUSIC)
 		Flags = ISound::FLAG_LOOP;
-
+		
+	m_pClient->m_pTest->Create(Pos, SetId);
 	Sound()->PlayAt(Chn, SampleId, Flags, Pos.x, Pos.y);
 }
 

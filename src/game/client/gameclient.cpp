@@ -30,6 +30,7 @@
 #include "components/controls.h"
 #include "components/countryflags.h"
 #include "components/damageind.h"
+#include "components/test.h"
 #include "components/debughud.h"
 #include "components/effects.h"
 #include "components/emoticon.h"
@@ -73,6 +74,7 @@ static CScoreboard gs_Scoreboard;
 static CSounds gs_Sounds;
 static CEmoticon gs_Emoticon;
 static CDamageInd gsDamageInd;
+static CTest gsTest;
 static CVoting gs_Voting;
 static CSpectator gs_Spectator;
 
@@ -121,6 +123,7 @@ void CGameClient::OnConsoleInit()
 	m_pSounds = &::gs_Sounds;
 	m_pMotd = &::gs_Motd;
 	m_pDamageind = &::gsDamageInd;
+	m_pTest = &::gsTest;
 	m_pMapimages = &::gs_MapImages;
 	m_pVoting = &::gs_Voting;
 	m_pScoreboard = &::gs_Scoreboard;
@@ -147,6 +150,7 @@ void CGameClient::OnConsoleInit()
 	m_All.Add(&gs_Players);
 	m_All.Add(&gs_MapLayersForeGround);
 	m_All.Add(&m_pParticles->m_RenderExplosions);
+	m_All.Add(m_pTest);
 	m_All.Add(&gs_NamePlates);
 	m_All.Add(&m_pParticles->m_RenderGeneral);
 	m_All.Add(m_pDamageind);
