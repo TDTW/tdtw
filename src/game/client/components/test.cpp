@@ -58,94 +58,94 @@ void CTest::Create(vec2 Pos, int Type)
 		{
 		case SOUND_GUN_FIRE: // тра - та та та та 
 			if(SearchType(SOUND_GUN_FIRE))
-				str_copy(i->m_Text, "Та", sizeof(i->m_Text));
+				str_copy(i->m_Text, Localize("Та"), sizeof(i->m_Text));
 			else			
-				str_copy(i->m_Text, "Тра", sizeof(i->m_Text));
+				str_copy(i->m_Text, Localize("Тра"), sizeof(i->m_Text));
 			break;
 		case SOUND_SHOTGUN_FIRE: // пух - пыщ
 			if(rand()%2==0)
-				str_copy(i->m_Text, "Пух", sizeof(i->m_Text));
+				str_copy(i->m_Text, Localize("Пух"), sizeof(i->m_Text));
 			else
-				str_copy(i->m_Text, "Пыщ", sizeof(i->m_Text));
+				str_copy(i->m_Text, Localize("Пыщ"), sizeof(i->m_Text));
 			break;
 		case SOUND_GRENADE_FIRE: // Бум
-			str_copy(i->m_Text, "Бум", sizeof(i->m_Text));
+			str_copy(i->m_Text, Localize("Бум"), sizeof(i->m_Text));
 			break;
 		case SOUND_GRENADE_EXPLODE: // бдыщ
-			str_copy(i->m_Text, "БДЫЩ", sizeof(i->m_Text));
+			str_copy(i->m_Text, Localize("БДЫЩ"), sizeof(i->m_Text));
 			i->m_Speed = S_SLOW;
 			i->m_Size = Z_LARG;
 			break;
 		case SOUND_HAMMER_FIRE: // фух
-			str_copy(i->m_Text, "Фух", sizeof(i->m_Text));
+			str_copy(i->m_Text, Localize("Фух"), sizeof(i->m_Text));
 			break;
 		case SOUND_HAMMER_HIT: // дыщ
-			str_copy(i->m_Text, "Дыщ", sizeof(i->m_Text));
+			str_copy(i->m_Text, Localize("Дыщ"), sizeof(i->m_Text));
 			i->m_Size = Z_MID;
 			break;
 		case SOUND_NINJA_FIRE: // кьяяя
-			str_copy(i->m_Text, "КЬЯЯ", sizeof(i->m_Text));
+			str_copy(i->m_Text, Localize("КЬЯЯ"), sizeof(i->m_Text));
 			i->m_Size = Z_MID;
 			break;
 		case SOUND_PICKUP_NINJA: // кьяяя
-			str_copy(i->m_Text, "КЬЯЯ", sizeof(i->m_Text));
+			str_copy(i->m_Text, Localize("КЬЯЯ"), sizeof(i->m_Text));
 			i->m_Speed = S_SLOW;
 			i->m_Size = Z_LARG;
 			break;
 		case SOUND_NINJA_HIT: // хряк
-			str_copy(i->m_Text, "Хряк", sizeof(i->m_Text));
+			str_copy(i->m_Text, Localize("Хряк"), sizeof(i->m_Text));
 			i->m_Size = Z_LARG;
 			break;
 		case SOUND_RIFLE_FIRE: // дзз
 		case SOUND_RIFLE_BOUNCE: // дзз
-			str_copy(i->m_Text, "Дзз", sizeof(i->m_Text));
+			str_copy(i->m_Text, Localize("Дзз"), sizeof(i->m_Text));
 			break;
 		case SOUND_WEAPON_SWITCH: // фух
-			str_copy(i->m_Text, "Фух", sizeof(i->m_Text));
+			str_copy(i->m_Text, Localize("Фух"), sizeof(i->m_Text));
 			break;
 		case SOUND_PLAYER_PAIN_SHORT: // Ааа
-			str_copy(i->m_Text, "Ааа", sizeof(i->m_Text));
+			str_copy(i->m_Text, Localize("Ааа"), sizeof(i->m_Text));
 			i->m_Speed = S_MID;
 			i->m_Size = Z_MID;
 			break;
 		case SOUND_PLAYER_PAIN_LONG: // АаАаА
-			str_copy(i->m_Text, "АаАаа", sizeof(i->m_Text));
+			str_copy(i->m_Text, Localize("АаАаа"), sizeof(i->m_Text));
 			i->m_Speed = S_SLOW;
 			i->m_Size = Z_LARG;
 			break;
 		case SOUND_PLAYER_DIE: // Труп
-			str_copy(i->m_Text, "Труп", sizeof(i->m_Text));
+			str_copy(i->m_Text, Localize("Труп"), sizeof(i->m_Text));
 			i->m_Speed = S_MID;
 			i->m_Size = Z_LARG;
 			break;
 		case SOUND_PLAYER_SPAWN: // Вжух
-			str_copy(i->m_Text, "Вжух", sizeof(i->m_Text));
+			str_copy(i->m_Text, Localize("Вжух"), sizeof(i->m_Text));
 			i->m_Speed = S_MID;
 			i->m_Size = Z_LARG;
 			break;
 		case SOUND_PLAYER_SKID: // УИИИ
-			str_copy(i->m_Text, "УИИИ", sizeof(i->m_Text));
+			str_copy(i->m_Text, Localize("УИИИ"), sizeof(i->m_Text));
 			i->m_Speed = S_MID;
 			i->m_Size = Z_MID;
 			break;
 
 		case SOUND_PICKUP_HEALTH: // Уоп
-			str_copy(i->m_Text, "Уоп", sizeof(i->m_Text));
+			str_copy(i->m_Text, Localize("Уоп"), sizeof(i->m_Text));
 			i->m_Speed = S_MID;
 			i->m_Size = Z_MID;
 			break;
 		case SOUND_WEAPON_NOAMMO: // Чик
-			str_copy(i->m_Text, "Чик", sizeof(i->m_Text));
+			str_copy(i->m_Text, Localize("Чик"), sizeof(i->m_Text));
 			break;
 		case SOUND_PICKUP_ARMOR: // Чик
 		case SOUND_PICKUP_GRENADE: // Чик
 		case SOUND_PICKUP_SHOTGUN: // Чик
-			str_copy(i->m_Text, "Чик", sizeof(i->m_Text));
+			str_copy(i->m_Text, Localize("Чик"), sizeof(i->m_Text));
 			i->m_Speed = S_MID;
 			i->m_Size = Z_MID;
 			break;
 		case SOUND_WEAPON_SPAWN: // Уоп
-			str_copy(i->m_Text, "Уоп", sizeof(i->m_Text));
+			str_copy(i->m_Text, Localize("Уоп"), sizeof(i->m_Text));
 			i->m_Speed = S_SLOW;
 			i->m_Size = Z_MID;
 			break;

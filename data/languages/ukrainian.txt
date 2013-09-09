@@ -229,9 +229,6 @@ Maximum ping:
 Miscellaneous
 == Додатково
 
-Mouse sens.
-== Чутлив. миші
-
 Move left
 == Вліво
 
@@ -513,6 +510,15 @@ Add
 Add Friend
 == 
 
+Antiping
+== 
+
+Antiping ghost
+== 
+
+Antiping only grenade
+== 
+
 Are you sure that you want to remove the player from your friends list?
 == 
 
@@ -522,7 +528,16 @@ Automatically record demos
 Automatically take game over screenshot
 == 
 
+Borderless window
+== 
+
+Browser
+== 
+
 Change settings
+== 
+
+Chat height
 == 
 
 Clan
@@ -552,6 +567,21 @@ Demo details
 Demofile: %s
 == 
 
+Don't show ghost
+== 
+
+Effects
+== 
+
+Features
+== 
+
+FlagTrail
+== 
+
+Fonts
+== 
+
 Free-View
 == 
 
@@ -561,7 +591,79 @@ Friends
 Game paused
 == 
 
+Ghost color
+== 
+
+Handle rendering async from updates
+== 
+
+Hide all
+== 
+
+Hide broadcast
+== 
+
+Hide chat
+== 
+
+Hide cursor
+== 
+
+Hide game timer
+== 
+
+Hide health and ammo
+== 
+
+Hide kill messages
+== 
+
+Hide score hud
+== 
+
+Hide spectator hud
+== 
+
+Hide sudden death
+== 
+
+Hide teambalance warning
+== 
+
+Hide voting
+== 
+
+Hide warmup timer
+== 
+
+Highlight for gametypes
+== 
+
+Highlight for number of players
+== 
+
+Highlight for ping
+== 
+
+Highlight weapon bar
+== 
+
+Highlights in browser
+== 
+
+Hud
+== 
+
+Ingame sens:
+== 
+
+Inner color
+== 
+
 Kick player
+== 
+
+Laser color
 == 
 
 Length:
@@ -576,6 +678,15 @@ Max Screenshots
 Max demos
 == 
 
+Maximum Zoom
+== 
+
+Menu sens:
+== 
+
+Minimum Zoom
+== 
+
 Move player to spectators
 == 
 
@@ -586,6 +697,18 @@ Netversion:
 == 
 
 New name:
+== 
+
+New weapon bar
+== 
+
+Notification weapons on pickup
+== 
+
+Other
+== 
+
+Outline color
 == 
 
 Parent Folder
@@ -618,6 +741,9 @@ Rename
 Rename demo
 == 
 
+Reset color
+== 
+
 Respawn
 == 
 
@@ -627,13 +753,37 @@ Server address:
 Server filter
 == 
 
+Show ammo bar
+== 
+
+Show fps
+== 
+
+Show friends
+== 
+
 Show friends only
+== 
+
+Show ghost
 == 
 
 Show ingame HUD
 == 
 
+Show num of bullets
+== 
+
 Show only chat messages from friends
+== 
+
+Show only ghost
+== 
+
+Show time msg
+== 
+
+Show weapon bar
 == 
 
 Size:
@@ -651,6 +801,9 @@ Spectate previous
 Spectator mode
 == 
 
+Standart hud and chat
+== 
+
 Strict gametype filter
 == 
 
@@ -658,6 +811,12 @@ The audio device couldn't be initialised.
 == 
 
 There's an unsaved map in the editor, you might want to save it before you quit the game.
+== 
+
+Threaded rendering
+== 
+
+Threaded sound loading
 == 
 
 Type:
@@ -669,7 +828,13 @@ Unable to delete the demo
 Unable to rename the demo
 == 
 
+Use clan plates
+== 
+
 Use team colors for name plates
+== 
+
+Use tee color
 == 
 
 Version:
@@ -681,8 +846,74 @@ Vote command:
 Vote description:
 == 
 
+WeaponTrail
+== 
+
+Zoom
+== 
+
+\n\nReconnect in %d sec
+== 
+
 no limit
 == 
 
+АаАаа
+== 
+
+Ааа
+== 
+
+БДЫЩ
+== 
+
+Бум
+== 
+
+Вжух
+== 
+
+Дзз
+== 
+
+Дыщ
+== 
+
+КЬЯЯ
+== 
+
+Пух
+== 
+
+Пыщ
+== 
+
+Та
+== 
+
+Тра
+== 
+
+Труп
+== 
+
+УИИИ
+== 
+
+Уоп
+== 
+
+Фух
+== 
+
+Хряк
+== 
+
+Чик
+== 
+
 ##### old translations #####
+
+Mouse sens.
+== Чутлив. миші
 

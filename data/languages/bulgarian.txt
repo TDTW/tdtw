@@ -316,9 +316,6 @@ Maximum ping:
 Miscellaneous
 == Допълнителни
 
-Mouse sens.
-== Мишка
-
 Move left
 == На ляво
 
@@ -672,17 +669,251 @@ no limit
 
 ##### needs translation #####
 
+Antiping
+== 
+
+Antiping ghost
+== 
+
+Antiping only grenade
+== 
+
+Borderless window
+== 
+
+Browser
+== 
+
+Chat height
+== 
+
+Don't show ghost
+== 
+
+Effects
+== 
+
+Features
+== 
+
+FlagTrail
+== 
+
+Fonts
+== 
+
 Game paused
+== 
+
+Ghost color
+== 
+
+Handle rendering async from updates
+== 
+
+Hide all
+== 
+
+Hide broadcast
+== 
+
+Hide chat
+== 
+
+Hide cursor
+== 
+
+Hide game timer
+== 
+
+Hide health and ammo
+== 
+
+Hide kill messages
+== 
+
+Hide score hud
+== 
+
+Hide spectator hud
+== 
+
+Hide sudden death
+== 
+
+Hide teambalance warning
+== 
+
+Hide voting
+== 
+
+Hide warmup timer
+== 
+
+Highlight for gametypes
+== 
+
+Highlight for number of players
+== 
+
+Highlight for ping
+== 
+
+Highlight weapon bar
+== 
+
+Highlights in browser
+== 
+
+Hud
+== 
+
+Ingame sens:
+== 
+
+Inner color
+== 
+
+Laser color
+== 
+
+Maximum Zoom
+== 
+
+Menu sens:
+== 
+
+Minimum Zoom
+== 
+
+New weapon bar
+== 
+
+Notification weapons on pickup
+== 
+
+Other
+== 
+
+Outline color
+== 
+
+Reset color
 == 
 
 Respawn
 == 
 
+Show ammo bar
+== 
+
+Show fps
+== 
+
+Show friends
+== 
+
+Show ghost
+== 
+
+Show num of bullets
+== 
+
 Show only chat messages from friends
+== 
+
+Show only ghost
+== 
+
+Show time msg
+== 
+
+Show weapon bar
 == 
 
 Spectate previous
 == 
 
+Standart hud and chat
+== 
+
+Threaded rendering
+== 
+
+Threaded sound loading
+== 
+
+Use clan plates
+== 
+
+Use tee color
+== 
+
+WeaponTrail
+== 
+
+Zoom
+== 
+
+\n\nReconnect in %d sec
+== 
+
+АаАаа
+== 
+
+Ааа
+== 
+
+БДЫЩ
+== 
+
+Бум
+== 
+
+Вжух
+== 
+
+Дзз
+== 
+
+Дыщ
+== 
+
+КЬЯЯ
+== 
+
+Пух
+== 
+
+Пыщ
+== 
+
+Та
+== 
+
+Тра
+== 
+
+Труп
+== 
+
+УИИИ
+== 
+
+Уоп
+== 
+
+Фух
+== 
+
+Хряк
+== 
+
+Чик
+== 
+
 ##### old translations #####
+
+Mouse sens.
+== Мишка
 
