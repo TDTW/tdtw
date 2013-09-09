@@ -134,6 +134,9 @@ void CMapLayers::OnRender()
 	{
 		CMapItemGroup *pGroup = m_pLayers->GetGroup(g);
 
+		if(!pGroup)
+			continue;
+
 		if(!g_Config.m_GfxNoclip && pGroup->m_Version >= 2 && pGroup->m_UseClipping)
 		{
 			// set clipping
