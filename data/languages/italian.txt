@@ -858,31 +858,36 @@ Zoom
 \n\nReconnect in %d sec
 == 
 
-АаАаа
-== 
-
-Ааа
-== 
-
-БДЫЩ
-== 
+##### old translations #####
 
 Бум
 == 
 
-Вжух
+Уоп
 == 
 
-Дзз
+УИИИ
+== 
+
+Тра
+== 
+
+﻿
+== ## translated strings #####
+
+КЬЯЯ
 == 
 
 Дыщ
 == 
 
-КЬЯЯ
+БДЫЩ
 == 
 
-Пух
+Вжух
+== 
+
+Хряк
 == 
 
 Пыщ
@@ -891,32 +896,27 @@ Zoom
 Та
 == 
 
-Тра
+Пух
 == 
+
+Дзз
+== 
+
+Mouse sens.
+== Sensibilità
 
 Труп
-== 
-
-УИИИ
-== 
-
-Уоп
 == 
 
 Фух
 == 
 
-Хряк
-== 
-
 Чик
 == 
 
-##### old translations #####
+Ааа
+== 
 
-Mouse sens.
-== Sensibilità
-
-﻿
-== ## translated strings #####
+АаАаа
+== 
 
