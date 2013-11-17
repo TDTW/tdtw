@@ -326,7 +326,8 @@ void CMenus::UiDoListboxStart(const void *pID, const float *pFade, const CUIRect
 	// the list
 	gs_ListBoxOriginalView = View;
 	gs_ListBoxView = gs_ListBoxOriginalView;
-	gs_ListBoxView.VMargin(5.0f, &gs_ListBoxView);
+	if(gs_ListBoxItemsPerRow > 1)
+		gs_ListBoxView.VMargin(5.0f, &gs_ListBoxView);
 	UI()->ClipEnable(&gs_ListBoxView);
 	gs_ListBoxView.y -= gs_ListBoxScrollValue*Num*Row.h;
 }
@@ -533,8 +534,15 @@ CMenus::CListboxItem CMenus::UiDoListboxNextItem(const void *pId, const float *p
 	vec4 Color = mix(vec4(BloodColor.r, BloodColor.g, BloodColor.b, 0.0f), vec4(BloodColor.r, BloodColor.g, BloodColor.b, 0.35f), FadeVal);
 	
 	CUIRect r = Item.m_Rect;
-	r.Margin(1.5f, &r);
-	RenderTools()->DrawUIRect(&r, Color, CUI::CORNER_ALL, 4.0f);
+	
+	// if 1 column, without corners, else - with
+	if (gs_ListBoxItemsPerRow > 1)
+	{
+		r.Margin(1.5f, &r);
+		RenderTools()->DrawUIRect(&r, Color, CUI::CORNER_ALL, 4.0f);
+	}	
+	else
+		RenderTools()->DrawUIRect(&r, Color, 0, 0.0f);
 		
 	return Item;
 }

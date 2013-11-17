@@ -1160,8 +1160,11 @@ void CMenus::RenderFontSelection(CUIRect MainView)
 	for(sorted_array<CFontFile>::range r = s_Fonts.all(); !r.empty(); r.pop_front())	
 	{		
 		CListboxItem Item = UiDoListboxNextItem(&r.front(), &m_Fade[r.size()-1]);		
-		if(Item.m_Visible)			
+		if(Item.m_Visible)
+		{
+			Item.m_Rect.VMargin(3.0f, &Item.m_Rect);
 			UI()->DoLabelScaled(&Item.m_Rect, r.front().m_Name, 16.0f, -1);	
+		}
 	}	
 	
 	s_SelectedFont = UiDoListboxEnd(&s_ScrollValue, 0);	

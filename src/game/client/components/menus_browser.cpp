@@ -281,7 +281,7 @@ void CMenus::RenderServerbrowserServerList(CUIRect View)
 			vec4 SerColor = mix(vec4(1.0f, 1.0f, 1.0f, 0.0f), vec4(1.0f, 1.0f, 1.0f, 0.35f), SerFadeVal);
 	
 			CUIRect r = Row;
-			r.Margin(1.5f, &r);
+			//r.Margin(1.5f, &r);
 			RenderTools()->DrawUIRect(&r, SerColor, 0, 0.0f);
 			
 			// clip the selection

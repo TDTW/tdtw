@@ -395,7 +395,10 @@ void CMenus::RenderServerControlServer(CUIRect MainView)
 		CListboxItem Item = UiDoListboxNextItem(pOption, &m_Fade[i]);
 
 		if(Item.m_Visible)
+		{
+			Item.m_Rect.VMargin(3.0f, &Item.m_Rect);
 			UI()->DoLabelScaled(&Item.m_Rect, pOption->m_aDescription, 16.0f, -1);
+		}
 			
 		pOption = pOption->m_pNext;
 	}
@@ -435,10 +438,11 @@ void CMenus::RenderServerControlKick(CUIRect MainView, bool FilterSpectators)
 		if(Item.m_Visible)
 		{
 			CTeeRenderInfo Info = m_pClient->m_aClients[aPlayerIDs[i]].m_RenderInfo;
+			Item.m_Rect.VMargin(3.0f, &Item.m_Rect);	
 			Info.m_Size = Item.m_Rect.h;
-			Item.m_Rect.HSplitTop(5.0f, 0, &Item.m_Rect); // some margin from the top
+			Item.m_Rect.HSplitTop(3.0f, 0, &Item.m_Rect); // some margin from the top
 			RenderTools()->RenderTee(CAnimState::GetIdle(), &Info, EMOTE_NORMAL, vec2(1,0), vec2(Item.m_Rect.x+Item.m_Rect.h/2, Item.m_Rect.y+Item.m_Rect.h/2));
-			Item.m_Rect.x +=Info.m_Size;
+			Item.m_Rect.x +=Info.m_Size;		
 			UI()->DoLabelScaled(&Item.m_Rect, m_pClient->m_aClients[aPlayerIDs[i]].m_aName, 16.0f, -1);
 		}
 	}
