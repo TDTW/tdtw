@@ -326,7 +326,7 @@ void CHud::RenderVoting()
 	char aBuf[512];
 	str_format(aBuf, sizeof(aBuf), Localize("%ds left"), m_pClient->m_pVoting->SecondsLeft());
 	float tw = TextRender()->TextWidth(0x0, 6, aBuf, -1);
-	TextRender()->SetCursor(&Cursor, 5.0f+100.0f-tw, 60.0f, 6.0f, TEXTFLAG_RENDER);
+	TextRender()->SetCursor(&Cursor, 5.0f+100.0f-tw, 70.0f, 6.0f, TEXTFLAG_RENDER);
 	TextRender()->TextEx(&Cursor, aBuf, -1);
 
 	TextRender()->SetCursor(&Cursor, 5.0f, 70.0f, 6.0f, TEXTFLAG_RENDER);
