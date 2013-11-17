@@ -126,9 +126,6 @@ void CMenus::RenderServerbrowserServerList(CUIRect View)
 
 	RenderTools()->DrawUIRect(&View, vec4(0,0,0,0.15f), 0, 0);
 
-	CUIRect Scroll;
-	View.VSplitRight(15, &View, &Scroll);
-
 	int NumServers = ServerBrowser()->NumSortedServers();
 
 	// display important messages in the middle of the screen so no
@@ -149,9 +146,11 @@ void CMenus::RenderServerbrowserServerList(CUIRect View)
 	static int s_ScrollBar = 0;
 	static float s_ScrollValue = 0;
 
+	CUIRect Scroll;
 	int ScrollNum = NumServers-Num+1;
 	if(ScrollNum > 0)
 	{
+		View.VSplitRight(15, &View, &Scroll);
 		static float s_FadeValue[2] = {0};
 		Scroll.HMargin(5.0f, &Scroll);
 		s_ScrollValue = DoScrollbarV(&s_ScrollBar, &s_FadeValue[0], &Scroll, s_ScrollValue);
@@ -283,7 +282,7 @@ void CMenus::RenderServerbrowserServerList(CUIRect View)
 	
 			CUIRect r = Row;
 			r.Margin(1.5f, &r);
-			RenderTools()->DrawUIRect(&r, SerColor, CUI::CORNER_ALL, 4.0f);
+			RenderTools()->DrawUIRect(&r, SerColor, 0, 0.0f);
 			
 			// clip the selection
 			if(SelectHitBox.y < OriginalView.y) // top
