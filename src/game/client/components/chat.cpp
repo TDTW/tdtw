@@ -399,8 +399,154 @@ void CChat::AddLine(int ClientID, int Team, const char *pLine)
 	}
 }
 
+void CChat::OnRenderNew()
+{
+	if (g_Config.m_HudModHideAll || g_Config.m_HudModHideChat)
+		return;
+		
+	// send pending chat messages
+	if(m_PendingChatCounter > 0 && m_LastChatSend+time_freq() < time_get())
+	{
+		CHistoryEntry *pEntry = m_History.Last();
+		for(int i = m_PendingChatCounter-1; pEntry; --i, pEntry = m_History.Prev(pEntry))
+		{
+			if(i == 0)
+			{
+				Say(pEntry->m_Team, pEntry->m_aText);
+				break;
+			}
+		}
+		--m_PendingChatCounter;
+	}
+
+	float Width = 300.0f*Graphics()->ScreenAspect();
+	Graphics()->MapScreen(0.0f, 0.0f, Width, 300.0f);
+	float x = 5.0f;
+	float y = 300.0f-20.0f;
+	if(m_Mode != MODE_NONE)
+	{
+		// render chat input
+		CTextCursor Cursor;
+		TextRender()->SetCursor(&Cursor, x, y, 8.0f, TEXTFLAG_RENDER);
+		Cursor.m_LineWidth = Width-190.0f;
+		Cursor.m_MaxLines = 2;
+
+		if(m_Mode == MODE_ALL)
+			TextRender()->TextEx(&Cursor, Localize("All"), -1);
+		else if(m_Mode == MODE_TEAM)
+			TextRender()->TextEx(&Cursor, Localize("Team"), -1);
+		else
+			TextRender()->TextEx(&Cursor, Localize("Chat"), -1);
+
+		TextRender()->TextEx(&Cursor, ": ", -1);
+
+		// check if the visible text has to be moved
+		if(m_InputUpdate)
+		{
+			if(m_ChatStringOffset > 0 && m_Input.GetLength() < m_OldChatStringLength)
+				m_ChatStringOffset = max(0, m_ChatStringOffset-(m_OldChatStringLength-m_Input.GetLength()));
+
+			if(m_ChatStringOffset > m_Input.GetCursorOffset())
+				m_ChatStringOffset -= m_ChatStringOffset-m_Input.GetCursorOffset();
+			else
+			{
+				CTextCursor Temp = Cursor;
+				Temp.m_Flags = 0;
+				TextRender()->TextEx(&Temp, m_Input.GetString()+m_ChatStringOffset, m_Input.GetCursorOffset()-m_ChatStringOffset);
+				TextRender()->TextEx(&Temp, "|", -1);
+				while(Temp.m_LineCount > 2)
+				{
+					++m_ChatStringOffset;
+					Temp = Cursor;
+					Temp.m_Flags = 0;
+					TextRender()->TextEx(&Temp, m_Input.GetString()+m_ChatStringOffset, m_Input.GetCursorOffset()-m_ChatStringOffset);
+					TextRender()->TextEx(&Temp, "|", -1);
+				}
+			}
+			m_InputUpdate = false;
+		}
+
+		TextRender()->TextEx(&Cursor, m_Input.GetString()+m_ChatStringOffset, m_Input.GetCursorOffset()-m_ChatStringOffset);
+		static float MarkerOffset = TextRender()->TextWidth(0, 8.0f, "|", -1)/3;
+		CTextCursor Marker = Cursor;
+		Marker.m_X -= MarkerOffset;
+		TextRender()->TextEx(&Marker, "|", -1);
+		TextRender()->TextEx(&Cursor, m_Input.GetString()+m_Input.GetCursorOffset(), -1);
+	}
+
+	y -= 8.0f;
+
+	int64 Now = time_get();
+	float LineWidth = m_pClient->m_pScoreboard->Active() ? 90.0f : 200.0f;
+	float HeightLimit = m_pClient->m_pScoreboard->Active() ? 230.0f : m_Show ? 50.0f : 200.0f;
+	float Begin = x;
+	float FontSize = 6.0f;
+	CTextCursor Cursor;
+	int OffsetType = m_pClient->m_pScoreboard->Active() ? 1 : 0;
+	for(int i = 0; i < MAX_LINES; i++)
+	{
+		int r = ((m_CurrentLine-i)+MAX_LINES)%MAX_LINES;
+		if(Now > m_aLines[r].m_Time+16*time_freq() && !m_Show)
+			break;
+
+		// get the y offset (calculate it if we haven't done that yet)
+		if(m_aLines[r].m_YOffset[OffsetType] < 0.0f)
+		{
+			TextRender()->SetCursor(&Cursor, Begin, 0.0f, FontSize, 0);
+			Cursor.m_LineWidth = LineWidth;
+			TextRender()->TextEx(&Cursor, m_aLines[r].m_aName, -1);
+			TextRender()->TextEx(&Cursor, m_aLines[r].m_aText, -1);
+			m_aLines[r].m_YOffset[OffsetType] = Cursor.m_Y + Cursor.m_FontSize;
+		}
+		y -= m_aLines[r].m_YOffset[OffsetType];
+
+		// cut off if msgs waste too much space
+		if(y < HeightLimit)
+			break;
+
+		float Blend = Now > m_aLines[r].m_Time+14*time_freq() && !m_Show ? 1.0f-(Now-m_aLines[r].m_Time-14*time_freq())/(2.0f*time_freq()) : 1.0f;
+
+		// reset the cursor
+		TextRender()->SetCursor(&Cursor, Begin, y, FontSize, TEXTFLAG_RENDER);
+		Cursor.m_LineWidth = LineWidth;
+
+		// render name
+		if(m_aLines[r].m_ClientID == -1)
+			TextRender()->TextColor(1.0f, 1.0f, 0.5f, Blend); // system
+		else if(m_aLines[r].m_Team)
+			TextRender()->TextColor(0.45f, 0.9f, 0.45f, Blend); // team message
+		else if(m_aLines[r].m_NameColor == TEAM_RED)
+			TextRender()->TextColor(1.0f, 0.5f, 0.5f, Blend); // red
+		else if(m_aLines[r].m_NameColor == TEAM_BLUE)
+			TextRender()->TextColor(0.7f, 0.7f, 1.0f, Blend); // blue
+		else if(m_aLines[r].m_NameColor == TEAM_SPECTATORS)
+			TextRender()->TextColor(0.75f, 0.5f, 0.75f, Blend); // spectator
+		else
+			TextRender()->TextColor(0.8f, 0.8f, 0.8f, Blend);
+
+		TextRender()->TextEx(&Cursor, m_aLines[r].m_aName, -1);
+
+		// render line
+		if(m_aLines[r].m_ClientID == -1)
+			TextRender()->TextColor(1.0f, 1.0f, 0.5f, Blend); // system
+		else if(m_aLines[r].m_Highlighted)
+			TextRender()->TextColor(1.0f, 0.5f, 0.5f, Blend); // highlighted
+		else if(m_aLines[r].m_Team)
+			TextRender()->TextColor(0.65f, 1.0f, 0.65f, Blend); // team message
+		else
+			TextRender()->TextColor(1.0f, 1.0f, 1.0f, Blend);
+
+		TextRender()->TextEx(&Cursor, m_aLines[r].m_aText, -1);
+	}
+
+	TextRender()->TextColor(1.0f, 1.0f, 1.0f, 1.0f);
+}
+
 void CChat::OnRender()
 {
+	OnRenderNew();
+	return;
+	
 	if (g_Config.m_HudModHideAll || g_Config.m_HudModHideChat)
 		return;
 		
