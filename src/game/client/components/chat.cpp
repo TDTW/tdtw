@@ -401,9 +401,6 @@ void CChat::AddLine(int ClientID, int Team, const char *pLine)
 
 void CChat::OnRenderNew()
 {
-	if (g_Config.m_HudModHideAll || g_Config.m_HudModHideChat)
-		return;
-		
 	// send pending chat messages
 	if(m_PendingChatCounter > 0 && m_LastChatSend+time_freq() < time_get())
 	{
@@ -419,6 +416,9 @@ void CChat::OnRenderNew()
 		--m_PendingChatCounter;
 	}
 
+	if (g_Config.m_HudModHideAll || g_Config.m_HudModHideChat)
+		return;
+		
 	float Width = 300.0f*Graphics()->ScreenAspect();
 	Graphics()->MapScreen(0.0f, 0.0f, Width, 300.0f);
 	float x = 5.0f;
@@ -547,9 +547,6 @@ void CChat::OnRender()
 	OnRenderNew();
 	return;
 	
-	if (g_Config.m_HudModHideAll || g_Config.m_HudModHideChat)
-		return;
-		
 	// send pending chat messages
 	if(m_PendingChatCounter > 0 && m_LastChatSend+time_freq() < time_get())
 	{
@@ -564,6 +561,9 @@ void CChat::OnRender()
 		}
 		--m_PendingChatCounter;
 	}
+
+	if (g_Config.m_HudModHideAll || g_Config.m_HudModHideChat)
+		return;
 
 	float Width = 300.0f*Graphics()->ScreenAspect();
 	Graphics()->MapScreen(0.0f, 0.0f, Width, 300.0f);
