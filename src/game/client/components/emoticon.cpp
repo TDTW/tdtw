@@ -38,6 +38,9 @@ void CEmoticon::OnReset()
 	m_WasActive = false;
 	m_Active = false;
 	m_SelectedEmote = -1;
+	m_CircleSize = 50.0f;
+	for(int i=0; i < NUM_EMOTICONS; i++)
+		m_Size[i] = 0.0f;
 }
 
 void CEmoticon::OnRelease()
@@ -94,7 +97,7 @@ void CEmoticon::DrawCircle(float x, float y, float r, int Segments)
 
 void CEmoticon::OnRender()
 {
-	if(!m_Active)
+	if(!m_Active && m_CircleSize <= 50.0f)
 	{
 		if(m_WasActive && m_SelectedEmote != -1)
 			Emote(m_SelectedEmote);
@@ -127,12 +130,25 @@ void CEmoticon::OnRender()
 
 	Graphics()->BlendNormal();
 
+	static bool AllClear = false;
+	
+	// Circle
+	if(m_CircleSize < 190.0f && m_Active)
+		m_CircleSize += 10.0f;
+	else if(!m_Active && m_CircleSize > 50.0f && AllClear)
+		m_CircleSize -= 20.0f;
+		
+	
 	Graphics()->TextureSet(-1);
 	Graphics()->QuadsBegin();
-	Graphics()->SetColor(0,0,0,0.3f);
-	DrawCircle(Screen.w/2, Screen.h/2, 190.0f, 64);
+	Graphics()->SetColor(0,0,0,(((m_CircleSize-50.0f)/140.0f)*0.3f));
+	DrawCircle(Screen.w/2, Screen.h/2, m_CircleSize, 64);
 	Graphics()->QuadsEnd();
 
+	if(m_CircleSize < 190.0f)
+		return;
+
+	// Emoticons
 	Graphics()->TextureSet(g_pData->m_aImages[IMAGE_EMOTICONS].m_Id);
 	Graphics()->QuadsBegin();
 
@@ -146,15 +162,31 @@ void CEmoticon::OnRender()
 
 		float Size = Selected ? 80.0f : 50.0f;
 
+		if(!m_Active)
+		{
+			if(m_Size[i] > 0.0f)
+				m_Size[i] -= 5.0f;
+			else
+				AllClear = true;
+		}
+		else if(m_Size[i] < Size)
+		{
+			m_Size[i] += 2.5f;
+			AllClear = false;
+		}
+		else if(m_Size[i] > Size)
+			m_Size[i] -= 2.0f;
+			
 		float NudgeX = 150.0f * cosf(Angle);
 		float NudgeY = 150.0f * sinf(Angle);
 		RenderTools()->SelectSprite(SPRITE_OOP + i);
-		IGraphics::CQuadItem QuadItem(Screen.w/2 + NudgeX, Screen.h/2 + NudgeY, Size, Size);
+		IGraphics::CQuadItem QuadItem(Screen.w/2 + NudgeX, Screen.h/2 + NudgeY, m_Size[i], m_Size[i]);
 		Graphics()->QuadsDraw(&QuadItem, 1);
 	}
 
 	Graphics()->QuadsEnd();
 
+	// Cursor
 	Graphics()->TextureSet(g_pData->m_aImages[IMAGE_CURSOR].m_Id);
 	Graphics()->QuadsBegin();
 	Graphics()->SetColor(1,1,1,1);

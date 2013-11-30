@@ -14,6 +14,8 @@ class CEmoticon : public CComponent
 
 	vec2 m_SelectorMouse;
 	int m_SelectedEmote;
+	float m_Size[NUM_EMOTICONS];
+	float m_CircleSize;
 
 	static void ConKeyEmoticon(IConsole::IResult *pResult, void *pUserData);
 	static void ConEmote(IConsole::IResult *pResult, void *pUserData);
