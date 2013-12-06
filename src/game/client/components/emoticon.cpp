@@ -134,10 +134,9 @@ void CEmoticon::OnRender()
 	
 	// Circle
 	if(m_CircleSize < 190.0f && m_Active)
-		m_CircleSize += 10.0f;
+		m_CircleSize += (190.0f-50.0f)*Client()->RenderFrameTime()*4.0f;
 	else if(!m_Active && m_CircleSize > 50.0f && AllClear)
-		m_CircleSize -= 20.0f;
-		
+		m_CircleSize -= (190.0f-50.0f)*Client()->RenderFrameTime()*4.0f;		
 	
 	Graphics()->TextureSet(-1);
 	Graphics()->QuadsBegin();
@@ -165,17 +164,27 @@ void CEmoticon::OnRender()
 		if(!m_Active)
 		{
 			if(m_Size[i] > 0.0f)
-				m_Size[i] -= 5.0f;
+			{
+				m_Size[i] -= 80.0f*Client()->RenderFrameTime()*4.0f;
+				if(m_Size[i] <= 0.0f)
+					m_Size[i] = 0.0f;
+			}
 			else
 				AllClear = true;
 		}
 		else if(m_Size[i] < Size)
 		{
-			m_Size[i] += 2.5f;
+			m_Size[i] += 80.0f*Client()->RenderFrameTime()*4.0f;
+			if(m_Size[i] >= Size)
+				m_Size[i] = Size;
 			AllClear = false;
 		}
 		else if(m_Size[i] > Size)
-			m_Size[i] -= 2.0f;
+		{
+			m_Size[i] -= 80.0f*Client()->RenderFrameTime()*4.0f;
+			if(m_Size[i] <= Size)
+				m_Size[i] = Size;
+		}
 			
 		float NudgeX = 150.0f * cosf(Angle);
 		float NudgeY = 150.0f * sinf(Angle);
