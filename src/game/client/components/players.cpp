@@ -280,17 +280,38 @@ void CPlayers::RenderPlayer(
 	bool InAir = !Collision()->CheckPoint(Player.m_X, Player.m_Y+16);
 	bool WantOtherDir = (Player.m_Direction == -1 && Vel.x > 0) || (Player.m_Direction == 1 && Vel.x < 0);
 
+	static bool LookDir = true;
+	if(Vel.x < 0)
+		LookDir = true;
+	else if(Vel.x > 0)
+		LookDir = false;
+	
 	// evaluate animation
 	float WalkTime = fmod(absolute(Position.x), 100.0f)/100.0f;
 	CAnimState State;
 	State.Set(&g_pData->m_aAnimations[ANIM_BASE], 0);
 
 	if(InAir)
-		State.Add(&g_pData->m_aAnimations[ANIM_INAIR], 0, 1.0f); // TODO: some sort of time here
+	{
+		if(Vel.x > 0)
+			State.Add(&g_pData->m_aAnimations[ANIM_INAIR_RIGHT], WalkTime, 1.0f); // TODO: some sort of time here
+		else
+			State.Add(&g_pData->m_aAnimations[ANIM_INAIR_LEFT], WalkTime, 1.0f); // TODO: some sort of time here
+	}
 	else if(Stationary)
-		State.Add(&g_pData->m_aAnimations[ANIM_IDLE], 0, 1.0f); // TODO: some sort of time here
+	{
+		if(LookDir)
+			State.Add(&g_pData->m_aAnimations[ANIM_IDLE_LEFT], 0, 1.0f); // TODO: some sort of time here
+		else
+			State.Add(&g_pData->m_aAnimations[ANIM_IDLE_RIGHT], 0, 1.0f); // TODO: some sort of time here
+	}
 	else if(!WantOtherDir)
-		State.Add(&g_pData->m_aAnimations[ANIM_WALK], WalkTime, 1.0f);
+	{
+		if(Vel.x > 0)
+			State.Add(&g_pData->m_aAnimations[ANIM_WALK_RIGHT], WalkTime, 1.0f);
+		else			
+			State.Add(&g_pData->m_aAnimations[ANIM_WALK_LEFT], WalkTime, 1.0f);
+	}
 
 	static float s_LastGameTickTime = Client()->GameTickTime();
 	if(m_pClient->m_Snap.m_pGameInfoObj && !(m_pClient->m_Snap.m_pGameInfoObj->m_GameStateFlags&GAMESTATEFLAG_PAUSED))

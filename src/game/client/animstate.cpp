@@ -88,7 +88,7 @@ CAnimState *CAnimState::GetIdle()
 	if(Init)
 	{
 		State.Set(&g_pData->m_aAnimations[ANIM_BASE], 0);
-		State.Add(&g_pData->m_aAnimations[ANIM_IDLE], 0, 1.0f);
+		State.Add(&g_pData->m_aAnimations[ANIM_IDLE_LEFT], 0, 1.0f);
 		Init = false;
 	}
 
