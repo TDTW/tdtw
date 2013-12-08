@@ -126,9 +126,9 @@ void CEmoticon::OnRender()
 	
 	// Circle
 	if(m_CircleSize < 190.0f && m_Active)
-		m_CircleSize += (190.0f-50.0f)*Client()->RenderFrameTime()*4.0f;
+		m_CircleSize += (190.0f-50.0f)*Client()->RenderFrameTime()*6.0f;
 	else if(!m_Active && m_CircleSize > 50.0f && AllClear)
-		m_CircleSize -= (190.0f-50.0f)*Client()->RenderFrameTime()*4.0f;		
+		m_CircleSize -= (190.0f-50.0f)*Client()->RenderFrameTime()*5.0f;		
 	
 	Graphics()->TextureSet(-1);
 	Graphics()->QuadsBegin();
@@ -163,13 +163,13 @@ void CEmoticon::OnRender()
 	{
 		if(m_WhiteCircleSize < m_CircleSize*0.45f)
 		{
-			m_WhiteCircleSize += (m_CircleSize*0.45f)*Client()->RenderFrameTime()*4.0f;
+			m_WhiteCircleSize += (m_CircleSize*0.45f)*Client()->RenderFrameTime()*6.0f;
 			if(m_WhiteCircleSize >= m_CircleSize*0.45f)
 				m_WhiteCircleSize = m_CircleSize*0.45f;
 		}
 		else
 		{
-			m_WhiteCircleSize -= (m_CircleSize*0.45f)*Client()->RenderFrameTime()*4.0f;
+			m_WhiteCircleSize -= (m_CircleSize*0.45f)*Client()->RenderFrameTime()*5.0f;
 			if(m_WhiteCircleSize <= m_CircleSize*0.45f)
 				m_WhiteCircleSize = m_CircleSize*0.45f;
 		}
@@ -183,7 +183,7 @@ void CEmoticon::OnRender()
 		{
 			if(m_WhiteCircleCoord.x > Screen.w/2)
 			{
-				m_WhiteCircleCoord.x -= abs(m_OldCoord.x - Screen.w/2) * Client()->RenderFrameTime() * 4.0f;
+				m_WhiteCircleCoord.x -= abs(m_OldCoord.x - Screen.w/2) * Client()->RenderFrameTime() * 6.0f;
 				if(m_WhiteCircleCoord.x < Screen.w/2)
 				{
 					m_WhiteCircleCoord.x = Screen.w/2;
@@ -192,7 +192,7 @@ void CEmoticon::OnRender()
 			}
 			else if(m_WhiteCircleCoord.x < Screen.w/2)
 			{
-				m_WhiteCircleCoord.x += abs(Screen.w/2 - m_OldCoord.x) * Client()->RenderFrameTime() * 4.0f;
+				m_WhiteCircleCoord.x += abs(Screen.w/2 - m_OldCoord.x) * Client()->RenderFrameTime() * 6.0f;
 				if(m_WhiteCircleCoord.x > Screen.w/2)
 				{
 					m_WhiteCircleCoord.x = Screen.w/2;
@@ -202,7 +202,7 @@ void CEmoticon::OnRender()
 			
 			if(m_WhiteCircleCoord.y > Screen.h/2)
 			{
-				m_WhiteCircleCoord.y -= abs(m_OldCoord.y - Screen.h/2) * Client()->RenderFrameTime() * 4.0f;
+				m_WhiteCircleCoord.y -= abs(m_OldCoord.y - Screen.h/2) * Client()->RenderFrameTime() * 6.0f;
 				if(m_WhiteCircleCoord.y < Screen.h/2)
 				{
 					m_WhiteCircleCoord.y = Screen.h/2;
@@ -211,7 +211,7 @@ void CEmoticon::OnRender()
 			}
 			else if(m_WhiteCircleCoord.y < Screen.h/2)
 			{
-				m_WhiteCircleCoord.y += abs(Screen.h/2 - m_OldCoord.y) * Client()->RenderFrameTime() * 4.0f;
+				m_WhiteCircleCoord.y += abs(Screen.h/2 - m_OldCoord.y) * Client()->RenderFrameTime() * 6.0f;
 				if(m_WhiteCircleCoord.y > Screen.h/2)
 				{
 					m_WhiteCircleCoord.y = Screen.h/2;
@@ -235,7 +235,7 @@ void CEmoticon::OnRender()
 		}
 		else
 		{
-			m_WhiteCircleSize += (m_CircleSize*0.45f-40.0f)*Client()->RenderFrameTime()*4.0f;
+			m_WhiteCircleSize += (m_CircleSize*0.45f-40.0f)*Client()->RenderFrameTime()*6.0f;
 			if(m_WhiteCircleSize >= 40.0f)
 				m_WhiteCircleSize = 40.0f;
 		}
@@ -249,7 +249,7 @@ void CEmoticon::OnRender()
 		
 		if(m_WhiteCircleCoord.x > NuX)
 		{
-			m_WhiteCircleCoord.x -= abs(m_OldCoord.x - NuX) * Client()->RenderFrameTime() * 4.0f;
+			m_WhiteCircleCoord.x -= abs(m_OldCoord.x - NuX) * Client()->RenderFrameTime() * 6.0f;
 			if(m_WhiteCircleCoord.x < NuX)
 			{
 				m_WhiteCircleCoord.x = NuX;
@@ -258,7 +258,7 @@ void CEmoticon::OnRender()
 		}
 		else if(m_WhiteCircleCoord.x < NuX)
 		{
-			m_WhiteCircleCoord.x += abs(NuX - m_OldCoord.x) * Client()->RenderFrameTime() * 4.0f;
+			m_WhiteCircleCoord.x += abs(NuX - m_OldCoord.x) * Client()->RenderFrameTime() * 6.0f;
 			if(m_WhiteCircleCoord.x > NuX)
 			{
 				m_WhiteCircleCoord.x = NuX;
@@ -268,7 +268,7 @@ void CEmoticon::OnRender()
 		
 		if(m_WhiteCircleCoord.y > NuY)
 		{
-			m_WhiteCircleCoord.y -= abs(m_OldCoord.y - NuY) * Client()->RenderFrameTime() * 4.0f;
+			m_WhiteCircleCoord.y -= abs(m_OldCoord.y - NuY) * Client()->RenderFrameTime() * 6.0f;
 			if(m_WhiteCircleCoord.y < NuY)
 			{
 				m_WhiteCircleCoord.y = NuY;
@@ -277,7 +277,7 @@ void CEmoticon::OnRender()
 		}
 		else if(m_WhiteCircleCoord.y < NuY)
 		{
-			m_WhiteCircleCoord.y += abs(NuY - m_OldCoord.y) * Client()->RenderFrameTime() * 4.0f;
+			m_WhiteCircleCoord.y += abs(NuY - m_OldCoord.y) * Client()->RenderFrameTime() * 6.0f;
 			if(m_WhiteCircleCoord.y > NuY)
 			{
 				m_WhiteCircleCoord.y = NuY;
@@ -313,7 +313,7 @@ void CEmoticon::OnRender()
 		{
 			if(m_Size[i] > 0.0f)
 			{
-				m_Size[i] -= 80.0f*Client()->RenderFrameTime()*4.0f;
+				m_Size[i] -= 80.0f*Client()->RenderFrameTime()*6.0f;
 				if(m_Size[i] <= 0.0f)
 					m_Size[i] = 0.0f;
 			}
@@ -322,7 +322,7 @@ void CEmoticon::OnRender()
 		}
 		else if(m_Size[i] < Size)
 		{
-			m_Size[i] += 80.0f*Client()->RenderFrameTime()*4.0f;
+			m_Size[i] += 80.0f*Client()->RenderFrameTime()*6.0f;
 			if(m_Size[i] >= Size)
 				m_Size[i] = Size;
 			AllClear = false;
