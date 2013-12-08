@@ -7,15 +7,20 @@
 
 class CEmoticon : public CComponent
 {
-	void DrawCircle(float x, float y, float r, int Segments);
+	void DrawCircle(float x, float y, float start_r, float end_r, int Segments);
 
 	bool m_WasActive;
 	bool m_Active;
 
 	vec2 m_SelectorMouse;
 	int m_SelectedEmote;
+	int m_OldEmote;
 	float m_Size[NUM_EMOTICONS];
 	float m_CircleSize;
+	float m_WhiteCircleSize;
+	vec2 m_WhiteCircleCoord;
+	vec2 m_OldCoord;
+	int64 m_aLastSoundPlayed;
 
 	static void ConKeyEmoticon(IConsole::IResult *pResult, void *pUserData);
 	static void ConEmote(IConsole::IResult *pResult, void *pUserData);
