@@ -459,6 +459,20 @@ anim.front_foot.frames.Add(AnimKeyframe(1.0, -3, 0, 0.1))
 
 container.animations.Add(anim)
 
+anim = Animation("idle_inair_left")
+
+anim.back_foot.frames.Add(AnimKeyframe(1.0, -3, 0, -0.2))
+anim.front_foot.frames.Add(AnimKeyframe(1.0, 3, 0, -0.2))
+
+container.animations.Add(anim)
+
+anim = Animation("idle_inair_right")
+
+anim.back_foot.frames.Add(AnimKeyframe(1.0, 3, 0, 0.2))
+anim.front_foot.frames.Add(AnimKeyframe(1.0, -3, 0, 0.2))
+
+container.animations.Add(anim)
+
 anim = Animation("walk_left")
 anim.body.frames.Add(AnimKeyframe(0.0, 0, 0, 0))
 anim.body.frames.Add(AnimKeyframe(0.2, 0,-1, 0))

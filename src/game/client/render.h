@@ -18,6 +18,7 @@ public:
 		m_ColorFeet = vec4(1,1,1,1);
 		m_Size = 1.0f;
 		m_GotAirJump = 1;
+		Direction = false;
 	};
 
 	int m_Texture;
@@ -25,6 +26,9 @@ public:
 	vec4 m_ColorFeet;
 	float m_Size;
 	int m_GotAirJump;
+	
+	//Animation
+	bool Direction;
 };
 
 // sprite renderings
