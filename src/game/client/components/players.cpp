@@ -280,7 +280,6 @@ void CPlayers::RenderPlayer(
 	bool InAir = !Collision()->CheckPoint(Player.m_X, Player.m_Y+16);
 	bool WantOtherDir = (Player.m_Direction == -1 && Vel.x > 0) || (Player.m_Direction == 1 && Vel.x < 0);
 
-	static bool LookDir = true;
 	if(Vel.x < 0)
 		m_pClient->m_aClients[pInfo.m_ClientID].m_RenderInfo.Direction = true;
 	else if(Vel.x > 0)
