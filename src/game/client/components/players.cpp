@@ -324,6 +324,13 @@ void CPlayers::RenderPlayer(
 		else			
 			NowAnimation = ANIM_WALK_LEFT;
 	}
+	else if(WantOtherDir)
+	{
+		if(Vel.x > 0)
+			NowAnimation = ANIM_SKID_RIGHT;
+		else			
+			NowAnimation = ANIM_SKID_LEFT;
+	}
 		
 	State.Add(&g_pData->m_aAnimations[NowAnimation], WalkTime, 1.0f);
 	
