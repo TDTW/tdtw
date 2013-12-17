@@ -126,9 +126,17 @@ void CEmoticon::OnRender()
 	
 	// Circle
 	if(m_CircleSize < 190.0f && m_Active)
+	{
 		m_CircleSize += (190.0f-50.0f)*Client()->RenderFrameTime()*6.0f;
+		if(m_CircleSize > 190.0f)
+			m_CircleSize = 190.0f;
+	}
 	else if(!m_Active && m_CircleSize > 50.0f && AllClear)
+	{
 		m_CircleSize -= (190.0f-50.0f)*Client()->RenderFrameTime()*5.0f;		
+		if(m_CircleSize < 50.0f)
+			m_CircleSize = 50.0f;
+	}
 	
 	Graphics()->TextureSet(-1);
 	Graphics()->QuadsBegin();
@@ -314,7 +322,7 @@ void CEmoticon::OnRender()
 			if(m_Size[i] > 0.0f)
 			{
 				m_Size[i] -= 80.0f*Client()->RenderFrameTime()*6.0f;
-				if(m_Size[i] <= 0.0f)
+				if(m_Size[i] < 0.0f)
 					m_Size[i] = 0.0f;
 			}
 			else
@@ -323,14 +331,14 @@ void CEmoticon::OnRender()
 		else if(m_Size[i] < Size)
 		{
 			m_Size[i] += 80.0f*Client()->RenderFrameTime()*6.0f;
-			if(m_Size[i] >= Size)
+			if(m_Size[i] > Size)
 				m_Size[i] = Size;
 			AllClear = false;
 		}
 		else if(m_Size[i] > Size)
 		{
 			m_Size[i] -= 80.0f*Client()->RenderFrameTime()*4.0f;
-			if(m_Size[i] <= Size)
+			if(m_Size[i] < Size)
 				m_Size[i] = Size;
 		}
 			
