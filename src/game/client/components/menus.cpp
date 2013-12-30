@@ -521,7 +521,7 @@ float CMenus::DoScrollbarV(const void *pID, const float *pFade, const CUIRect *p
 	
 	Slider = Handle;
 	Slider.Margin(5.0f, &Slider);
-	RenderTools()->DrawUIRect(&Slider, ButtColor, CUI::CORNER_ALL, 2.5f);
+	RenderTools()->DrawUIRect(&Slider, ButtColor, CUI::CORNER_ALL, 0.0f);
 
 	return ReturnValue;
 }
@@ -576,16 +576,19 @@ int CMenus::DoCoolScrollbarH(const void *pID, const float *pFade, const CUIRect 
 		float *pTextFade = ButtonFadeActive(pID, &pFade[2], 0.6f, MovedNow);
 		float TextFadeVal = *pTextFade/0.6f;
 		
-		CUIRect Background = Number;
-		Background.HMargin(2.0f, &Background);
-		RenderTools()->DrawUIRect(&Background, vec4(1.0f, 1.0f, 1.0f, 0.5f*TextFadeVal), CUI::CORNER_ALL, 4.0f);
-		
-		Number.HMargin(4.0f, &Number);
-		float tw = TextRender()->TextWidth(0, 14, aBuf, -1);
-		
-		TextRender()->TextColor(1.0f, 1.0f, 1.0f, 1.0f*TextFadeVal);
-		TextRender()->Text(0, Number.x + Number.w/2-tw/2, Number.y-Number.h/2, 14, aBuf, -1);
-		TextRender()->TextColor(1.0f, 1.0f, 1.0f, 1.0f);
+		if(TextFadeVal > 0.0f)
+		{
+			CUIRect Background = Number;
+			Background.HMargin(2.0f, &Background);
+			RenderTools()->DrawUIRect(&Background, vec4(1.0f, 1.0f, 1.0f, 0.5f*TextFadeVal), CUI::CORNER_ALL, 4.0f);
+			
+			Number.HMargin(4.0f, &Number);
+			float tw = TextRender()->TextWidth(0, 14, aBuf, -1);
+			
+			TextRender()->TextColor(1.0f, 1.0f, 1.0f, 1.0f*TextFadeVal);
+			TextRender()->Text(0, Number.x + Number.w/2-tw/2, Number.y-Number.h/2, 14, aBuf, -1);
+			TextRender()->TextColor(1.0f, 1.0f, 1.0f, 1.0f);
+		}
 	}
 
 	if(Inside)
@@ -595,17 +598,18 @@ int CMenus::DoCoolScrollbarH(const void *pID, const float *pFade, const CUIRect 
 	float RailFadeVal = *pRailFade/0.6f;
 	
 	vec4 RailColor = mix(vec4(1.0f, 1.0f, 1.0f, 0.10f), vec4(1.0f, 1.0f, 1.0f, 0.35f), RailFadeVal);
+	vec4 RailColor2 = mix(vec4(1.0f, 1.0f, 1.0f, 0.0f), vec4(1.0f, 1.0f, 1.0f, 0.35f), RailFadeVal);
 		
 	// render
 	CUIRect Rail;
-	pRect->HMargin(5.0f, &Rail);
+	pRect->HMargin(6.0f - RailFadeVal, &Rail);
 	RenderTools()->DrawUIRect(&Rail, RailColor, 0, 0.0f);
 
 	CUIRect Slider = Handle;
 	Slider.h = Rail.y-Slider.y;
-	RenderTools()->DrawUIRect(&Slider, RailColor, CUI::CORNER_T, 2.5f);
+	RenderTools()->DrawUIRect(&Slider, RailColor2, CUI::CORNER_T, 2.5f);
 	Slider.y = Rail.y+Rail.h;
-	RenderTools()->DrawUIRect(&Slider, RailColor, CUI::CORNER_B, 2.5f);
+	RenderTools()->DrawUIRect(&Slider, RailColor2, CUI::CORNER_B, 2.5f);
 	
 	float *pButtFade = ButtonFade(pID, &pFade[1], 0.6f);
 	float ButtFadeVal = *pButtFade/0.6f;
@@ -613,8 +617,8 @@ int CMenus::DoCoolScrollbarH(const void *pID, const float *pFade, const CUIRect 
 	vec4 ButtColor = mix(vec4(1.0f, 1.0f, 1.0f, 0.25f), vec4(1.0f, 1.0f, 1.0f, 0.75f), ButtFadeVal);
 	
 	Slider = Handle;
-	Slider.Margin(5.0f, &Slider);
-	RenderTools()->DrawUIRect(&Slider, ButtColor, CUI::CORNER_ALL, 2.5f);
+	Slider.Margin(6.0f - RailFadeVal, &Slider);
+	RenderTools()->DrawUIRect(&Slider, ButtColor, CUI::CORNER_ALL, 0.0f);
 
 	ReturnValue = ReturnValue*(Max-Min) + Min;
 	return (int)ReturnValue;
@@ -660,17 +664,18 @@ float CMenus::DoScrollbarH(const void *pID, const float *pFade, const CUIRect *p
 	float RailFadeVal = *pRailFade/0.6f;
 	
 	vec4 RailColor = mix(vec4(1.0f, 1.0f, 1.0f, 0.10f), vec4(1.0f, 1.0f, 1.0f, 0.35f), RailFadeVal);
+	vec4 RailColor2 = mix(vec4(1.0f, 1.0f, 1.0f, 0.0f), vec4(1.0f, 1.0f, 1.0f, 0.35f), RailFadeVal);
 		
-	// render
+// render
 	CUIRect Rail;
-	pRect->HMargin(5.0f, &Rail);
+	pRect->HMargin(6.0f - RailFadeVal, &Rail);
 	RenderTools()->DrawUIRect(&Rail, RailColor, 0, 0.0f);
 
 	CUIRect Slider = Handle;
 	Slider.h = Rail.y-Slider.y;
-	RenderTools()->DrawUIRect(&Slider, RailColor, CUI::CORNER_T, 2.5f);
+	RenderTools()->DrawUIRect(&Slider, RailColor2, CUI::CORNER_T, 2.5f);
 	Slider.y = Rail.y+Rail.h;
-	RenderTools()->DrawUIRect(&Slider, RailColor, CUI::CORNER_B, 2.5f);
+	RenderTools()->DrawUIRect(&Slider, RailColor2, CUI::CORNER_B, 2.5f);
 	
 	float *pButtFade = ButtonFade(pID, &pFade[1], 0.6f);
 	float ButtFadeVal = *pButtFade/0.6f;
@@ -678,8 +683,8 @@ float CMenus::DoScrollbarH(const void *pID, const float *pFade, const CUIRect *p
 	vec4 ButtColor = mix(vec4(1.0f, 1.0f, 1.0f, 0.25f), vec4(1.0f, 1.0f, 1.0f, 0.75f), ButtFadeVal);
 	
 	Slider = Handle;
-	Slider.Margin(5.0f, &Slider);
-	RenderTools()->DrawUIRect(&Slider, ButtColor, CUI::CORNER_ALL, 2.5f);
+	Slider.Margin(6.0f - RailFadeVal, &Slider);
+	RenderTools()->DrawUIRect(&Slider, ButtColor, CUI::CORNER_ALL, 0.0f);
 
 	return ReturnValue;
 }
