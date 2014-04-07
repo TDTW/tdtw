@@ -201,7 +201,7 @@ void CEffects::PlayerDeath(vec2 Pos, int ClientID)
 		p.m_Rot = frandom()*pi*2;
 		p.m_Rotspeed = (frandom()-0.5f) * pi;
 		p.m_Gravity = 1600; //800.0f;
-		p.m_Friction = 0.1f; //0.8f;
+		p.m_Friction = 0.8f; //0.8f;
 		vec3 c = BloodColor * (0.75f + frandom()*0.25f);
 		p.m_Color = vec4(c.r, c.g, c.b, 0.75f);
 		m_pClient->m_pParticles->Add(CParticles::GROUP_GENERAL, &p);
