@@ -636,7 +636,7 @@ void CHud::OnRender()
 			RenderHealthAndAmmo(m_pClient->m_Snap.m_pLocalCharacter);
 		else if(m_pClient->m_Snap.m_SpecInfo.m_Active)
 		{
-			if(!g_Config.m_HudModHideHealthAndAmmo && m_pClient->m_Snap.m_SpecInfo.m_SpectatorID != SPEC_FREEVIEW)
+			if (!g_Config.m_HudModHideHealthAndAmmo && m_pClient->m_Snap.m_SpecInfo.m_SpectatorID != SPEC_FREEVIEW && (m_pClient->m_Snap.m_SpecInfo.m_SpectatorID >= 0 && m_pClient->m_Snap.m_SpecInfo.m_SpectatorID < 16))
 				RenderHealthAndAmmo(&m_pClient->m_Snap.m_aCharacters[m_pClient->m_Snap.m_SpecInfo.m_SpectatorID].m_Cur);
 			if(!g_Config.m_HudModHideSpectator)
 				RenderSpectatorHud();

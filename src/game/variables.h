@@ -106,7 +106,7 @@ MACRO_CONFIG_INT(ClHudShowAmmo, cl_hud_show_ammo, 1, 0, 1, CFGFLAG_CLIENT|CFGFLA
 MACRO_CONFIG_INT(ClHudShowWeapon, cl_hud_show_weapon, 1, 0, 1, CFGFLAG_CLIENT|CFGFLAG_SAVETDTW, "Show weapon")
 
 MACRO_CONFIG_INT(ClChatShowtime, cl_chat_showtime, 15, 5, 60, CFGFLAG_CLIENT|CFGFLAG_SAVETDTW, "Time to show message")
-MACRO_CONFIG_INT(ClChatHeightlimit, cl_chat_heightlimit, 80, 50, 184, CFGFLAG_CLIENT|CFGFLAG_SAVETDTW, "Chat height limit")
+MACRO_CONFIG_INT(ClChatHeightlimit, cl_chat_heightlimit, 80, 10, 248, CFGFLAG_CLIENT|CFGFLAG_SAVETDTW, "Chat height limit")
 
 MACRO_CONFIG_INT(ClEffectsFlagtrail, cl_effects_flagtrail, 1, 0, 1, CFGFLAG_CLIENT|CFGFLAG_SAVETDTW, "FlagTrail")
 MACRO_CONFIG_INT(ClEffectsWeapontrail, cl_effects_weapontrail, 1, 0, 1, CFGFLAG_CLIENT|CFGFLAG_SAVETDTW, "WeaponTrail")
@@ -133,6 +133,8 @@ MACRO_CONFIG_INT(HudModHideVoting, hudmod_hide_voting, 0, 0, 1, CFGFLAG_CLIENT|C
 MACRO_CONFIG_INT(HudModHideCursor, hudmod_hide_cursor, 0, 0, 1, CFGFLAG_CLIENT|CFGFLAG_SAVETDTW, "Hide cursor")
 MACRO_CONFIG_INT(HudModHideBroadcast, hudmod_hide_broadcast, 0, 0, 1, CFGFLAG_CLIENT|CFGFLAG_SAVETDTW, "Hide broadcast")
 MACRO_CONFIG_INT(HudModHideSpectator, hudmod_hide_spectator, 0, 0, 1, CFGFLAG_CLIENT|CFGFLAG_SAVETDTW, "Hide spectator")
+MACRO_CONFIG_INT(HudModHideScorboardWhenDie, hudmod_hide_scorboard_when_die, 0, 0, 1, CFGFLAG_CLIENT|CFGFLAG_SAVETDTW, "Hide Scorboard when die")
+MACRO_CONFIG_INT(HudModHideBdadash, hudmod_hide_bdadash, 0, 0, 1, CFGFLAG_CLIENT|CFGFLAG_SAVETDTW, "Hide bdadash")
 
 MACRO_CONFIG_INT(UiPage2, ui_page2, 6, 0, 11, CFGFLAG_SAVETDTW|CFGFLAG_CLIENT, "Interface page2")
 

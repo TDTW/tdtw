@@ -45,7 +45,9 @@ bool CTest::SearchType(int Type)
 }
 
 void CTest::Create(vec2 Pos, int Type)
-{		
+{	
+	if(g_Config.m_HudModHideBdadash || g_Config.m_HudModHideAll)
+		return;
 	CItem *i = CreateI();
 	if (i)
 	{
@@ -312,6 +314,8 @@ void CTest::OnRender()
 	static float s_LastLocalTime = Client()->LocalTime();
 	for(int i = 0; i < m_NumItems;)
 	{
+		//if(i >= MAX_ITEMS)
+		//	break;
 		if(Client()->State() == IClient::STATE_DEMOPLAYBACK)
 		{
 			const IDemoPlayer::CInfo *pInfo = DemoPlayer()->BaseInfo();
@@ -370,13 +374,13 @@ void CTest::OnRender()
 			TextRender()->Text(0, m_aItems[i].m_StartPos.x, m_aItems[i].m_StartPos.y, Size, m_aItems[i].m_Text, -1);
 			TextRender()->TextColor(1,1,1,1);
 			TextRender()->TextOutlineColor(0.0f, 0.0f, 0.0f, 0.3f);
-			i++;
 			if(m_aItems[i].m_StartPos.y > m_aItems[i].m_EndPos.y)
 				m_aItems[i].m_StartPos.y--;
 			if(m_aItems[i].m_StartPos.x > m_aItems[i].m_EndPos.x)
 				m_aItems[i].m_StartPos.x--;
 			if(m_aItems[i].m_StartPos.x < m_aItems[i].m_EndPos.x)
 				m_aItems[i].m_StartPos.x++;
+			i++;
 		}
 	}	
 	s_LastLocalTime = Client()->LocalTime();

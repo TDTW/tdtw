@@ -1655,7 +1655,9 @@ void CMenus::RenderSettingsHudMod(CUIRect MainView)
 		Localize("Hide teambalance warning"),
 		Localize("Hide voting"),
 		Localize("Hide cursor"),
-		Localize("Hide spectator hud")};
+		Localize("Hide spectator hud"),
+		Localize("Hide scorboard when die"),
+		Localize("Hide BAHBDIDISH")};
 	int *paButton[] = {
 		&g_Config.m_HudModHideChat,
 		&g_Config.m_HudModHideKillMessages,
@@ -1668,9 +1670,11 @@ void CMenus::RenderSettingsHudMod(CUIRect MainView)
 		&g_Config.m_HudModHideTeambalanceWarning,
 		&g_Config.m_HudModHideVoting,
 		&g_Config.m_HudModHideCursor,
-		&g_Config.m_HudModHideSpectator};
+		&g_Config.m_HudModHideSpectator,
+		&g_Config.m_HudModHideScorboardWhenDie,
+		&g_Config.m_HudModHideBdadash};
 			
-	for(int s = 0; s < 12; s++)
+	for(int s = 0; s < 14; s++)
 	{
 		MainView.HSplitTop(20.0f, &Button, &MainView);
 		Button.VMargin(15.0f, &Button);

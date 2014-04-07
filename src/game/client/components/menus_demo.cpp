@@ -44,6 +44,9 @@ int CMenus::DoButton_Sprite(const void *pID, int ImageID, int SpriteID, int Chec
 
 void CMenus::RenderDemoPlayer(CUIRect MainView)
 {
+	if(!m_MenuActive)
+		return;
+		
 	const IDemoPlayer::CInfo *pInfo = DemoPlayer()->BaseInfo();
 
 	const float SeekBarHeight = 15.0f;
