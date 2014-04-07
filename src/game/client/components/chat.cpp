@@ -14,9 +14,11 @@
 
 #include <game/client/components/scoreboard.h>
 #include <game/client/components/sounds.h>
+#include <game/client/animstate.h>
 #include <game/localization.h>
 
 #include "chat.h"
+#include "binds.h"
 
 
 CChat::CChat()
@@ -31,6 +33,8 @@ void CChat::OnReset()
 		m_aLines[i].m_Time = 0;
 		m_aLines[i].m_aText[0] = 0;
 		m_aLines[i].m_aName[0] = 0;
+		m_aLines[i].m_Blend = 0.0f;
+		m_aLines[i].m_Tee = CTeeRenderInfo::CTeeRenderInfo();
 	}
 
 	m_Show = false;
@@ -43,6 +47,7 @@ void CChat::OnReset()
 	m_pHistoryEntry = 0x0;
 	m_PendingChatCounter = 0;
 	m_LastChatSend = 0;
+	ChatY = 0;
 
 	for(int i = 0; i < CHAT_NUM; ++i)
 		m_aLastSoundPlayed[i] = 0;
@@ -51,6 +56,22 @@ void CChat::OnReset()
 void CChat::OnRelease()
 {
 	m_Show = false;
+}
+
+bool CChat::OnMouseMove(float x, float y)
+{
+	if(!m_Show && m_Mode == MODE_NONE)
+		return false;
+
+	UI()->ConvertMouseMove(&x, &y);
+	m_MousePos.x += x;
+	m_MousePos.y += y;
+	//if(m_MousePos.x < 0) m_MousePos.x = 0;
+	//if(m_MousePos.y < 0) m_MousePos.y = 0;
+	//if(m_MousePos.x > Graphics()->ScreenWidth()) m_MousePos.x = Graphics()->ScreenWidth();
+	//if(m_MousePos.y > Graphics()->ScreenHeight()) m_MousePos.y = Graphics()->ScreenHeight();
+
+	return true;
 }
 
 void CChat::OnStateChange(int NewState, int OldState)
@@ -101,7 +122,17 @@ void CChat::OnConsoleInit()
 bool CChat::OnInput(IInput::CEvent Event)
 {
 	if(m_Mode == MODE_NONE)
-		return false;
+	{
+		if(m_Show)
+		{
+			if(Event.m_Flags&IInput::FLAG_RELEASE && str_comp(m_pClient->m_pBinds->Get(Event.m_Key, false), "+show_chat") == 0)
+				m_Show = false;
+			else
+				return true;
+		}
+		else
+			return false;
+	}
 
 	if(Event.m_Flags&IInput::FLAG_PRESS && Event.m_Key == KEY_ESCAPE)
 	{
@@ -328,11 +359,16 @@ void CChat::AddLine(int ClientID, int Team, const char *pLine)
 
 		m_CurrentLine = (m_CurrentLine+1)%MAX_LINES;
 		m_aLines[m_CurrentLine].m_Time = time_get();
-		m_aLines[m_CurrentLine].m_YOffset[0] = -1.0f;
-		m_aLines[m_CurrentLine].m_YOffset[1] = -1.0f;
+		m_aLines[m_CurrentLine].m_YNew[0] = -1.0f;
+		m_aLines[m_CurrentLine].m_YNew[1] = -1.0f;
+		m_aLines[m_CurrentLine].m_YOld[0] = -1.0f;
+		m_aLines[m_CurrentLine].m_YOld[1] = -1.0f;
 		m_aLines[m_CurrentLine].m_ClientID = ClientID;
 		m_aLines[m_CurrentLine].m_Team = Team;
 		m_aLines[m_CurrentLine].m_NameColor = -2;
+		m_aLines[m_CurrentLine].m_Blend = 0.0f;
+		m_aLines[m_CurrentLine].m_Tee = CTeeRenderInfo::CTeeRenderInfo();
+		
 
 		// check for highlighted name
 		const char *pHL = str_find_nocase(pLine, m_pClient->m_aClients[m_pClient->m_Snap.m_LocalClientID].m_aName);
@@ -361,6 +397,8 @@ void CChat::AddLine(int ClientID, int Team, const char *pLine)
 				else if(m_pClient->m_aClients[ClientID].m_Team == TEAM_BLUE)
 					m_aLines[m_CurrentLine].m_NameColor = TEAM_BLUE;
 			}
+			
+			m_aLines[m_CurrentLine].m_Tee = m_pClient->m_aClients[ClientID].m_RenderInfo;
 
 			str_copy(m_aLines[m_CurrentLine].m_aName, m_pClient->m_aClients[ClientID].m_aName, sizeof(m_aLines[m_CurrentLine].m_aName));
 			str_format(m_aLines[m_CurrentLine].m_aText, sizeof(m_aLines[m_CurrentLine].m_aText), ": %s", pLine);
@@ -399,6 +437,120 @@ void CChat::AddLine(int ClientID, int Team, const char *pLine)
 	}
 }
 
+float *CChat::ButtonFade(const void *pID, const void *pValueFade, float Seconds, int Checked)
+{
+	float *pFade = (float*)pValueFade;
+
+	if(UI()->ActiveItem() == pID)
+	{
+		*pFade -= Client()->RenderFrameTime()*3;
+		if(*pFade < 0.35f*Seconds)
+			*pFade = 0.35f*Seconds;
+	}
+	else if(UI()->HotItem() == pID)
+	{
+		*pFade += Client()->RenderFrameTime()*2;
+		if(*pFade > Seconds)
+			*pFade = Seconds;
+	}
+	else if(Checked)
+	{
+		*pFade += Client()->RenderFrameTime()*2;
+		if(*pFade > 0.85f*Seconds)
+			*pFade = 0.85f*Seconds;
+	}
+	else if(*pFade > 0.0f)
+	{
+		*pFade -= Client()->RenderFrameTime();
+		if(*pFade < 0.0f)
+			*pFade = 0.0f;
+	}
+	return pFade;
+}
+
+float *CChat::ButtonFade(const void *pID, const void *pValueFade, const CUIRect *pRect, float Seconds)
+{
+	float *pFade = (float*)pValueFade;
+
+	if(UI()->MouseInside(pRect) || UI()->ActiveItem() == pID)
+	{
+		*pFade += Client()->RenderFrameTime()*2;
+		if(*pFade > Seconds)
+			*pFade = Seconds;
+	}
+	else if(*pFade > 0.0f)
+	{
+		*pFade -= Client()->RenderFrameTime();
+		if(*pFade < 0.0f)
+			*pFade = 0.0f;
+	}
+	return pFade;
+}
+
+float CChat::DoScrollbarV(const void *pID, const float *pFade, const CUIRect *pRect, float Current)
+{
+	CUIRect Handle;
+	static float OffsetY;
+	pRect->HSplitTop(33, &Handle, 0);
+
+	Handle.y += (pRect->h-Handle.h)*Current;
+
+	// logic
+	float ReturnValue = Current;
+	int Inside = UI()->MouseInside(&Handle);
+
+	if(UI()->ActiveItem() == pID)
+	{
+		if(!UI()->MouseButton(0))
+			UI()->SetActiveItem(0);
+
+		float Min = pRect->y;
+		float Max = pRect->h-Handle.h;
+		float Cur = UI()->MouseY()-OffsetY;
+		ReturnValue = (Cur-Min)/Max;
+		if(ReturnValue < 0.0f) ReturnValue = 0.0f;
+		if(ReturnValue > 1.0f) ReturnValue = 1.0f;
+	}
+	else if(UI()->HotItem() == pID)
+	{
+		if(UI()->MouseButton(0))
+		{
+			UI()->SetActiveItem(pID);
+			OffsetY = UI()->MouseY()-Handle.y;
+		}
+	}
+
+	if(Inside)
+		UI()->SetHotItem(pID);
+		
+	float *pRailFade = ButtonFade(pID, &pFade[0], pRect, 0.6f);
+	float RailFadeVal = *pRailFade/0.6f;
+	
+	vec4 RailColor = mix(vec4(1.0f, 1.0f, 1.0f, 0.0f), vec4(1.0f, 1.0f, 1.0f, 0.25f), RailFadeVal);
+		 				
+	// render
+	CUIRect Rail;
+	pRect->VMargin(5.0f, &Rail);
+	RenderTools()->DrawUIRect(&Rail, RailColor, 0, 0.0f);
+
+	CUIRect Slider = Handle;
+	Slider.w = Rail.x-Slider.x;
+	RenderTools()->DrawUIRect(&Slider, RailColor, CUI::CORNER_L, 2.5f);
+	Slider.x = Rail.x+Rail.w;
+	RenderTools()->DrawUIRect(&Slider, RailColor, CUI::CORNER_R, 2.5f);
+
+	float *pButtFade = ButtonFade(pID, &pFade[1], 0.6f);
+	float ButtFadeVal = *pButtFade/0.6f;
+	
+	vec4 ButtColor = mix(vec4(1.0f, 1.0f, 1.0f, 0.25f), vec4(1.0f, 1.0f, 1.0f, 0.75f), ButtFadeVal);
+	
+	Slider = Handle;
+	Slider.Margin(5.0f, &Slider);
+	RenderTools()->DrawUIRect(&Slider, ButtColor, CUI::CORNER_ALL, 2.5f);
+
+	return ReturnValue;
+}
+
 void CChat::OnRenderNew()
 {
 	// send pending chat messages
@@ -416,29 +568,200 @@ void CChat::OnRenderNew()
 		--m_PendingChatCounter;
 	}
 
-	if (g_Config.m_HudModHideAll || g_Config.m_HudModHideChat)
+	if (g_Config.m_HudModHideAll || g_Config.m_HudModHideChat)// || (!m_Show && m_Mode == MODE_NONE))
 		return;
 		
-	float Width = 300.0f*Graphics()->ScreenAspect();
-	Graphics()->MapScreen(0.0f, 0.0f, Width, 300.0f);
-	float x = 5.0f;
-	float y = 300.0f-20.0f;
+	CUIRect Screen = *UI()->Screen();
+
+	static float ExtraMenus = 0.0f;
+	static bool ExtraShown = false;
+	
+	Graphics()->MapScreen(Screen.x, Screen.y, Screen.x+Screen.w, Screen.y+Screen.h);
+	Screen.HSplitBottom(400.0f-g_Config.m_ClChatHeightlimit/* -ExtraMenus */, 0, &Screen);
+	Screen.VSplitLeft(300.0f*Graphics()->ScreenAspect(), &Screen, 0);
+	Screen.Margin(10.0f, &Screen);
+	
+	// clamp mouse position to selector area
+	// m_MousePos.x = clamp(m_MousePos.x, Screen.x, Screen.x+Screen.w);
+	// m_MousePos.y = clamp(m_MousePos.y, Screen.y-5, Screen.y+Screen.h);
+		
+	float Width = Screen.w;
+	float Height = Screen.h;
+	
+	CUIRect View = Screen;
+	m_MousePos.x = clamp(m_MousePos.x, View.x, View.x+View.w);
+	m_MousePos.y = clamp(m_MousePos.y, View.y-5, View.y+View.h);
+	CUIRect Header, Footer, Down, TypeBox, Scroll, Row, d_Extra, d_Left, d_Right, d_Bottom, d_Top;
+	
+	View.HSplitTop(17.0f, &Header, &View);
+	View.HSplitBottom(36.0f, &View, &TypeBox);
+	View.HSplitBottom(17.0f+ExtraMenus, &View, &Footer);
+		
+	static float m_ShowFade = 0.0f;
+	if(m_Show || m_Mode != MODE_NONE)
+	{
+		if(m_ShowFade < 1.0f)
+			m_ShowFade += Client()->RenderFrameTime()*5.0f;
+	}
+	else
+	{
+		if(m_ShowFade > 0.0f)
+			m_ShowFade -= Client()->RenderFrameTime()*5.0f;
+	}
+	
+	static bool ChatMoving = false;
+	if(m_ShowFade > 0.0f)
+	{
+		static int upBar = 0;
+		static float upFade = 0;
+		static int MousePosY = 0;
+		static int ChatHeight = 0;
+		
+		int Inside = UI()->MouseInside(&Header);
+
+		if(UI()->ActiveItem() == &upBar)
+		{
+			if(!UI()->MouseButton(0))
+			{
+				UI()->SetActiveItem(0);
+				ChatMoving = true;			
+			}
+			g_Config.m_ClChatHeightlimit = ChatHeight + m_MousePos.y - MousePosY;
+			g_Config.m_ClChatHeightlimit = clamp(g_Config.m_ClChatHeightlimit, 10, 248);
+		}
+		else if(UI()->HotItem() == &upBar)
+		{
+			if(UI()->MouseButton(0))
+			{
+				UI()->SetActiveItem(&upBar);
+			}
+			MousePosY = m_MousePos.y;
+			ChatHeight = g_Config.m_ClChatHeightlimit;
+		}
+
+		if(Inside)
+			UI()->SetHotItem(&upBar);	
+		
+		float *pUpperFade = ButtonFade(&upBar, &upFade, 0.6f);
+		float UpperFadeVal = *pUpperFade/0.6f;
+		
+		vec4 UpperColor = mix(vec4(1.0f, 1.0f, 1.0f, 0.35f*m_ShowFade), vec4(0.5f, 0.5f, 0.5f, 0.55f*m_ShowFade), UpperFadeVal);
+
+		RenderTools()->DrawUIRect(&Header, UpperColor, CUI::CORNER_T, 5.0f);
+		UI()->DoLabel(&Header, "Chat", Header.h*0.8f, 0);
+
+		// draw footers
+		RenderTools()->DrawUIRect(&TypeBox, vec4(0,0,0,0.35f*m_ShowFade), CUI::CORNER_B, 5.0f);
+		
+		//RenderTools()->DrawUIRect(&Footer, vec4(1,1,1,0.35f*m_ShowFade), 0, 5.0f);
+		
+		
+		//View.HSplitTop(17.0f, &Header, &View);
+		//View.HSplitBottom(36.0f, &View, &TypeBox);
+		//View.HSplitBottom(17.0f+ExtraMenus, &View, &Footer);
+		
+		Footer.HSplitTop(17.0f, &d_Top, &Footer);
+				
+		static int upExtra = 0;
+		static float ExtraFade[3] = {0};
+		static float ExtraHeight = 0.0f;
+		int Inside2 = UI()->MouseInside(&d_Top);
+		
+		bool TempShown = false;
+		if(UI()->ActiveItem() == &upExtra)
+		{
+			if(!UI()->MouseButton(0))
+			{
+				UI()->SetActiveItem(0);
+			//	ChatMoving = true;			
+			}
+			ExtraMenus = ExtraHeight + MousePosY - m_MousePos.y;
+			ExtraMenus = clamp(ExtraMenus, 0.0f, 84.0f);
+			TempShown = true;
+		}
+		else if(UI()->HotItem() == &upExtra)
+		{
+			if(UI()->MouseButton(0))
+			{
+				UI()->SetActiveItem(&upExtra);
+				//if(
+			}
+			MousePosY = m_MousePos.y;
+			ExtraHeight = ExtraMenus;
+		}
+		
+		if(!TempShown)
+		{
+			if(ExtraShown)
+			{
+				if(ExtraMenus <= 84.0f/4*3 && ExtraMenus > 0.0f)
+					ExtraMenus-=2;
+				else if(ExtraMenus > 84.0f/4*3 && ExtraMenus < 84.0f)
+					ExtraMenus+=2;
+			}
+			else
+			{
+				if(ExtraMenus <= 84.0f/4 && ExtraMenus > 0.0f)
+					ExtraMenus-=2;
+				else if(ExtraMenus > 84.0f/4 && ExtraMenus < 84.0f)
+					ExtraMenus+=2;
+			}
+		}
+		ExtraMenus = clamp(ExtraMenus, 0.0f, 84.0f);
+		if(ExtraMenus >= 84.0f)
+			ExtraShown = true;
+		else if(ExtraMenus <= 0.0f)
+			ExtraShown = false;
+			
+
+		if(Inside2)
+			UI()->SetHotItem(&upExtra);	
+		
+		float *pUpperFade2 = ButtonFade(&upExtra, &ExtraFade[0], 0.6f);
+		float UpperFadeVal2 = *pUpperFade2/0.6f;
+		
+		vec4 UpperColor2 = mix(vec4(1.0f, 1.0f, 1.0f, 0.35f*m_ShowFade), vec4(0.5f, 0.5f, 0.5f, 0.55f*m_ShowFade), UpperFadeVal2);
+
+		RenderTools()->DrawUIRect(&d_Top, UpperColor2, 0, 5.0f);
+		
+		if(ExtraMenus > 0.0f)
+		{
+		
+		
+		
+			Footer.HSplitBottom(17.0f, &d_Extra, &d_Bottom);
+			RenderTools()->DrawUIRect(&d_Bottom, vec4(1,1,1,0.35f*m_ShowFade), 0, 5.0f);
+		
+		
+		
+		
+		
+		
+		}
+/* 		Footer.VSplitLeft(10.0f, 0, &Footer);
+		
+		if(m_Mode == MODE_ALL)
+			UI()->DoLabel(&Footer, Localize("All"), Footer.h*0.8f, 0);
+		else if(m_Mode == MODE_TEAM)
+			UI()->DoLabel(&Footer, Localize("Team"), Footer.h*0.8f, 0);
+		else if(m_Mode != MODE_NONE)
+			UI()->DoLabel(&Footer, Localize("Chat"), Footer.h*0.8f, 0); */
+
+		// background
+		RenderTools()->DrawUIRect(&View, vec4(0,0,0,0.25f*m_ShowFade), 0, 0);
+	}
+	else
+	{
+		ExtraMenus = 0.0f;
+	}
+
 	if(m_Mode != MODE_NONE)
 	{
 		// render chat input
 		CTextCursor Cursor;
-		TextRender()->SetCursor(&Cursor, x, y, 8.0f, TEXTFLAG_RENDER);
-		Cursor.m_LineWidth = Width-190.0f;
+		TextRender()->SetCursor(&Cursor, TypeBox.x, TypeBox.y, 14.0f, TEXTFLAG_RENDER);
+		Cursor.m_LineWidth = TypeBox.w;
 		Cursor.m_MaxLines = 2;
-
-		if(m_Mode == MODE_ALL)
-			TextRender()->TextEx(&Cursor, Localize("All"), -1);
-		else if(m_Mode == MODE_TEAM)
-			TextRender()->TextEx(&Cursor, Localize("Team"), -1);
-		else
-			TextRender()->TextEx(&Cursor, Localize("Chat"), -1);
-
-		TextRender()->TextEx(&Cursor, ": ", -1);
 
 		// check if the visible text has to be moved
 		if(m_InputUpdate)
@@ -470,45 +793,100 @@ void CChat::OnRenderNew()
 		static float MarkerOffset = TextRender()->TextWidth(0, 8.0f, "|", -1)/3;
 		CTextCursor Marker = Cursor;
 		Marker.m_X -= MarkerOffset;
-		TextRender()->TextEx(&Marker, "|", -1);
+		if((2*time_get()/time_freq()) % 2)	// make it blink
+			TextRender()->TextEx(&Marker, "|", -1);
 		TextRender()->TextEx(&Cursor, m_Input.GetString()+m_Input.GetCursorOffset(), -1);
 	}
 
-	y -= 8.0f;
 
+	UI()->ClipEnable(&View);
+	
+	int x = View.x;
+	//int Temp
+	int y = TypeBox.y - 17.0f; // View.y + View.h;// - ChatY;
+	int TempY = y - 10.0f;
+	
 	int64 Now = time_get();
-	float LineWidth = m_pClient->m_pScoreboard->Active() ? 90.0f : 200.0f;
-	float HeightLimit = m_pClient->m_pScoreboard->Active() ? 230.0f : m_Show ? 50.0f : 200.0f;
+	float LineWidth = View.w;//m_pClient->m_pScoreboard->Active() ? 90.0f : 200.0f;
+	float HeightLimit = View.y;//m_pClient->m_pScoreboard->Active() ? 230.0f : m_Show ? 50.0f : 200.0f;
 	float Begin = x;
-	float FontSize = 6.0f;
+	float FontSize = 14.0f;
 	CTextCursor Cursor;
 	int OffsetType = m_pClient->m_pScoreboard->Active() ? 1 : 0;
 	for(int i = 0; i < MAX_LINES; i++)
 	{
 		int r = ((m_CurrentLine-i)+MAX_LINES)%MAX_LINES;
-		if(Now > m_aLines[r].m_Time+16*time_freq() && !m_Show)
-			break;
+		int r_prev = ((m_CurrentLine-i-1)+MAX_LINES)%MAX_LINES;
 
 		// get the y offset (calculate it if we haven't done that yet)
-		if(m_aLines[r].m_YOffset[OffsetType] < 0.0f)
+		if(m_aLines[r].m_YNew[OffsetType] < 0.0f)
 		{
 			TextRender()->SetCursor(&Cursor, Begin, 0.0f, FontSize, 0);
 			Cursor.m_LineWidth = LineWidth;
 			TextRender()->TextEx(&Cursor, m_aLines[r].m_aName, -1);
 			TextRender()->TextEx(&Cursor, m_aLines[r].m_aText, -1);
-			m_aLines[r].m_YOffset[OffsetType] = Cursor.m_Y + Cursor.m_FontSize;
+			m_aLines[r].m_YOld[OffsetType] = y; 
+			m_aLines[r].m_YNew[OffsetType] = Cursor.m_Y + Cursor.m_FontSize;
 		}
-		y -= m_aLines[r].m_YOffset[OffsetType];
 
+		TempY -= m_aLines[r].m_YNew[OffsetType];
+		
+		if(m_aLines[r_prev].m_YNew[OffsetType] >= 0.0f && i != MAX_LINES - 1)
+		{
+			if(m_aLines[r].m_YOld[OffsetType] < m_aLines[r_prev].m_YOld[OffsetType] + m_aLines[r_prev].m_YNew[OffsetType])
+				continue;
+		}
+		if(m_aLines[r].m_YOld[OffsetType] > TempY)
+		{
+			m_aLines[r].m_YOld[OffsetType] --;
+		}
+		else if(m_aLines[r].m_YOld[OffsetType] < TempY)
+		{
+			m_aLines[r].m_YOld[OffsetType] ++;
+		}
+		
+		if(!m_Show && m_aLines[r].m_Time+3*time_freq() < Now)
+		{
+			if(m_aLines[r].m_Blend > 0.0f)
+				m_aLines[r].m_Blend -= 1.0f*Client()->RenderFrameTime()*2.0f;
+			if(m_aLines[r].m_Blend < 0.0f)
+				m_aLines[r].m_Blend = 0.0f;
+		}
+		else
+		{
+			if(m_aLines[r].m_Blend < 1.0f)
+				m_aLines[r].m_Blend += 1.0f*Client()->RenderFrameTime()*2.0f;
+			if(m_aLines[r].m_Blend > 1.0f)
+				m_aLines[r].m_Blend = 1.0f;
+		}
+		
 		// cut off if msgs waste too much space
-		if(y < HeightLimit)
-			break;
-
-		float Blend = Now > m_aLines[r].m_Time+14*time_freq() && !m_Show ? 1.0f-(Now-m_aLines[r].m_Time-14*time_freq())/(2.0f*time_freq()) : 1.0f;
-
+		if(m_aLines[r].m_YOld[OffsetType] + m_aLines[r].m_YNew[OffsetType] + 10.0f < HeightLimit)
+			continue;
+		
+		if(ChatMoving && m_aLines[r_prev].m_YOld[OffsetType] + m_aLines[r_prev].m_YNew[OffsetType] + 10.0f < HeightLimit)
+		{
+			if((int)(Header.y + Header.h - y - 8.0f) % 14 != 0)
+				g_Config.m_ClChatHeightlimit++;
+			if((int)(Header.y + Header.h - y - 8.0f) % 14 == 0)
+				ChatMoving = false;
+		}
+		
+		float Blend = m_aLines[r].m_Blend;
+		
 		// reset the cursor
-		TextRender()->SetCursor(&Cursor, Begin, y, FontSize, TEXTFLAG_RENDER);
+		TextRender()->SetCursor(&Cursor, Begin, m_aLines[r].m_YOld[OffsetType], FontSize, TEXTFLAG_RENDER);
 		Cursor.m_LineWidth = LineWidth;
+
+		if(m_aLines[r].m_Tee.m_Texture != -1)
+		{
+			CTeeRenderInfo TeeInfo = m_aLines[r].m_Tee;
+			TeeInfo.m_Size = 20.0f;
+			TeeInfo.m_ColorBody.a = Blend;
+			TeeInfo.m_ColorFeet.a = Blend;
+			RenderTools()->RenderTee(CAnimState::GetIdle(), &TeeInfo, EMOTE_NORMAL, vec2(1.0f, 0.0f), vec2(Cursor.m_X+TeeInfo.m_Size/2, Cursor.m_Y+14.0f));
+			Cursor.m_X += 22.0f;
+		}
 
 		// render name
 		if(m_aLines[r].m_ClientID == -1)
@@ -535,11 +913,62 @@ void CChat::OnRenderNew()
 			TextRender()->TextColor(0.65f, 1.0f, 0.65f, Blend); // team message
 		else
 			TextRender()->TextColor(1.0f, 1.0f, 1.0f, Blend);
-
-		TextRender()->TextEx(&Cursor, m_aLines[r].m_aText, -1);
+		
+		TextRender()->TextEx(&Cursor, m_aLines[r].m_aText, -1);		
 	}
+		
+	TextRender()->TextColor(1.0f, 1.0f, 1.0f, 1.0f); 
+	
+	UI()->ClipDisable();
+	
+	
+	if(m_Show || m_Mode != MODE_NONE)
+	{
+		float RowHeight = 24.0f;
+		// do the scrollbar
+		static int s_ScrollBar = 0;
+		static float s_ScrollValue = 1.0f;
+		static float s_FadeValue[2] = {0};
 
-	TextRender()->TextColor(1.0f, 1.0f, 1.0f, 1.0f);
+		int NumViewable = (int)(View.h/RowHeight) + 1;
+		int Num = MAX_LINES-NumViewable+1;
+		if(Num < 0)
+			Num = 0;
+		if(Num > 0)
+		{
+			if(Input()->KeyPresses(KEY_MOUSE_WHEEL_UP) && UI()->MouseInside(&View))
+				s_ScrollValue -= 3.0f/Num;
+			if(Input()->KeyPresses(KEY_MOUSE_WHEEL_DOWN) && UI()->MouseInside(&View))
+				s_ScrollValue += 3.0f/Num;
+
+			if(s_ScrollValue < 0.0f) s_ScrollValue = 0.0f;
+			if(s_ScrollValue > 1.0f) s_ScrollValue = 1.0f;
+		
+			// prepare the scroll
+			View.VSplitRight(15, &View, &Scroll);
+
+			
+			Scroll.HMargin(5.0f, &Scroll);
+			s_ScrollValue = DoScrollbarV(&s_ScrollBar, &s_FadeValue[0], &Scroll, s_ScrollValue);
+		}
+		
+		// update the ui
+		int Buttons = 0;
+		
+		if(Input()->KeyPressed(KEY_MOUSE_1)) Buttons |= 1;
+		if(Input()->KeyPressed(KEY_MOUSE_2)) Buttons |= 2;
+		if(Input()->KeyPressed(KEY_MOUSE_3)) Buttons |= 4;
+		
+		UI()->Update(m_MousePos.x,m_MousePos.y,m_MousePos.x*3.0f,m_MousePos.y*3.0f,Buttons);
+
+		// render cursor
+		Graphics()->TextureSet(g_pData->m_aImages[IMAGE_CURSOR].m_Id);
+		Graphics()->QuadsBegin();
+		Graphics()->SetColor(1,1,1,1);
+		IGraphics::CQuadItem QuadItem(m_MousePos.x, m_MousePos.y, 24, 24);
+		Graphics()->QuadsDrawTL(&QuadItem, 1);
+		Graphics()->QuadsEnd();
+	}	
 }
 
 void CChat::OnRender()
@@ -636,15 +1065,15 @@ void CChat::OnRender()
 			break;
 
 		// get the y offset (calculate it if we haven't done that yet)
-		if(m_aLines[r].m_YOffset[OffsetType] < 0.0f)
+		if(m_aLines[r].m_YNew[OffsetType] < 0.0f)
 		{
 			TextRender()->SetCursor(&Cursor, Begin, 0.0f, FontSize, 0);
 			Cursor.m_LineWidth = LineWidth;
 			TextRender()->TextEx(&Cursor, m_aLines[r].m_aName, -1);
 			TextRender()->TextEx(&Cursor, m_aLines[r].m_aText, -1);
-			m_aLines[r].m_YOffset[OffsetType] = Cursor.m_Y + Cursor.m_FontSize;
+			m_aLines[r].m_YNew[OffsetType] = Cursor.m_Y + Cursor.m_FontSize;
 		}
-		y -= m_aLines[r].m_YOffset[OffsetType];
+		y -= m_aLines[r].m_YNew[OffsetType];
 
 		// cut off if msgs waste too much space
 		if(y < HeightLimit)

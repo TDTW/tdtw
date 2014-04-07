@@ -18,13 +18,16 @@ class CChat : public CComponent
 	struct CLine
 	{
 		int64 m_Time;
-		float m_YOffset[2];
+		float m_YNew[2];
+		float m_YOld[2];
 		int m_ClientID;
 		int m_Team;
 		int m_NameColor;
 		char m_aName[64];
 		char m_aText[512];
 		bool m_Highlighted;
+		float m_Blend;
+		CTeeRenderInfo m_Tee;
 	};
 
 	CLine m_aLines[MAX_LINES];
@@ -52,7 +55,9 @@ class CChat : public CComponent
 	char m_aCompletionBuffer[256];
 	int m_PlaceholderOffset;
 	int m_PlaceholderLength;
+	vec2 m_MousePos;
 
+	float ChatY;
 	struct CHistoryEntry
 	{
 		int m_Team;
@@ -65,6 +70,10 @@ class CChat : public CComponent
 	int64 m_aLastSoundPlayed[CHAT_NUM];
 
 	void OnRenderNew();
+	
+	float *ButtonFade(const void *pID, const void *pValue, float Seconds, int Checked=0);
+	float *ButtonFade(const void *pID, const void *pValue, const CUIRect *pRect, float Seconds);
+	float DoScrollbarV(const void *pID, const float *pFade, const CUIRect *pRect, float Current);
 	
 	static void ConSay(IConsole::IResult *pResult, void *pUserData);
 	static void ConSayTeam(IConsole::IResult *pResult, void *pUserData);
@@ -89,5 +98,7 @@ public:
 	virtual void OnRelease();
 	virtual void OnMessage(int MsgType, void *pRawMsg);
 	virtual bool OnInput(IInput::CEvent Event);
+	
+	virtual bool OnMouseMove(float x, float y);
 };
 #endif
