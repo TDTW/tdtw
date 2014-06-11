@@ -462,11 +462,14 @@ int CMenus::DoEditBox(void *pID, const void *pValueFade, const CUIRect *pRect, c
 	return ReturnValue;
 }
 
-float CMenus::DoScrollbarV(const void *pID, const float *pFade, const CUIRect *pRect, float Current)
+float CMenus::DoScrollbarV(const void *pID, const float *pFade, const CUIRect *pRect, float Current, int SizeSlider)
 {
 	CUIRect Handle;
 	static float OffsetY;
-	pRect->HSplitTop(33, &Handle, 0);
+	
+	if(SizeSlider < 33)
+		SizeSlider = 33;
+	pRect->HSplitTop(SizeSlider, &Handle, 0);
 
 	Handle.y += (pRect->h-Handle.h)*Current;
 

@@ -322,8 +322,9 @@ void CMenus::UiDoListboxStart(const void *pID, const float *pFade, const CUIRect
 		// prepare the scroll
 		View.VSplitRight(15, &View, &Scroll);
 
-		Scroll.HMargin(5.0f, &Scroll);
-		gs_ListBoxScrollValue = DoScrollbarV(pID, pFade, &Scroll, gs_ListBoxScrollValue);
+		//Scroll.HMargin(5.0f, &Scroll);
+		int SizeSlider = View.h * (View.h / ((Num + NumViewable - 1) * gs_ListBoxRowHeight));				
+		gs_ListBoxScrollValue = DoScrollbarV(pID, pFade, &Scroll, gs_ListBoxScrollValue, SizeSlider);
 	}
 
 	// the list

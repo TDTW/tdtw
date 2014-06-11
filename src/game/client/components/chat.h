@@ -73,7 +73,7 @@ class CChat : public CComponent
 	
 	float *ButtonFade(const void *pID, const void *pValue, float Seconds, int Checked=0);
 	float *ButtonFade(const void *pID, const void *pValue, const CUIRect *pRect, float Seconds);
-	float DoScrollbarV(const void *pID, const float *pFade, const CUIRect *pRect, float Current);
+	float DoScrollbarV(const void *pID, const float *pFade, const CUIRect *pRect, float Current, int SizeSlider = 33);
 	
 	static void ConSay(IConsole::IResult *pResult, void *pUserData);
 	static void ConSayTeam(IConsole::IResult *pResult, void *pUserData);

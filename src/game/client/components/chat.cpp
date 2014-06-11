@@ -487,11 +487,13 @@ float *CChat::ButtonFade(const void *pID, const void *pValueFade, const CUIRect 
 	return pFade;
 }
 
-float CChat::DoScrollbarV(const void *pID, const float *pFade, const CUIRect *pRect, float Current)
+float CChat::DoScrollbarV(const void *pID, const float *pFade, const CUIRect *pRect, float Current, int SizeSlider)
 {
 	CUIRect Handle;
 	static float OffsetY;
-	pRect->HSplitTop(33, &Handle, 0);
+	if(SizeSlider < 33)
+		SizeSlider = 33;
+	pRect->HSplitTop(SizeSlider, &Handle, 0);
 
 	Handle.y += (pRect->h-Handle.h)*Current;
 
@@ -948,8 +950,9 @@ void CChat::OnRenderNew()
 			View.VSplitRight(15, &View, &Scroll);
 
 			
-			Scroll.HMargin(5.0f, &Scroll);
-			s_ScrollValue = DoScrollbarV(&s_ScrollBar, &s_FadeValue[0], &Scroll, s_ScrollValue);
+			//Scroll.HMargin(5.0f, &Scroll);
+			int SizeSlider = View.h * (View.h / ((Num + NumViewable - 1) * RowHeight));	
+			s_ScrollValue = DoScrollbarV(&s_ScrollBar, &s_FadeValue[0], &Scroll, s_ScrollValue, SizeSlider);
 		}
 		
 		// update the ui

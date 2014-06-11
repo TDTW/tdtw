@@ -152,8 +152,9 @@ void CMenus::RenderServerbrowserServerList(CUIRect View)
 	{
 		View.VSplitRight(15, &View, &Scroll);
 		static float s_FadeValue[2] = {0};
-		Scroll.HMargin(5.0f, &Scroll);
-		s_ScrollValue = DoScrollbarV(&s_ScrollBar, &s_FadeValue[0], &Scroll, s_ScrollValue);
+		//Scroll.HMargin(5.0f, &Scroll);
+		int SizeSlider = View.h * (View.h / (NumServers * s_aCols[0].m_Rect.h));	
+		s_ScrollValue = DoScrollbarV(&s_ScrollBar, &s_FadeValue[0], &Scroll, s_ScrollValue, SizeSlider);
 
 		if(m_ScrollOffset)
 		{
