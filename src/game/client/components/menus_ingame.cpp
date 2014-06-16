@@ -501,7 +501,7 @@ void CMenus::RenderServerControl(CUIRect MainView)
 	static int s_ControlPage = 0;
 
 	// render background
-	CUIRect Bottom, Extended, TabBar, Button;
+	CUIRect Bottom, Extended, TabBar, Button, Temp3;
 	MainView.HSplitTop(20.0f, &Bottom, &MainView);
 	RenderTools()->DrawUIRect(&Bottom, ms_ColorTabbarActive, CUI::CORNER_T, 10.0f);
 	MainView.HSplitTop(20.0f, &TabBar, &MainView);
@@ -511,16 +511,21 @@ void CMenus::RenderServerControl(CUIRect MainView)
 
 	// tab bar
 	{
-		TabBar.VSplitLeft(TabBar.w/3, &Button, &TabBar);
+		float Temp = TabBar.w/3-10.0f;
+		TabBar.VSplitLeft(Temp, &Button, &TabBar);
+		TabBar.VSplitLeft(20.0f, &Temp3, &TabBar);
+		RenderTools()->DrawUIRect(&Temp3, ms_ColorTabbarInactive, CUI::CORNER_T, 0.0f);
 		static int s_Button0 = 0;
 		if(DoButton_MenuTab(&s_Button0, Localize("Change settings"), s_ControlPage == 0, &Button, 0))
 			s_ControlPage = 0;
 
-		TabBar.VSplitMid(&Button, &TabBar);
+		TabBar.VSplitLeft(Temp, &Button, &TabBar);
+		TabBar.VSplitLeft(20.0f, &Temp3, &TabBar);
+		RenderTools()->DrawUIRect(&Temp3, ms_ColorTabbarInactive, CUI::CORNER_T, 0.0f);
 		static int s_Button1 = 0;
 		if(DoButton_MenuTab(&s_Button1, Localize("Kick player"), s_ControlPage == 1, &Button, 0))
 			s_ControlPage = 1;
-
+			
 		static int s_Button2 = 0;
 		if(DoButton_MenuTab(&s_Button2, Localize("Move player to spectators"), s_ControlPage == 2, &TabBar, 0))
 			s_ControlPage = 2;
