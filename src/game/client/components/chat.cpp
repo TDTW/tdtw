@@ -582,11 +582,7 @@ void CChat::OnRenderNew()
 	Screen.HSplitBottom(400.0f-g_Config.m_ClChatHeightlimit/* -ExtraMenus */, 0, &Screen);
 	Screen.VSplitLeft(300.0f*Graphics()->ScreenAspect(), &Screen, 0);
 	Screen.Margin(10.0f, &Screen);
-	
-	// clamp mouse position to selector area
-	// m_MousePos.x = clamp(m_MousePos.x, Screen.x, Screen.x+Screen.w);
-	// m_MousePos.y = clamp(m_MousePos.y, Screen.y-5, Screen.y+Screen.h);
-		
+			
 	float Width = Screen.w;
 	float Height = Screen.h;
 	
@@ -823,7 +819,9 @@ void CChat::OnRenderNew()
 		// get the y offset (calculate it if we haven't done that yet)
 		if(m_aLines[r].m_YNew[OffsetType] < 0.0f)
 		{
-			TextRender()->SetCursor(&Cursor, Begin, 0.0f, FontSize, 0);
+			TextRender()->SetCursor(&Cursor, Begin, 0.0f, FontSize, 0);				
+			if(m_aLines[r].m_Tee.m_Texture != -1)
+				Cursor.m_X += 22.0f;
 			Cursor.m_LineWidth = LineWidth;
 			TextRender()->TextEx(&Cursor, m_aLines[r].m_aName, -1);
 			TextRender()->TextEx(&Cursor, m_aLines[r].m_aText, -1);
