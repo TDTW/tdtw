@@ -799,13 +799,16 @@ void CChat::OnRenderNew()
 
 	UI()->ClipEnable(&View);
 	
+	static float s_ScrollValue = 1.0f;
+	int ScrollPos = (1.0f-s_ScrollValue)*View.y;
 	int x = View.x;
 	//int Temp
 	int y = TypeBox.y - 17.0f; // View.y + View.h;// - ChatY;
+	
 	int TempY = y - 10.0f;
 	
 	int64 Now = time_get();
-	float LineWidth = View.w;//m_pClient->m_pScoreboard->Active() ? 90.0f : 200.0f;
+	float LineWidth = View.w - 15.0f;//m_pClient->m_pScoreboard->Active() ? 90.0f : 200.0f;
 	float HeightLimit = View.y;//m_pClient->m_pScoreboard->Active() ? 230.0f : m_Show ? 50.0f : 200.0f;
 	float Begin = x;
 	float FontSize = 14.0f;
@@ -875,7 +878,7 @@ void CChat::OnRenderNew()
 		float Blend = m_aLines[r].m_Blend;
 		
 		// reset the cursor
-		TextRender()->SetCursor(&Cursor, Begin, m_aLines[r].m_YOld[OffsetType], FontSize, TEXTFLAG_RENDER);
+		TextRender()->SetCursor(&Cursor, Begin, m_aLines[r].m_YOld[OffsetType]+ScrollPos, FontSize, TEXTFLAG_RENDER);
 		Cursor.m_LineWidth = LineWidth;
 
 		if(m_aLines[r].m_Tee.m_Texture != -1)
@@ -927,7 +930,6 @@ void CChat::OnRenderNew()
 		float RowHeight = 24.0f;
 		// do the scrollbar
 		static int s_ScrollBar = 0;
-		static float s_ScrollValue = 1.0f;
 		static float s_FadeValue[2] = {0};
 
 		int NumViewable = (int)(View.h/RowHeight) + 1;
@@ -945,7 +947,7 @@ void CChat::OnRenderNew()
 			if(s_ScrollValue > 1.0f) s_ScrollValue = 1.0f;
 		
 			// prepare the scroll
-			View.VSplitRight(15, &View, &Scroll);
+			View.VSplitRight(15.0f, &View, &Scroll);
 
 			
 			//Scroll.HMargin(5.0f, &Scroll);
