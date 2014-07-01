@@ -23,3 +23,7 @@ versionsrv*
 *.db
 *.bat
 *.rar
+/Debug/*.log
+/*.opensdf
+/*.sdf
+/*.suo
