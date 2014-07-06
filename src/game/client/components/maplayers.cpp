@@ -156,6 +156,7 @@ void CMapLayers::OnRender()
 		for(int l = 0; l < pGroup->m_NumLayers; l++)
 		{
 			CMapItemLayer *pTempLayer = m_pLayers->GetLayer(pGroup->m_StartLayer+l);
+			// TODO: проверить краш, pTempLayer == NULL (m_NumLayers забивается мусором)
 			if(pTempLayer->m_Type != LAYERTYPE_QUADS)
 				IsAllQuads = false;
 		}
