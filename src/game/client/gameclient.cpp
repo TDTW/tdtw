@@ -50,6 +50,7 @@
 #include "components/sounds.h"
 #include "components/spectator.h"
 #include "components/voting.h"
+#include <base/tl/base.h>
 
 CGameClient g_GameClient;
 
@@ -1183,18 +1184,9 @@ void CGameClient::ConKill(IConsole::IResult *pResult, void *pUserData)
 
 void CGameClient::ConDynCameraToggle(IConsole::IResult *pResult, void *pUserData)
 {
-	if(g_Config.m_ClMouseDeadzone == 300 && g_Config.m_ClMouseFollowfactor == 60 && g_Config.m_ClMouseMaxDistance == 800)
-	{
-		g_Config.m_ClMouseDeadzone = 0;
-		g_Config.m_ClMouseMaxDistance = 400;
-		g_Config.m_ClMouseFollowfactor = 0;
-	}
-	else
-	{
-		g_Config.m_ClMouseDeadzone = 300;
-		g_Config.m_ClMouseMaxDistance = 800;
-		g_Config.m_ClMouseFollowfactor = 60;
-	} /*TODO: Changeable variables here*/
+	swap(g_Config.m_ClMouseDeadzone, g_Config.m_ClMouseDeadzone2);
+	swap(g_Config.m_ClMouseMaxDistance, g_Config.m_ClMouseMaxDistance2);
+	swap(g_Config.m_ClMouseFollowfactor, g_Config.m_ClMouseFollowfactor2);
 }
 
 void CGameClient::ConchainSpecialInfoupdate(IConsole::IResult *pResult, void *pUserData, IConsole::FCommandCallback pfnCallback, void *pCallbackUserData)
