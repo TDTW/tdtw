@@ -78,18 +78,9 @@ void CMenus::RenderSettingsGame(CUIRect MainView)
 		static int s_DynamicCameraButton = 0;
 		if(DoButton_CheckBox(&s_DynamicCameraButton, &s_SettingsFade[0], Localize("Dynamic Camera"), g_Config.m_ClMouseDeadzone != 0, &Button))
 		{
-			if(g_Config.m_ClMouseDeadzone)
-			{
-				g_Config.m_ClMouseFollowfactor = 0;
-				g_Config.m_ClMouseMaxDistance = 400;
-				g_Config.m_ClMouseDeadzone = 0;
-			}
-			else
-			{
-				g_Config.m_ClMouseFollowfactor = 60;
-				g_Config.m_ClMouseMaxDistance = 1000;
-				g_Config.m_ClMouseDeadzone = 300;
-			}
+			swap(g_Config.m_ClMouseFollowfactor, g_Config.m_ClMouseFollowfactor2);
+			swap(g_Config.m_ClMouseMaxDistance, g_Config.m_ClMouseMaxDistance2);
+			swap(g_Config.m_ClMouseDeadzone, g_Config.m_ClMouseDeadzone2);
 		}
 
 		// weapon pickup
