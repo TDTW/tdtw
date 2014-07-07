@@ -403,7 +403,14 @@ void CMenus::RenderServerControlServer(CUIRect MainView)
 		pOption = pOption->m_pNext;
 	}
 
-	m_CallvoteSelectedOption = UiDoListboxEnd(&s_ScrollValue, 0);
+	bool b_Activated = false;
+	m_CallvoteSelectedOption = UiDoListboxEnd(&s_ScrollValue, &b_Activated);
+
+	if (b_Activated)
+	{
+		m_pClient->m_pVoting->CallvoteOption(m_CallvoteSelectedOption, m_aCallvoteReason);
+		m_aCallvoteReason[0] = 0;
+	}		
 }
 
 void CMenus::RenderServerControlKick(CUIRect MainView, bool FilterSpectators)
@@ -447,8 +454,32 @@ void CMenus::RenderServerControlKick(CUIRect MainView, bool FilterSpectators)
 		}
 	}
 
-	Selected = UiDoListboxEnd(&s_ScrollValue, 0);
+	bool b_Activated = false;
+	Selected = UiDoListboxEnd(&s_ScrollValue, &b_Activated);
 	m_CallvoteSelectedPlayer = Selected != -1 ? aPlayerIDs[Selected] : -1;
+	
+	if (b_Activated)
+	{
+		if (!FilterSpectators)
+		{
+			if (m_CallvoteSelectedPlayer >= 0 && m_CallvoteSelectedPlayer < MAX_CLIENTS &&
+				m_pClient->m_Snap.m_paPlayerInfos[m_CallvoteSelectedPlayer])
+			{
+				m_pClient->m_pVoting->CallvoteKick(m_CallvoteSelectedPlayer, m_aCallvoteReason);
+				SetActive(false);
+			}
+		}
+		else
+		{
+			if (m_CallvoteSelectedPlayer >= 0 && m_CallvoteSelectedPlayer < MAX_CLIENTS &&
+				m_pClient->m_Snap.m_paPlayerInfos[m_CallvoteSelectedPlayer])
+			{
+				m_pClient->m_pVoting->CallvoteSpectate(m_CallvoteSelectedPlayer, m_aCallvoteReason);
+				SetActive(false);
+			}
+		}
+		m_aCallvoteReason[0] = 0;
+	}
 }
 
 void CMenus::RenderIngameServerbrowser(CUIRect MainView)
@@ -576,7 +607,7 @@ void CMenus::RenderServerControl(CUIRect MainView)
 		// render kick reason
 		CUIRect Reason;
 		Bottom.VSplitRight(40.0f, &Bottom, 0);
-		Bottom.VSplitRight(160.0f, &Bottom, &Reason);
+		Bottom.VSplitRight(260.0f, &Bottom, &Reason);
 		Reason.HSplitTop(5.0f, 0, &Reason);
 		const char *pLabel = Localize("Reason:");
 		UI()->DoLabelScaled(&Reason, pLabel, 14.0f, -1);
