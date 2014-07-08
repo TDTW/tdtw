@@ -15,6 +15,14 @@ inline T clamp(T val, T min, T max)
 	return val;
 }
 
+template <typename T>
+bool inrange(T val, T min, T max)
+{
+	if (val >= min && val <= max)
+		return true;
+	return false;
+}
+
 inline float sign(float f)
 {
 	return f<0.0f?-1.0f:1.0f;

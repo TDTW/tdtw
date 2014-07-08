@@ -1,8 +1,12 @@
 /* (c) Magnus Auvinen. See licence.txt in the root of the distribution for more information. */
 /* If you are missing that file, acquire a complete release at teeworlds.com.                */
+#include <SDL.h>
+
 #include <base/math.h>
 
 #include <engine/shared/config.h>
+#include <engine/graphics.h>
+#include <engine/textrender.h>
 
 #include <game/collision.h>
 #include <game/client/gameclient.h>
@@ -13,9 +17,68 @@
 
 #include "controls.h"
 
+enum 
+{
+	LEFT_JOYSTICK_X = 0, LEFT_JOYSTICK_Y = 1,
+	RIGHT_JOYSTICK_X = 2, RIGHT_JOYSTICK_Y = 3,
+	SECOND_RIGHT_JOYSTICK_X = 20, SECOND_RIGHT_JOYSTICK_Y = 21,
+	NUM_JOYSTICK_AXES = 22
+};
+
+enum 
+{
+	KJ_TRIANGLE = 0, KJ_BUTTON1 = 0,
+	KJ_ROUND = 1, KJ_BUTTON2 = 1,
+	KJ_CROSS = 2, KJ_BUTTON3 = 2,
+	KJ_SQUARE = 3, KJ_BUTTON4 = 3,
+	KJ_TRIGGER_LEFT_UP,
+	KJ_TRIGGER_RIGHT_UP,
+	KJ_TRIGGER_LEFT_DOWN,
+	KJ_TRIGGER_RIGHT_DOWN,
+	KJ_SELECT,
+	KJ_START,
+	KJ_STICK_LEFT,
+	KJ_STICK_RIGHT,
+	KJ_NUM
+};
+
+
 CControls::CControls()
 {
 	mem_zero(&m_LastData, sizeof(m_LastData));
+
+	SDL_Init(SDL_INIT_JOYSTICK);
+	m_Joystick = SDL_JoystickOpen(0);
+
+	if (m_Joystick)
+	{
+		int temp = SDL_JoystickNumAxes(m_Joystick);
+		switch (temp)
+		{
+		case 4:
+			b_StickAim = true;
+		case 2:
+			b_StickRun = true;
+			break;
+		case 0:
+			b_StickAim = false;
+			b_StickRun = false;
+			break;
+		}
+	}
+	else
+	{
+		SDL_JoystickClose(m_Joystick);
+		b_StickAim = false;
+		b_StickRun = false;
+		m_Joystick = NULL;
+	}
+	
+	SDL_JoystickEventState(SDL_QUERY);
+	
+	m_UsingGamepad = false;
+	if (getenv("OUYA"))
+		m_UsingGamepad = true;
 }
 
 void CControls::OnReset()
@@ -31,6 +94,14 @@ void CControls::OnReset()
 
 	m_InputDirectionLeft = 0;
 	m_InputDirectionRight = 0;
+
+	m_JoystickFirePressed = false;
+	m_JoystickRunPressed = false;
+	m_JoystickTapTime = 0;
+	m_OldMouseX = m_OldMouseY = 0.0f;
+
+	m_NextButton = false;
+	m_PrevButton = false;
 }
 
 void CControls::OnRelease()
@@ -40,8 +111,10 @@ void CControls::OnRelease()
 
 void CControls::OnPlayerDeath()
 {
-	for (int i = 0; i < 5; i++) m_pClient->m_AmmoCount[i] = -2;
+	for (int i = 0; i < 5; i++)
+		m_pClient->m_AmmoCount[i] = -2;
 	m_LastData.m_WantedWeapon = m_InputData.m_WantedWeapon = 0;
+	m_JoystickTapTime = 0; // Do not launch hook on first tap
 }
 
 static void ConKeyInputState(IConsole::IResult *pResult, void *pUserData)
@@ -124,6 +197,9 @@ int CControls::SnapInput(int *pData)
 	if(m_pClient->m_pScoreboard->Active())
 		m_InputData.m_PlayerFlags |= PLAYERFLAG_SCOREBOARD;
 
+	if (m_InputData.m_PlayerFlags != PLAYERFLAG_PLAYING)
+		m_JoystickTapTime = 0; // Do not launch hook on first tap
+
 	if(m_LastData.m_PlayerFlags != m_InputData.m_PlayerFlags)
 		Send = true;
 
@@ -200,6 +276,100 @@ int CControls::SnapInput(int *pData)
 
 void CControls::OnRender()
 {
+	enum 
+	{
+		JOYSTICK_DEAD_ZONE = 32767 / 8,
+	};
+
+	int64 CurTime = time_get();
+
+	if (m_Joystick)
+	{
+		int RunX = -1, RunY = -1, AimX = -1, AimY = -1;
+		bool RunPressed = false, AimPressed = false;
+
+		// Get input from left joystick
+		if (b_StickRun)
+		{
+			RunX = SDL_JoystickGetAxis(m_Joystick, LEFT_JOYSTICK_X);
+			RunY = SDL_JoystickGetAxis(m_Joystick, LEFT_JOYSTICK_Y);
+			RunPressed = (!inrange(RunX, -JOYSTICK_DEAD_ZONE, +JOYSTICK_DEAD_ZONE) ||
+							!inrange(RunY, -JOYSTICK_DEAD_ZONE, +JOYSTICK_DEAD_ZONE));//(RunX != -1 || RunY != -1); 
+		}
+		// Get input from right joystick
+		if (b_StickAim)
+		{
+			AimX = SDL_JoystickGetAxis(m_Joystick, RIGHT_JOYSTICK_X);
+			AimY = SDL_JoystickGetAxis(m_Joystick, RIGHT_JOYSTICK_Y);
+			AimPressed = (!inrange(AimX, -JOYSTICK_DEAD_ZONE, +JOYSTICK_DEAD_ZONE) ||
+							!inrange(AimY, -JOYSTICK_DEAD_ZONE, +JOYSTICK_DEAD_ZONE));//(AimX != -1 || AimY != -1); 
+		}
+
+
+		m_InputData.m_Jump = (RunY < -JOYSTICK_DEAD_ZONE * 2);
+
+		if (m_JoystickRunPressed != RunPressed)
+		{
+			m_JoystickTapTime = CurTime;
+		}
+		m_JoystickRunPressed = RunPressed;
+
+		if (RunPressed)
+		{
+			m_InputDirectionLeft = (RunX < -JOYSTICK_DEAD_ZONE);
+			m_InputDirectionRight = (RunX > JOYSTICK_DEAD_ZONE);
+		}
+
+		// Move 500ms in the same direction, to prevent speed bump when tapping
+		if (!RunPressed && m_JoystickTapTime + time_freq() / 2 > CurTime)
+		{
+			m_InputDirectionLeft = 0;
+			m_InputDirectionRight = 0;
+		}
+		
+		m_InputData.m_Hook = SDL_JoystickGetButton(m_Joystick, KJ_TRIGGER_RIGHT_DOWN);
+		
+		if (AimPressed)
+		{
+			m_MousePos = vec2(AimX / 30, AimY / 30);
+			ClampMousePos();
+		}
+		
+		bool ButtonAim = SDL_JoystickGetButton(m_Joystick, KJ_TRIGGER_RIGHT_UP);
+
+
+		if (ButtonAim != m_JoystickFirePressed)
+		{
+			if (ButtonAim)
+				Console()->ExecuteLineStroked(1, "+fire");
+			else
+				Console()->ExecuteLineStroked(0, "+fire");
+		}
+		m_JoystickFirePressed = ButtonAim;
+	}
+	
+	bool NextButton = SDL_JoystickGetButton(m_Joystick, KJ_TRIGGER_LEFT_UP);
+
+	if (NextButton != m_NextButton)
+	{
+		if (NextButton)
+			Console()->ExecuteLineStroked(1, "+nextweapon");
+		else
+			Console()->ExecuteLineStroked(0, "+nextweapon");
+	}
+	m_NextButton = NextButton;
+
+	bool PrevButton = SDL_JoystickGetButton(m_Joystick, KJ_TRIGGER_LEFT_DOWN);
+
+	if (PrevButton != m_PrevButton)
+	{
+		if (PrevButton)
+			Console()->ExecuteLineStroked(1, "+prevweapon");
+		else
+			Console()->ExecuteLineStroked(0, "+prevweapon");
+	}
+	m_PrevButton = PrevButton;
+
 	// update target pos
 	if(m_pClient->m_Snap.m_pGameInfoObj && !m_pClient->m_Snap.m_SpecInfo.m_Active)
 	{
