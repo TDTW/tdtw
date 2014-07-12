@@ -306,12 +306,12 @@ CClient::CClient() : m_DemoPlayer(&m_SnapshotDelta), m_DemoRecorder(&m_SnapshotD
 }
 
 // ----- send functions -----
-int CClient::SendMsg(CMsgPacker *pMsg, int Flags)
+int CClient::SendMsg(CMsgPacker *pMsg, int Flags, bool TDTW)
 {
-	return SendMsgEx(pMsg, Flags, false);
+	return SendMsgEx(pMsg, Flags, false, TDTW);
 }
 
-int CClient::SendMsgEx(CMsgPacker *pMsg, int Flags, bool System)
+int CClient::SendMsgEx(CMsgPacker *pMsg, int Flags, bool System, bool TDTW)
 {
 	CNetChunk Packet;
 
@@ -343,8 +343,13 @@ int CClient::SendMsgEx(CMsgPacker *pMsg, int Flags, bool System)
 			m_DemoRecorder.RecordMessage(Packet.m_pData, Packet.m_DataSize);
 	}
 
-	if(!(Flags&MSGFLAG_NOSEND))
-		m_NetClient.Send(&Packet);
+	if (!(Flags&MSGFLAG_NOSEND))
+	{
+		if (TDTW)
+			m_NetTdtw.Send(&Packet);
+		else
+			m_NetClient.Send(&Packet);
+	}
 	return 0;
 }
 
@@ -544,6 +549,26 @@ void CClient::Connect(const char *pAddress)
 
 	m_InputtimeMarginGraph.Init(-150.0f, 150.0f);
 	m_GametimeMarginGraph.Init(-150.0f, 150.0f);
+}
+
+void CClient::ConnectTdtw(const char *pAddress)
+{
+	int Port = 8000;
+
+	m_NetTdtw.Disconnect("Null");
+
+	m_pConsole->Print(IConsole::OUTPUT_LEVEL_STANDARD, "tdtw", "connecting to Tdtw Server");
+	
+	if (net_host_lookup(pAddress, &m_ServerTdtwAddress, m_NetTdtw.NetType()) != 0) // TODO: Change TDTW ServerIP
+	{
+		m_pConsole->Print(IConsole::OUTPUT_LEVEL_STANDARD, "tdtw", "could not find the address of Tdtw Server, connecting to localhost");
+		net_host_lookup("localhost", &m_ServerTdtwAddress, m_NetTdtw.NetType());
+	}
+
+	if (m_ServerTdtwAddress.port == 0)
+		m_ServerTdtwAddress.port = Port;
+	m_NetTdtw.Connect(&m_ServerTdtwAddress);
+	//SetState(IClient::STATE_CONNECTING);	// TODO: SetState TDTW
 }
 
 void CClient::DisconnectWithReason(const char *pReason)
@@ -1412,10 +1437,10 @@ void CClient::PumpNetwork()
 {
 	m_NetClient.Update();
 
-	if(State() != IClient::STATE_DEMOPLAYBACK)
+	if (State() != IClient::STATE_DEMOPLAYBACK)
 	{
 		// check for errors
-		if(State() != IClient::STATE_OFFLINE && State() != IClient::STATE_QUITING && m_NetClient.State() == NETSTATE_OFFLINE)
+		if (State() != IClient::STATE_OFFLINE && State() != IClient::STATE_QUITING && m_NetClient.State() == NETSTATE_OFFLINE)
 		{
 			SetState(IClient::STATE_OFFLINE);
 			Disconnect();
@@ -1425,7 +1450,7 @@ void CClient::PumpNetwork()
 		}
 
 		//
-		if(State() == IClient::STATE_CONNECTING && m_NetClient.State() == NETSTATE_ONLINE)
+		if (State() == IClient::STATE_CONNECTING && m_NetClient.State() == NETSTATE_ONLINE)
 		{
 			// we switched to online
 			m_pConsole->Print(IConsole::OUTPUT_LEVEL_STANDARD, "client", "connected, sending info");
@@ -1436,12 +1461,29 @@ void CClient::PumpNetwork()
 
 	// process packets
 	CNetChunk Packet;
-	while(m_NetClient.Recv(&Packet))
+	while (m_NetClient.Recv(&Packet))
 	{
-		if(Packet.m_ClientID == -1)
+		if (Packet.m_ClientID == -1)
 			ProcessConnlessPacket(&Packet);
 		else
 			ProcessServerPacket(&Packet);
+	}
+}
+
+void CClient::PumpNetworkTdtw()
+{
+	m_NetTdtw.Update();
+
+	// process packets
+	CNetChunk Packet;
+	while (m_NetTdtw.Recv(&Packet))
+	{
+		// получение пакета, распаковка на переменные и дальнейшие действия по пакету
+/*
+		if (Packet.m_ClientID == -1)
+			ProcessConnlessPacket(&Packet);
+		else
+			ProcessServerPacket(&Packet);*/
 	}
 }
 
@@ -1644,6 +1686,7 @@ void CClient::Update()
 
 	// pump the network
 	PumpNetwork();
+	PumpNetworkTdtw();
 
 	// update the maser server registry
 	MasterServer()->Update();
@@ -1761,6 +1804,19 @@ void CClient::Run()
 		if(!m_NetClient.Open(BindAddr, 0))
 		{
 			dbg_msg("client", "couldn't open socket");
+			return;
+		}
+	}
+
+	// Open tdtw socket
+	{
+		NETADDR BindAddr;
+		mem_zero(&BindAddr, sizeof(BindAddr));
+		BindAddr.type = NETTYPE_ALL;
+
+		if (!m_NetClient.Open(BindAddr, 0))
+		{
+			dbg_msg("tdtw", "couldn't open socket");
 			return;
 		}
 	}

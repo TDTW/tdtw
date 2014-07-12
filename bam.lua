@@ -95,16 +95,35 @@ function ContentCompile(action, output)
 	AddDependency(output, Path("datasrc/datatypes.py"))
 	return output
 end
-
 -- Content Compile
+function  TdtwPyCompile(action, output)
+	output = Path(output)
+	AddJob(
+		output,
+		action .. " > " .. output,
+		--Script("datasrc/compile.py") .. "\" ".. Path(output) .. " " .. action
+		Script("datasrc/compile_tdtw.py") .. " " .. action .. " > " .. Path(output)
+	)
+	AddDependency(output, Path("datasrc/network_tdtw.py"))
+	AddDependency(output, Path("datasrc/compile_tdtw.py"))
+	AddDependency(output, Path("datasrc/datatypes.py"))
+
+	return output
+end
+-- Content TdtwPyCompile
+
 network_source = ContentCompile("network_source", "src/game/generated/protocol.cpp")
 network_header = ContentCompile("network_header", "src/game/generated/protocol.h")
+network_tdtw_source = TdtwPyCompile("network_tdtw_source", "src/game/generated/protocol_tdtw.cpp")
+network_tdtw_header = TdtwPyCompile("network_tdtw_header", "src/game/generated/protocol_tdtw.h")
 client_content_source = ContentCompile("client_content_source", "src/game/generated/client_data.cpp")
 client_content_header = ContentCompile("client_content_header", "src/game/generated/client_data.h")
 server_content_source = ContentCompile("server_content_source", "src/game/generated/server_data.cpp")
 server_content_header = ContentCompile("server_content_header", "src/game/generated/server_data.h")
 
+
 AddDependency(network_source, network_header)
+AddDependency(network_tdtw_source, network_tdtw_header)
 AddDependency(client_content_source, client_content_header)
 AddDependency(server_content_source, server_content_header)
 
@@ -238,7 +257,8 @@ function build(settings)
 
 	versionserver = Compile(settings, Collect("src/versionsrv/*.cpp"))
 	masterserver = Compile(settings, Collect("src/mastersrv/*.cpp"))
-	game_shared = Compile(settings, Collect("src/game/*.cpp"), nethash, network_source)
+	tdtwserver = Compile(settings, Collect("src/tdtwsrv/*.cpp"))
+	game_shared = Compile(settings, Collect("src/game/*.cpp"), nethash, network_source, network_tdtw_source)
 	game_client = Compile(settings, CollectRecursive("src/game/client/*.cpp"), client_content_source)
 	game_server = Compile(settings, CollectRecursive("src/game/server/*.cpp"), server_content_source)
 	game_editor = Compile(settings, Collect("src/game/editor/*.cpp"))
@@ -277,6 +297,7 @@ function build(settings)
 
 	masterserver_exe = Link(server_settings, "mastersrv", masterserver,
 		engine, zlib)
+	tdtwserver_exe = Link(server_settings, "tdtwsrv", tdtwserver, engine, zlib)
 
 	-- make targets
 	c = PseudoTarget("client".."_"..settings.config_name, client_exe, client_depends)
@@ -285,6 +306,7 @@ function build(settings)
 
 	v = PseudoTarget("versionserver".."_"..settings.config_name, versionserver_exe)
 	m = PseudoTarget("masterserver".."_"..settings.config_name, masterserver_exe)
+	ts = PseudoTarget("tdtwserver".."_"..settings.config_name, tdtwserver_exe)
 	t = PseudoTarget("tools".."_"..settings.config_name, tools)
 
 	all = PseudoTarget(settings.config_name, c, s, v, m, t)

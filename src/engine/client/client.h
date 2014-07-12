@@ -72,6 +72,7 @@ class CClient : public IClient, public CDemoPlayer::IListner
 	};
 
 	class CNetClient m_NetClient;
+	class CNetClient m_NetTdtw;
 	class CDemoPlayer m_DemoPlayer;
 	class CDemoRecorder m_DemoRecorder;
 	class CServerBrowser m_ServerBrowser;
@@ -91,6 +92,7 @@ class CClient : public IClient, public CDemoPlayer::IListner
 	int m_RenderFrames;
 
 	NETADDR m_ServerAddress;
+	NETADDR m_ServerTdtwAddress;
 	int m_WindowMustRefocus;
 	int m_SnapCrcErrors;
 	bool m_AutoScreenshotRecycle;
@@ -191,9 +193,9 @@ public:
 	CClient();
 
 	// ----- send functions -----
-	virtual int SendMsg(CMsgPacker *pMsg, int Flags);
+	virtual int SendMsg(CMsgPacker *pMsg, int Flags, bool TDTW = false);
 
-	int SendMsgEx(CMsgPacker *pMsg, int Flags, bool System=true);
+	int SendMsgEx(CMsgPacker *pMsg, int Flags, bool System = true, bool TDTW = false);
 	void SendInfo();
 	void SendEnterGame();
 	void SendReady();
@@ -225,6 +227,7 @@ public:
 	void OnEnterGame();
 	virtual void EnterGame();
 
+	virtual void ConnectTdtw(const char *pAddress);
 	virtual void Connect(const char *pAddress);
 	void DisconnectWithReason(const char *pReason);
 	virtual void Disconnect();
@@ -262,6 +265,7 @@ public:
 	virtual int MapDownloadTotalsize() { return m_MapdownloadTotalsize; }
 
 	void PumpNetwork();
+	void PumpNetworkTdtw();
 
 	virtual void OnDemoPlayerSnapshot(void *pData, int Size);
 	virtual void OnDemoPlayerMessage(void *pData, int Size);

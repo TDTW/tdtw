@@ -9,6 +9,14 @@
       <Configuration>Release</Configuration>
       <Platform>Win32</Platform>
     </ProjectConfiguration>
+    <ProjectConfiguration Include="Server(Debug)|Win32">
+      <Configuration>Server(Debug)</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="TDTWServer(Debug)|Win32">
+      <Configuration>TDTWServer(Debug)</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
   </ItemGroup>
   <PropertyGroup Label="Globals">
     <ProjectGuid>{6F723D2A-D0B7-4A7A-914D-B689F2BA2C58}</ProjectGuid>
@@ -16,6 +24,18 @@
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
+    <ConfigurationType>Makefile</ConfigurationType>
+    <UseDebugLibraries>true</UseDebugLibraries>
+    <PlatformToolset>v120</PlatformToolset>
+    <CharacterSet>MultiByte</CharacterSet>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Server(Debug)|Win32'" Label="Configuration">
+    <ConfigurationType>Makefile</ConfigurationType>
+    <UseDebugLibraries>true</UseDebugLibraries>
+    <PlatformToolset>v120</PlatformToolset>
+    <CharacterSet>MultiByte</CharacterSet>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='TDTWServer(Debug)|Win32'" Label="Configuration">
     <ConfigurationType>Makefile</ConfigurationType>
     <UseDebugLibraries>true</UseDebugLibraries>
     <PlatformToolset>v120</PlatformToolset>
@@ -34,16 +54,38 @@
   <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
   </ImportGroup>
+  <ImportGroup Condition="'$(Configuration)|$(Platform)'=='Server(Debug)|Win32'" Label="PropertySheets">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <ImportGroup Condition="'$(Configuration)|$(Platform)'=='TDTWServer(Debug)|Win32'" Label="PropertySheets">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
   <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
   </ImportGroup>
   <PropertyGroup Label="UserMacros" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <IncludePath>$(ProjectDir)/src/engine/external/zlib/;$(ProjectDir)/other/sdl/include/;$(ProjectDir)/src/;$(IncludePath)</IncludePath>
-    <NMakeBuildCommandLine>..\bam\bam client_debug</NMakeBuildCommandLine>
-    <NMakeReBuildCommandLine>..\bam\bam -c all
-..\bam\bam client_debug</NMakeReBuildCommandLine>
-    <NMakeCleanCommandLine>..\bam\bam -c all</NMakeCleanCommandLine>
+    <NMakeBuildCommandLine>.\bam\bam client_debug</NMakeBuildCommandLine>
+    <NMakeReBuildCommandLine>.\bam\bam -c all
+.\bam\bam client_debug</NMakeReBuildCommandLine>
+    <NMakeCleanCommandLine>.\bam\bam -c all</NMakeCleanCommandLine>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Server(Debug)|Win32'">
+    <IncludePath>$(ProjectDir)/src/engine/external/zlib/;$(ProjectDir)/other/sdl/include/;$(ProjectDir)/src/;$(IncludePath)</IncludePath>
+    <NMakeBuildCommandLine>.\bam\bam server_debug</NMakeBuildCommandLine>
+    <NMakeReBuildCommandLine>.\bam\bam -c all
+.\bam\bam server_debug</NMakeReBuildCommandLine>
+    <NMakeCleanCommandLine>.\bam\bam -c all</NMakeCleanCommandLine>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='TDTWServer(Debug)|Win32'">
+    <IncludePath>$(ProjectDir)/src/engine/external/zlib/;$(ProjectDir)/other/sdl/include/;$(ProjectDir)/src/;$(IncludePath)</IncludePath>
+    <NMakeBuildCommandLine>.\bam\bam tdtwserver_debug</NMakeBuildCommandLine>
+    <NMakeReBuildCommandLine>.\bam\bam -c all
+ .\bam\bam tdtwserver_debug</NMakeReBuildCommandLine>
+    <NMakeCleanCommandLine>.\bam\bam -c all</NMakeCleanCommandLine>
+    <OutDir>objs\</OutDir>
+    <IntDir>objs\</IntDir>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <ClCompile>
@@ -54,6 +96,29 @@
     <Link>
       <GenerateDebugInformation>true</GenerateDebugInformation>
     </Link>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Server(Debug)|Win32'">
+    <ClCompile>
+      <WarningLevel>Level3</WarningLevel>
+      <Optimization>Disabled</Optimization>
+      <SDLCheck>true</SDLCheck>
+    </ClCompile>
+    <Link>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+    </Link>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='TDTWServer(Debug)|Win32'">
+    <ClCompile>
+      <WarningLevel>Level3</WarningLevel>
+      <Optimization>Disabled</Optimization>
+      <SDLCheck>true</SDLCheck>
+    </ClCompile>
+    <Link>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+    </Link>
+    <BuildLog>
+      <Path />
+    </BuildLog>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <ClCompile>
@@ -73,12 +138,14 @@
     <None Include="bam.lua" />
     <None Include="configure.lua" />
     <None Include="datasrc\compile.py" />
+    <None Include="datasrc\compile_tdtw.py" />
     <None Include="datasrc\content.py" />
     <None Include="datasrc\content.pyc" />
     <None Include="datasrc\datatypes.py" />
     <None Include="datasrc\datatypes.pyc" />
     <None Include="datasrc\network.py" />
     <None Include="datasrc\network.pyc" />
+    <None Include="datasrc\network_tdtw.py" />
     <None Include="other\freetype\freetype.lua" />
     <None Include="other\icons\Teeworlds.icns" />
     <None Include="other\icons\Teeworlds_srv.icns" />
@@ -329,6 +396,7 @@
     <ClInclude Include="src\game\client\gameclient.h" />
     <ClInclude Include="src\game\client\lineinput.h" />
     <ClInclude Include="src\game\client\render.h" />
+    <ClInclude Include="src\game\client\tdtwserver\connect.h" />
     <ClInclude Include="src\game\client\ui.h" />
     <ClInclude Include="src\game\collision.h" />
     <ClInclude Include="src\game\editor\auto_map.h" />
@@ -336,6 +404,7 @@
     <ClInclude Include="src\game\gamecore.h" />
     <ClInclude Include="src\game\generated\client_data.h" />
     <ClInclude Include="src\game\generated\protocol.h" />
+    <ClInclude Include="src\game\generated\protocol_tdtw.h" />
     <ClInclude Include="src\game\layers.h" />
     <ClInclude Include="src\game\localization.h" />
     <ClInclude Include="src\game\mapitems.h" />
@@ -362,6 +431,7 @@
     <ClInclude Include="src\osxlaunch\client.h" />
     <ClInclude Include="src\versionsrv\mapversions.h" />
     <ClInclude Include="src\versionsrv\versionsrv.h" />
+    <ClInclude Include="tdtwsrv.h" />
   </ItemGroup>
   <ItemGroup>
     <Image Include="other\icons\Teeworlds.ico" />
@@ -471,6 +541,7 @@
     <ClCompile Include="src\game\client\lineinput.cpp" />
     <ClCompile Include="src\game\client\render.cpp" />
     <ClCompile Include="src\game\client\render_map.cpp" />
+    <ClCompile Include="src\game\client\tdtwserver\connect.cpp" />
     <ClCompile Include="src\game\client\ui.cpp" />
     <ClCompile Include="src\game\collision.cpp" />
     <ClCompile Include="src\game\editor\auto_map.cpp" />
@@ -484,6 +555,7 @@
     <ClCompile Include="src\game\generated\client_data.cpp" />
     <ClCompile Include="src\game\generated\nethash.cpp" />
     <ClCompile Include="src\game\generated\protocol.cpp" />
+    <ClCompile Include="src\game\generated\protocol_tdtw.cpp" />
     <ClCompile Include="src\game\layers.cpp" />
     <ClCompile Include="src\game\localization.cpp" />
     <ClCompile Include="src\game\server\entities\character.cpp" />
@@ -513,6 +585,7 @@
     <ClCompile Include="src\tools\tileset_borderrem.cpp" />
     <ClCompile Include="src\tools\tileset_borderset.cpp" />
     <ClCompile Include="src\versionsrv\versionsrv.cpp" />
+    <ClCompile Include="tdtwsrv.cpp" />
   </ItemGroup>
   <ItemGroup>
     <Text Include="src\engine\docs\client_time.txt" />

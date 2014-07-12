@@ -1,7 +1,6 @@
 import os, imp, sys
 from datatypes import *
-import content
-import network
+import network_tdtw
 
 def create_enum_table(names, num):
 	lines = []
@@ -40,100 +39,51 @@ def EmitFlags(names, num):
 		i += 1
 	print("};")
 
-gen_network_header = False
-gen_network_source = False
-gen_client_content_header = False
-gen_client_content_source = False
-gen_server_content_header = False
-gen_server_content_source = False
+gen_tdtw_network_header = False
+gen_tdtw_network_source = False
 
-if "network_header" in sys.argv: gen_network_header = True
-if "network_source" in sys.argv: gen_network_source = True
-if "client_content_header" in sys.argv: gen_client_content_header = True
-if "client_content_source" in sys.argv: gen_client_content_source = True
-if "server_content_header" in sys.argv: gen_server_content_header = True
-if "server_content_source" in sys.argv: gen_server_content_source = True
+if "network_tdtw_header" in sys.argv: gen_tdtw_network_header = True
+if "network_tdtw_source" in sys.argv: gen_tdtw_network_source = True
 
-if gen_client_content_header:
-	print("#ifndef CLIENT_CONTENT_HEADER")
-	print("#define CLIENT_CONTENT_HEADER")
-
-if gen_server_content_header:
-	print("#ifndef SERVER_CONTENT_HEADER")
-	print("#define SERVER_CONTENT_HEADER")
-
-
-if gen_client_content_header or gen_server_content_header:
-	# emit the type declarations
-	contentlines = open("datasrc/content.py", "rb").readlines()
-	order = []
-	for line in contentlines:
-		line = line.strip()
-		if line[:6] == "class ".encode() and "(Struct)".encode() in line:
-			order += [line.split()[1].split("(".encode())[0].decode("ascii")]
-	for name in order:
-		EmitTypeDeclaration(content.__dict__[name])
-
-	# the container pointer
-	print('extern CDataContainer *g_pData;')
-
-	# enums
-	EmitEnum(["IMAGE_%s"%i.name.value.upper() for i in content.container.images.items], "NUM_IMAGES")
-	EmitEnum(["ANIM_%s"%i.name.value.upper() for i in content.container.animations.items], "NUM_ANIMS")
-	EmitEnum(["SPRITE_%s"%i.name.value.upper() for i in content.container.sprites.items], "NUM_SPRITES")
-
-if gen_client_content_source or gen_server_content_source:
-	if gen_client_content_source:
-		print('#include "client_data.h"')
-	if gen_server_content_source:
-		print('#include "server_data.h"')
-	EmitDefinition(content.container, "datacontainer")
-	print('CDataContainer *g_pData = &datacontainer;')
 
 # NETWORK
-if gen_network_header:
+if gen_tdtw_network_header:
 
-	print("#ifndef GAME_GENERATED_PROTOCOL_H")
-	print("#define GAME_GENERATED_PROTOCOL_H")
-	print(network.RawHeader)
+	print("#ifndef GAME_GENERATED_PROTOCOL_TDTW_H")
+	print("#define GAME_GENERATED_PROTOCOL_TDTW_H")
+	print(network_tdtw.RawHeader)
 
-	for e in network.Enums:
-		for l in create_enum_table(["%s_%s"%(e.name, v) for v in e.values], 'NUM_%sS'%e.name): print(l)
-		print("")
-
-	for e in network.Flags:
+	for e in network_tdtw.Flags:
 		for l in create_flags_table(["%s_%s" % (e.name, v) for v in e.values]): print(l)
 		print("")
 
-	for l in create_enum_table(["NETOBJ_INVALID"]+[o.enum_name for o in network.Objects], "NUM_NETOBJTYPES"): print(l)
+	for l in create_enum_table(["NETOBJTDTW_INVALID"]+[o.enum_name for o in network_tdtw.Objects], "NUM_NETOBJTDTWTYPES"): print(l)
 	print("")
-	for l in create_enum_table(["NETMSG_INVALID"]+[o.enum_name for o in network.Messages], "NUM_NETMSGTYPES"): print(l)
+	for l in create_enum_table(["NETMSGTDTW_INVALID"]+[o.enum_name for o in network_tdtw.Messages], "NUM_NETMSGTDTWTYPES"): print(l)
 	print("")
 
-	for item in network.Objects + network.Messages:
+	for item in network_tdtw.Objects + network_tdtw.Messages:
 		for line in item.emit_declaration():
 			print(line)
 		print("")
 
-	EmitEnum(["SOUND_%s"%i.name.value.upper() for i in content.container.sounds.items], "NUM_SOUNDS")
-	EmitEnum(["WEAPON_%s"%i.name.value.upper() for i in content.container.weapons.id.items], "NUM_WEAPONS")
-
 	print("""
 
-class CNetObjHandler
+class CNetObjHandlerTdtw
 {
+protected:
 	const char *m_pMsgFailedOn;
 	const char *m_pObjCorrectedOn;
 	char m_aMsgData[1024];
 	int m_NumObjCorrections;
 	int ClampInt(const char *pErrorMsg, int Value, int Min, int Max);
-
+private:
 	static const char *ms_apObjNames[];
 	static int ms_aObjSizes[];
 	static const char *ms_apMsgNames[];
 
 public:
-	CNetObjHandler();
+	CNetObjHandlerTdtw();
 
 	int ValidateObj(int Type, void *pData, int Size);
 	const char *GetObjName(int Type);
@@ -151,24 +101,24 @@ public:
 	print("#endif // GAME_GENERATED_PROTOCOL_H")
 
 
-if gen_network_source:
+if gen_tdtw_network_source:
 	# create names
 	lines = []
 
 	lines += ['#include <engine/shared/protocol.h>']
 	lines += ['#include <engine/message.h>']
-	lines += ['#include "protocol.h"']
+	lines += ['#include "protocol_tdtw.h"']
 
-	lines += ['CNetObjHandler::CNetObjHandler()']
+	lines += ['CNetObjHandlerTdtw::CNetObjHandlerTdtw()']
 	lines += ['{']
 	lines += ['\tm_pMsgFailedOn = "";']
 	lines += ['\tm_pObjCorrectedOn = "";']
 	lines += ['\tm_NumObjCorrections = 0;']
 	lines += ['}']
 	lines += ['']
-	lines += ['int CNetObjHandler::NumObjCorrections() { return m_NumObjCorrections; }']
-	lines += ['const char *CNetObjHandler::CorrectedObjOn() { return m_pObjCorrectedOn; }']
-	lines += ['const char *CNetObjHandler::FailedMsgOn() { return m_pMsgFailedOn; }']
+	lines += ['int CNetObjHandlerTdtw::NumObjCorrections() { return m_NumObjCorrections; }']
+	lines += ['const char *CNetObjHandlerTdtw::CorrectedObjOn() { return m_pObjCorrectedOn; }']
+	lines += ['const char *CNetObjHandlerTdtw::FailedMsgOn() { return m_pMsgFailedOn; }']
 	lines += ['']
 	lines += ['']
 	lines += ['']
@@ -177,50 +127,50 @@ if gen_network_source:
 
 	lines += ['static const int max_int = 0x7fffffff;']
 
-	lines += ['int CNetObjHandler::ClampInt(const char *pErrorMsg, int Value, int Min, int Max)']
+	lines += ['int CNetObjHandlerTdtw::ClampInt(const char *pErrorMsg, int Value, int Min, int Max)']
 	lines += ['{']
 	lines += ['\tif(Value < Min) { m_pObjCorrectedOn = pErrorMsg; m_NumObjCorrections++; return Min; }']
 	lines += ['\tif(Value > Max) { m_pObjCorrectedOn = pErrorMsg; m_NumObjCorrections++; return Max; }']
 	lines += ['\treturn Value;']
 	lines += ['}']
 
-	lines += ["const char *CNetObjHandler::ms_apObjNames[] = {"]
+	lines += ["const char *CNetObjHandlerTdtw::ms_apObjNames[] = {"]
 	lines += ['\t"invalid",']
-	lines += ['\t"%s",' % o.name for o in network.Objects]
+	lines += ['\t"%s",' % o.name for o in network_tdtw.Objects]
 	lines += ['\t""', "};", ""]
 
-	lines += ["int CNetObjHandler::ms_aObjSizes[] = {"]
+	lines += ["int CNetObjHandlerTdtw::ms_aObjSizes[] = {"]
 	lines += ['\t0,']
-	lines += ['\tsizeof(%s),' % o.struct_name for o in network.Objects]
+	lines += ['\tsizeof(%s),' % o.struct_name for o in network_tdtw.Objects]
 	lines += ['\t0', "};", ""]
 
 
-	lines += ['const char *CNetObjHandler::ms_apMsgNames[] = {']
+	lines += ['const char *CNetObjHandlerTdtw::ms_apMsgNames[] = {']
 	lines += ['\t"invalid",']
-	for msg in network.Messages:
+	for msg in network_tdtw.Messages:
 		lines += ['\t"%s",' % msg.name]
 	lines += ['\t""']
 	lines += ['};']
 	lines += ['']
 
-	lines += ['const char *CNetObjHandler::GetObjName(int Type)']
+	lines += ['const char *CNetObjHandlerTdtw::GetObjName(int Type)']
 	lines += ['{']
-	lines += ['\tif(Type < 0 || Type >= NUM_NETOBJTYPES) return "(out of range)";']
+	lines += ['\tif(Type < 0 || Type >= NUM_NETOBJTDTWTYPES) return "(out of range)";']
 	lines += ['\treturn ms_apObjNames[Type];']
 	lines += ['};']
 	lines += ['']
 
-	lines += ['int CNetObjHandler::GetObjSize(int Type)']
+	lines += ['int CNetObjHandlerTdtw::GetObjSize(int Type)']
 	lines += ['{']
-	lines += ['\tif(Type < 0 || Type >= NUM_NETOBJTYPES) return 0;']
+	lines += ['\tif(Type < 0 || Type >= NUM_NETOBJTDTWTYPES) return 0;']
 	lines += ['\treturn ms_aObjSizes[Type];']
 	lines += ['};']
 	lines += ['']
 
 
-	lines += ['const char *CNetObjHandler::GetMsgName(int Type)']
+	lines += ['const char *CNetObjHandlerTdtw::GetMsgName(int Type)']
 	lines += ['{']
-	lines += ['\tif(Type < 0 || Type >= NUM_NETMSGTYPES) return "(out of range)";']
+	lines += ['\tif(Type < 0 || Type >= NUM_NETMSGTDTWTYPES) return "(out of range)";']
 	lines += ['\treturn ms_apMsgNames[Type];']
 	lines += ['};']
 	lines += ['']
@@ -230,7 +180,7 @@ if gen_network_source:
 		print(l)
 
 	if 0:
-		for item in network.Objects:
+		for item in network_tdtw.Objects:
 			for line in item.emit_validate():
 				print(line)
 			print("")
@@ -241,22 +191,22 @@ if gen_network_source:
 		lines += ["typedef int(*VALIDATEFUNC)(void *data, int size);"]
 		lines += ["static VALIDATEFUNC validate_funcs[] = {"]
 		lines += ['\tvalidate_invalid,']
-		lines += ['\tvalidate_%s,' % o.name for o in network.Objects]
+		lines += ['\tvalidate_%s,' % o.name for o in network_tdtw.Objects]
 		lines += ["\t0x0", "};", ""]
 
 		lines += ["int netobj_validate(int type, void *data, int size)"]
 		lines += ["{"]
-		lines += ["\tif(type < 0 || type >= NUM_NETOBJTYPES) return -1;"]
+		lines += ["\tif(type < 0 || type >= NUM_NETOBJTDTWTYPES) return -1;"]
 		lines += ["\treturn validate_funcs[type](data, size);"]
 		lines += ["};", ""]
 
 	lines = []
-	lines += ['int CNetObjHandler::ValidateObj(int Type, void *pData, int Size)']
+	lines += ['int CNetObjHandlerTdtw::ValidateObj(int Type, void *pData, int Size)']
 	lines += ['{']
 	lines += ['\tswitch(Type)']
 	lines += ['\t{']
 
-	for item in network.Objects:
+	for item in network_tdtw.Objects:
 		for line in item.emit_validate():
 			lines += ["\t" + line]
 		lines += ['\t']
@@ -268,7 +218,7 @@ if gen_network_source:
 #int Validate(int Type, void *pData, int Size);
 
 	if 0:
-		for item in network.Messages:
+		for item in network_tdtw.Messages:
 			for line in item.emit_unpack():
 				print(line)
 			print("")
@@ -277,20 +227,20 @@ if gen_network_source:
 		lines += ['typedef void *(*SECUREUNPACKFUNC)(CUnpacker *pUnpacker);']
 		lines += ['static SECUREUNPACKFUNC secure_unpack_funcs[] = {']
 		lines += ['\tsecure_unpack_invalid,']
-		for msg in network.Messages:
+		for msg in network_tdtw.Messages:
 			lines += ['\tsecure_unpack_%s,' % msg.name]
 		lines += ['\t0x0']
 		lines += ['};']
 
 	#
-	lines += ['void *CNetObjHandler::SecureUnpackMsg(int Type, CUnpacker *pUnpacker)']
+	lines += ['void *CNetObjHandlerTdtw::SecureUnpackMsg(int Type, CUnpacker *pUnpacker)']
 	lines += ['{']
 	lines += ['\tm_pMsgFailedOn = 0;']
 	lines += ['\tswitch(Type)']
 	lines += ['\t{']
 
 
-	for item in network.Messages:
+	for item in network_tdtw.Messages:
 		for line in item.emit_unpack():
 			lines += ["\t" + line]
 		lines += ['\t']
@@ -313,6 +263,3 @@ if gen_network_source:
 
 	for l in lines:
 		print(l)
-
-if gen_client_content_header or gen_server_content_header:
-	print("#endif")

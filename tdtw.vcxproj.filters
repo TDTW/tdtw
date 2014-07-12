@@ -106,6 +106,12 @@
     <Filter Include="src\versionsrv">
       <UniqueIdentifier>{2c2e06ac-2a97-45bb-9156-bb34105c2b8f}</UniqueIdentifier>
     </Filter>
+    <Filter Include="src\tdtwsrv">
+      <UniqueIdentifier>{77d165a5-9ce3-4c13-adf8-8cf9c7d9e681}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src\game\client\tdtwserver">
+      <UniqueIdentifier>{3bd79e97-20af-4c39-a08f-b42837efbf0a}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <None Include="datasrc\compile.py">
@@ -175,6 +181,12 @@
     </None>
     <None Include="src\osxlaunch\client.m">
       <Filter>src\osxlaunch</Filter>
+    </None>
+    <None Include="datasrc\network_tdtw.py">
+      <Filter>datasrc</Filter>
+    </None>
+    <None Include="datasrc\compile_tdtw.py">
+      <Filter>datasrc</Filter>
     </None>
   </ItemGroup>
   <ItemGroup>
@@ -976,6 +988,15 @@
     <ClInclude Include="src\versionsrv\versionsrv.h">
       <Filter>src\versionsrv</Filter>
     </ClInclude>
+    <ClInclude Include="src\game\generated\protocol_tdtw.h">
+      <Filter>src\game\generated</Filter>
+    </ClInclude>
+    <ClInclude Include="src\game\client\tdtwserver\connect.h">
+      <Filter>src\game\client\tdtwserver</Filter>
+    </ClInclude>
+    <ClInclude Include="tdtwsrv.h">
+      <Filter>src\tdtwsrv</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Image Include="other\icons\Teeworlds_srv.ico">
@@ -1412,6 +1433,15 @@
     </ClCompile>
     <ClCompile Include="src\versionsrv\versionsrv.cpp">
       <Filter>src\versionsrv</Filter>
+    </ClCompile>
+    <ClCompile Include="src\game\generated\protocol_tdtw.cpp">
+      <Filter>src\game\generated</Filter>
+    </ClCompile>
+    <ClCompile Include="src\game\client\tdtwserver\connect.cpp">
+      <Filter>src\game\client\tdtwserver</Filter>
+    </ClCompile>
+    <ClCompile Include="tdtwsrv.cpp">
+      <Filter>src\tdtwsrv</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

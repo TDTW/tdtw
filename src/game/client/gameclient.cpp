@@ -293,6 +293,8 @@ void CGameClient::OnInit()
 	for(int i = 0; i < m_All.m_Num; i++)
 		m_All.m_paComponents[i]->OnReset();
 
+	m_pClient->ConnectTdtw("127.0.0.1");
+
 	int64 End = time_get();
 	char aBuf[256];
 	str_format(aBuf, sizeof(aBuf), "initialisation finished after %.2fms", ((End-Start)*1000)/(float)time_freq());
