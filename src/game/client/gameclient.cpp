@@ -14,6 +14,7 @@
 #include <engine/shared/config.h>
 
 #include <game/generated/protocol.h>
+#include <game/generated/protocol_tdtw.h>
 #include <game/generated/client_data.h>
 
 #include <game/localization.h>
@@ -460,6 +461,14 @@ static void Evolve(CNetObj_Character *pCharacter, int Tick)
 
 void CGameClient::OnRender()
 {
+	if (Input()->KeyPressed(KEY_F11))
+	{
+		CNetMsg_SysTestChat Msg;
+		Msg.m_pMessage = "Hello Worlds of Teeworlds";
+		Msg.m_Name = "PsychoGod";
+		Client()->SendPackMsg(&Msg, MSGFLAG_VITAL | MSGFLAG_FLUSH, true);
+	}
+
 	/*Graphics()->Clear(1,0,0);
 
 	menus->render_background();

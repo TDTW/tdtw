@@ -57,9 +57,9 @@ if gen_tdtw_network_header:
 		for l in create_flags_table(["%s_%s" % (e.name, v) for v in e.values]): print(l)
 		print("")
 
-	for l in create_enum_table(["NETOBJTDTW_INVALID"]+[o.enum_name for o in network_tdtw.Objects], "NUM_NETOBJTDTWTYPES"): print(l)
+	for l in create_enum_table(["NETOBJTYPE_TDTW_INVALID"]+[o.enum_name for o in network_tdtw.Objects], "NUM_NETOBJTYPES_TDTW"): print(l)
 	print("")
-	for l in create_enum_table(["NETMSGTDTW_INVALID"]+[o.enum_name for o in network_tdtw.Messages], "NUM_NETMSGTDTWTYPES"): print(l)
+	for l in create_enum_table(["NETMSGTYPE_TDTW_INVALID"]+[o.enum_name for o in network_tdtw.Messages], "NUM_NETMSGTYPES_TDTW"): print(l)
 	print("")
 
 	for item in network_tdtw.Objects + network_tdtw.Messages:
@@ -155,14 +155,14 @@ if gen_tdtw_network_source:
 
 	lines += ['const char *CNetObjHandlerTdtw::GetObjName(int Type)']
 	lines += ['{']
-	lines += ['\tif(Type < 0 || Type >= NUM_NETOBJTDTWTYPES) return "(out of range)";']
+	lines += ['\tif(Type < 0 || Type >= NUM_NETOBJTYPES_TDTW) return "(out of range)";']
 	lines += ['\treturn ms_apObjNames[Type];']
 	lines += ['};']
 	lines += ['']
 
 	lines += ['int CNetObjHandlerTdtw::GetObjSize(int Type)']
 	lines += ['{']
-	lines += ['\tif(Type < 0 || Type >= NUM_NETOBJTDTWTYPES) return 0;']
+	lines += ['\tif(Type < 0 || Type >= NUM_NETOBJTYPES_TDTW) return 0;']
 	lines += ['\treturn ms_aObjSizes[Type];']
 	lines += ['};']
 	lines += ['']
@@ -170,7 +170,7 @@ if gen_tdtw_network_source:
 
 	lines += ['const char *CNetObjHandlerTdtw::GetMsgName(int Type)']
 	lines += ['{']
-	lines += ['\tif(Type < 0 || Type >= NUM_NETMSGTDTWTYPES) return "(out of range)";']
+	lines += ['\tif(Type < 0 || Type >= NUM_NETMSGTYPES_TDTW) return "(out of range)";']
 	lines += ['\treturn ms_apMsgNames[Type];']
 	lines += ['};']
 	lines += ['']
@@ -196,7 +196,7 @@ if gen_tdtw_network_source:
 
 		lines += ["int netobj_validate(int type, void *data, int size)"]
 		lines += ["{"]
-		lines += ["\tif(type < 0 || type >= NUM_NETOBJTDTWTYPES) return -1;"]
+		lines += ["\tif(type < 0 || type >= NUM_NETOBJTYPES_TDTW) return -1;"]
 		lines += ["\treturn validate_funcs[type](data, size);"]
 		lines += ["};", ""]
 

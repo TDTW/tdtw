@@ -118,15 +118,15 @@ public:
 
 	virtual void SnapSetStaticsize(int ItemType, int Size) = 0;
 
-	virtual int SendMsg(CMsgPacker *pMsg, int Flags) = 0;
+	virtual int SendMsg(CMsgPacker *pMsg, int Flags, bool Tdtw = false) = 0;
 
 	template<class T>
-	int SendPackMsg(T *pMsg, int Flags)
+	int SendPackMsg(T *pMsg, int Flags, bool Tdtw = false)
 	{
 		CMsgPacker Packer(pMsg->MsgID());
 		if(pMsg->Pack(&Packer))
 			return -1;
-		return SendMsg(&Packer, Flags);
+		return SendMsg(&Packer, Flags, Tdtw);
 	}
 
 	//

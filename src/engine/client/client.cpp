@@ -315,7 +315,7 @@ int CClient::SendMsgEx(CMsgPacker *pMsg, int Flags, bool System, bool TDTW)
 {
 	CNetChunk Packet;
 
-	if(State() == IClient::STATE_OFFLINE)
+	if(State() == IClient::STATE_OFFLINE && !TDTW)
 		return 0;
 
 	mem_zero(&Packet, sizeof(CNetChunk));

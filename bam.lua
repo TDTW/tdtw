@@ -184,6 +184,7 @@ function build(settings)
 
 	-- set some platform specific settings
 	settings.cc.includes:Add("src")
+	settings.cc.includes:Add("other/sdl/include/")
 
 	if family == "unix" then
 		if platform == "macosx" then

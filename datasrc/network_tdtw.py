@@ -20,7 +20,7 @@ Flags = [
 Objects = [
     NetObject("TestVersion",[
         NetStringStrict("m_Version"),
-    ]),
+    ], True),
 	#NetObject("PlayerInfo", [
 	#	NetIntRange("m_Local", 0, 1),
 	#	NetIntRange("m_ClientID", 0, 'MAX_CLIENTS-1'),
@@ -35,7 +35,7 @@ Messages = [
     NetMessage("SysTestChat",[
         NetString("m_Name"),
         NetStringStrict("m_pMessage"),
-    ], True),
+    ], True, True),
 	#NetMessage("Sv_Chat", [
 	#	NetIntRange("m_Team", 'TEAM_SPECTATORS', 'TEAM_BLUE'),
 	#	NetIntRange("m_ClientID", -1, 'MAX_CLIENTS-1'),

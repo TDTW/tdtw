@@ -109,9 +109,6 @@
     <Filter Include="src\tdtwsrv">
       <UniqueIdentifier>{77d165a5-9ce3-4c13-adf8-8cf9c7d9e681}</UniqueIdentifier>
     </Filter>
-    <Filter Include="src\game\client\tdtwserver">
-      <UniqueIdentifier>{3bd79e97-20af-4c39-a08f-b42837efbf0a}</UniqueIdentifier>
-    </Filter>
   </ItemGroup>
   <ItemGroup>
     <None Include="datasrc\compile.py">
@@ -991,10 +988,7 @@
     <ClInclude Include="src\game\generated\protocol_tdtw.h">
       <Filter>src\game\generated</Filter>
     </ClInclude>
-    <ClInclude Include="src\game\client\tdtwserver\connect.h">
-      <Filter>src\game\client\tdtwserver</Filter>
-    </ClInclude>
-    <ClInclude Include="tdtwsrv.h">
+    <ClInclude Include="src\tdtwsrv\tdtwsrv.h">
       <Filter>src\tdtwsrv</Filter>
     </ClInclude>
   </ItemGroup>
@@ -1437,10 +1431,7 @@
     <ClCompile Include="src\game\generated\protocol_tdtw.cpp">
       <Filter>src\game\generated</Filter>
     </ClCompile>
-    <ClCompile Include="src\game\client\tdtwserver\connect.cpp">
-      <Filter>src\game\client\tdtwserver</Filter>
-    </ClCompile>
-    <ClCompile Include="tdtwsrv.cpp">
+    <ClCompile Include="src\tdtwsrv\tdtwsrv.cpp">
       <Filter>src\tdtwsrv</Filter>
     </ClCompile>
   </ItemGroup>

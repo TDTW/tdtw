@@ -66,10 +66,10 @@
   <PropertyGroup Label="UserMacros" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <IncludePath>$(ProjectDir)/src/engine/external/zlib/;$(ProjectDir)/other/sdl/include/;$(ProjectDir)/src/;$(IncludePath)</IncludePath>
-    <NMakeBuildCommandLine>.\bam\bam client_debug</NMakeBuildCommandLine>
-    <NMakeReBuildCommandLine>.\bam\bam -c all
+    <NMakeBuildCommandLine>..\bam\bam client_debug</NMakeBuildCommandLine>
+    <NMakeReBuildCommandLine>..\bam\bam -c all
 .\bam\bam client_debug</NMakeReBuildCommandLine>
-    <NMakeCleanCommandLine>.\bam\bam -c all</NMakeCleanCommandLine>
+    <NMakeCleanCommandLine>..\bam\bam -c all</NMakeCleanCommandLine>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Server(Debug)|Win32'">
     <IncludePath>$(ProjectDir)/src/engine/external/zlib/;$(ProjectDir)/other/sdl/include/;$(ProjectDir)/src/;$(IncludePath)</IncludePath>
@@ -396,7 +396,6 @@
     <ClInclude Include="src\game\client\gameclient.h" />
     <ClInclude Include="src\game\client\lineinput.h" />
     <ClInclude Include="src\game\client\render.h" />
-    <ClInclude Include="src\game\client\tdtwserver\connect.h" />
     <ClInclude Include="src\game\client\ui.h" />
     <ClInclude Include="src\game\collision.h" />
     <ClInclude Include="src\game\editor\auto_map.h" />
@@ -429,9 +428,9 @@
     <ClInclude Include="src\game\voting.h" />
     <ClInclude Include="src\mastersrv\mastersrv.h" />
     <ClInclude Include="src\osxlaunch\client.h" />
+    <ClInclude Include="src\tdtwsrv\tdtwsrv.h" />
     <ClInclude Include="src\versionsrv\mapversions.h" />
     <ClInclude Include="src\versionsrv\versionsrv.h" />
-    <ClInclude Include="tdtwsrv.h" />
   </ItemGroup>
   <ItemGroup>
     <Image Include="other\icons\Teeworlds.ico" />
@@ -541,7 +540,6 @@
     <ClCompile Include="src\game\client\lineinput.cpp" />
     <ClCompile Include="src\game\client\render.cpp" />
     <ClCompile Include="src\game\client\render_map.cpp" />
-    <ClCompile Include="src\game\client\tdtwserver\connect.cpp" />
     <ClCompile Include="src\game\client\ui.cpp" />
     <ClCompile Include="src\game\collision.cpp" />
     <ClCompile Include="src\game\editor\auto_map.cpp" />
@@ -574,6 +572,7 @@
     <ClCompile Include="src\game\server\gameworld.cpp" />
     <ClCompile Include="src\game\server\player.cpp" />
     <ClCompile Include="src\mastersrv\mastersrv.cpp" />
+    <ClCompile Include="src\tdtwsrv\tdtwsrv.cpp" />
     <ClCompile Include="src\tools\crapnet.cpp" />
     <ClCompile Include="src\tools\dilate.cpp" />
     <ClCompile Include="src\tools\fake_server.cpp" />
@@ -585,7 +584,6 @@
     <ClCompile Include="src\tools\tileset_borderrem.cpp" />
     <ClCompile Include="src\tools\tileset_borderset.cpp" />
     <ClCompile Include="src\versionsrv\versionsrv.cpp" />
-    <ClCompile Include="tdtwsrv.cpp" />
   </ItemGroup>
   <ItemGroup>
     <Text Include="src\engine\docs\client_time.txt" />
