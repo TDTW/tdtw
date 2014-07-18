@@ -156,6 +156,7 @@ function Intermediate_Output(settings, input)
 end
 
 function build(settings)
+	os.setlocale ("Russian_Russia.1251")
 	-- apply compiler settings
 	config.compiler:Apply(settings)
 	
@@ -298,7 +299,7 @@ function build(settings)
 
 	masterserver_exe = Link(server_settings, "mastersrv", masterserver,
 		engine, zlib)
-	tdtwserver_exe = Link(server_settings, "tdtwsrv", tdtwserver, engine, zlib)
+	tdtwserver_exe = Link(server_settings, "tdtwsrv", tdtwserver, game_shared, engine, zlib)
 
 	-- make targets
 	c = PseudoTarget("client".."_"..settings.config_name, client_exe, client_depends)

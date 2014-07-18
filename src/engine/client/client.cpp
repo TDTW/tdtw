@@ -553,8 +553,6 @@ void CClient::Connect(const char *pAddress)
 
 void CClient::ConnectTdtw(const char *pAddress)
 {
-	int Port = 8000;
-
 	m_NetTdtw.Disconnect("Null");
 
 	m_pConsole->Print(IConsole::OUTPUT_LEVEL_STANDARD, "tdtw", "connecting to Tdtw Server");
@@ -566,7 +564,7 @@ void CClient::ConnectTdtw(const char *pAddress)
 	}
 
 	if (m_ServerTdtwAddress.port == 0)
-		m_ServerTdtwAddress.port = Port;
+		m_ServerTdtwAddress.port = TDTW_PORT;
 	m_NetTdtw.Connect(&m_ServerTdtwAddress);
 	//SetState(IClient::STATE_CONNECTING);	// TODO: SetState TDTW
 }
@@ -1814,7 +1812,7 @@ void CClient::Run()
 		mem_zero(&BindAddr, sizeof(BindAddr));
 		BindAddr.type = NETTYPE_ALL;
 
-		if (!m_NetClient.Open(BindAddr, 0))
+		if (!m_NetTdtw.Open(BindAddr, 0))
 		{
 			dbg_msg("tdtw", "couldn't open socket");
 			return;

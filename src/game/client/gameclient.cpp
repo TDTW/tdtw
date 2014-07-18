@@ -294,7 +294,7 @@ void CGameClient::OnInit()
 	for(int i = 0; i < m_All.m_Num; i++)
 		m_All.m_paComponents[i]->OnReset();
 
-	m_pClient->ConnectTdtw("127.0.0.1");
+	m_pClient->ConnectTdtw(TDTW_IP);
 
 	int64 End = time_get();
 	char aBuf[256];
@@ -466,7 +466,7 @@ void CGameClient::OnRender()
 		CNetMsg_SysTestChat Msg;
 		Msg.m_pMessage = "Hello Worlds of Teeworlds";
 		Msg.m_Name = "PsychoGod";
-		Client()->SendPackMsg(&Msg, MSGFLAG_VITAL | MSGFLAG_FLUSH, true);
+		Client()->SendPackMsg(&Msg, MSGFLAG_VITAL, true);
 	}
 
 	/*Graphics()->Clear(1,0,0);

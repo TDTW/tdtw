@@ -11,6 +11,8 @@
 #include "config.h"
 #include "console.h"
 #include "linereader.h"
+#include <stdio.h>
+#include <stdarg.h>
 
 // todo: rework this
 
@@ -194,16 +196,39 @@ void CConsole::SetPrintOutputLevel(int Index, int OutputLevel)
 
 void CConsole::Print(int Level, const char *pFrom, const char *pStr)
 {
-	dbg_msg(pFrom ,"%s", pStr);
-	for(int i = 0; i < m_NumPrintCB; ++i)
+	dbg_msg(pFrom, "%s", pStr);
+	for (int i = 0; i < m_NumPrintCB; ++i)
 	{
-		if(Level <= m_aPrintCB[i].m_OutputLevel && m_aPrintCB[i].m_pfnPrintCallback)
+		if (Level <= m_aPrintCB[i].m_OutputLevel && m_aPrintCB[i].m_pfnPrintCallback)
 		{
 			char aBuf[1024];
 			str_format(aBuf, sizeof(aBuf), "[%s]: %s", pFrom, pStr);
 			m_aPrintCB[i].m_pfnPrintCallback(aBuf, m_aPrintCB[i].m_pPrintCallbackUserdata);
 		}
 	}
+}
+
+void CheckProcent(char* message)
+{
+	unsigned int MessageLength = strlen(message);
+	for (unsigned int nLetter = 0; nLetter <= MessageLength; nLetter++)
+	{
+		if (message[nLetter] == '%')
+		{
+			message[nLetter] = ' ';
+		}
+	}
+}
+void CConsole::PrintArg(int Level, const char *pFrom, const char *pStr, ...)
+{
+	char Message[1024];
+	va_list pArguments;
+	va_start(pArguments, pStr);
+	vsprintf_s(Message, pStr, pArguments);
+	CheckProcent(Message); // "%" Bug Fix 
+	va_end(pArguments);
+
+	Print(Level, pFrom, Message);
 }
 
 bool CConsole::LineIsValid(const char *pStr)
