@@ -467,6 +467,16 @@ void CGameClient::OnRender()
 		Msg.m_pMessage = "Hello Worlds of Teeworlds";
 		Msg.m_Name = "PsychoGod";
 		Client()->SendPackMsg(&Msg, MSGFLAG_VITAL, true);
+		m_pConsole->PrintArg(IConsole::OUTPUT_LEVEL_STANDARD, "tdtw"
+			"F11 pressed %s", Msg.m_Name);
+	}
+	if (Input()->KeyPressed(KEY_F12))
+	{
+		CMsgPacker Msg(NETMSG_PING);
+		Client()->SendMsgEx(&Msg, MSGFLAG_VITAL, true, true);
+		Client()->SetPingStartTime(time_get());
+		m_pConsole->PrintArg(IConsole::OUTPUT_LEVEL_STANDARD, "tdtw",
+			"F12 pressed");
 	}
 
 	/*Graphics()->Clear(1,0,0);

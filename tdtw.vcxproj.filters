@@ -991,6 +991,9 @@
     <ClInclude Include="src\tdtwsrv\tdtwsrv.h">
       <Filter>src\tdtwsrv</Filter>
     </ClInclude>
+    <ClInclude Include="src\tdtwsrv\client.h">
+      <Filter>src\tdtwsrv</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Image Include="other\icons\Teeworlds_srv.ico">
@@ -1432,6 +1435,12 @@
       <Filter>src\game\generated</Filter>
     </ClCompile>
     <ClCompile Include="src\tdtwsrv\tdtwsrv.cpp">
+      <Filter>src\tdtwsrv</Filter>
+    </ClCompile>
+    <ClCompile Include="src\engine\shared\network_tdtw_server.cpp">
+      <Filter>src\engine\shared</Filter>
+    </ClCompile>
+    <ClCompile Include="src\tdtwsrv\client.cpp">
       <Filter>src\tdtwsrv</Filter>
     </ClCompile>
   </ItemGroup>

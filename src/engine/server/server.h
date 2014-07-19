@@ -4,6 +4,13 @@
 #define ENGINE_SERVER_SERVER_H
 
 #include <engine/server.h>
+#include <engine/shared/protocol.h>
+#include <engine/shared/snapshot.h>
+#include <engine/shared/econ.h>
+#include <engine/map.h>
+#include <engine/shared/demo.h>
+#include <engine/server/register.h>
+#include <engine/shared/mapchecker.h>
 
 
 class CSnapIDPool

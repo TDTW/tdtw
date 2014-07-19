@@ -4,7 +4,7 @@
 #define GAME_VARIABLES_H
 #undef GAME_VARIABLES_H // this file will be included several times
 
-#define TDTW_IP "62.221.112.98:8000"
+#define TDTW_IP "127.0.0.1"
 #define TDTW_PORT 8000
 
 // client

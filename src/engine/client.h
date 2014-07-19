@@ -119,6 +119,8 @@ public:
 	virtual void SnapSetStaticsize(int ItemType, int Size) = 0;
 
 	virtual int SendMsg(CMsgPacker *pMsg, int Flags, bool Tdtw = false) = 0;
+	virtual int SendMsgEx(CMsgPacker *pMsg, int Flags, bool System = true, bool TDTW = false) = 0;
+	virtual void SetPingStartTime(int64 Ping) = 0;
 
 	template<class T>
 	int SendPackMsg(T *pMsg, int Flags, bool Tdtw = false)

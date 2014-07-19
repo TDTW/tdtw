@@ -194,8 +194,9 @@ public:
 
 	// ----- send functions -----
 	virtual int SendMsg(CMsgPacker *pMsg, int Flags, bool TDTW = false);
+	virtual int SendMsgEx(CMsgPacker *pMsg, int Flags, bool System = true, bool TDTW = false);
+	virtual void SetPingStartTime(int64 Ping) { m_PingStartTime = Ping; }
 
-	int SendMsgEx(CMsgPacker *pMsg, int Flags, bool System = true, bool TDTW = false);
 	void SendInfo();
 	void SendEnterGame();
 	void SendReady();

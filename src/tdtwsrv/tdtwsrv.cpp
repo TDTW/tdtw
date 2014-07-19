@@ -1,7 +1,9 @@
 #include "tdtwsrv.h"
+#include "client.h"
 
 #include <base\system.h>
 
+#include <engine\engine.h>
 #include <engine\shared\packer.h>
 #include <engine\shared\config.h>
 
@@ -17,20 +19,46 @@ TdtwSrv::TdtwSrv(int argc, const char **argv)
 	dbg_logger_stdout();
 	net_init();
 
-	IKernel *pKernel = IKernel::Create();
-	IStorage *pStorage = CreateStorage("Teeworlds", IStorage::STORAGETYPE_BASIC, argc, argv);
-	IConfig *pConfig = CreateConfig();
-	m_pConsole = CreateConsole(CFGFLAG_MASTER);
+	pKernel = IKernel::Create();
+	pEngine = CreateEngine("TDTW Server");
+	m_pConsole = CreateConsole(CFGFLAG_MASTER | CFGFLAG_ECON);
+	pStorage = CreateStorage("Teeworlds", IStorage::STORAGETYPE_SERVER, argc, argv);
+	pConfig = CreateConfig();
 
-	bool RegisterFail = !pKernel->RegisterInterface(pStorage);
-	RegisterFail |= !pKernel->RegisterInterface(m_pConsole);
-	RegisterFail |= !pKernel->RegisterInterface(pConfig);
+	m_aClients.clear();
 
-	if (RegisterFail)
-		::exit(0);
+	m_CurrentGameTick = 0;
+	m_TickSpeed = SERVER_TICK_SPEED;
 
+/*	// TODO: ADD
+	m_RconClientID = IServer::RCON_CID_SERV;
+	m_RconAuthLevel = AUTHED_ADMIN;*/
+	{
+		bool RegisterFail = false;
+
+		RegisterFail = RegisterFail || !pKernel->RegisterInterface(pEngine);
+		RegisterFail = RegisterFail || !pKernel->RegisterInterface(m_pConsole);
+		RegisterFail = RegisterFail || !pKernel->RegisterInterface(pStorage);
+		RegisterFail = RegisterFail || !pKernel->RegisterInterface(pConfig);
+
+		if (RegisterFail)
+			::exit(0);
+	}
+
+	pEngine->Init();
 	pConfig->Init();
-	m_NetBan.Init(m_pConsole, pStorage);
+
+	//RegisterCommands(); // TODO: ADD from server.cpp
+/*	m_pConsole->ExecuteFile("tdtwexec.cfg"); // TODO: Make config
+	// parse the command line arguments
+
+	if (argc > 1) // ignore_convention
+		m_pConsole->ParseArguments(argc - 1, &argv[1]); // ignore_convention
+
+	// restore empty config strings to their defaults
+	pConfig->RestoreStrings();*/
+	
+	pEngine->InitLogfile();
 
 	// process pending commands
 	m_pConsole->StoreCommands(true);
@@ -41,22 +69,86 @@ TdtwSrv::TdtwSrv(int argc, const char **argv)
 TdtwSrv::~TdtwSrv()
 {
 	delete pKernel;
+	delete pEngine;
 	delete pStorage;
 	delete pConfig;
 	delete m_pConsole;
 }
 
-void TdtwSrv::ReloadBans()
+int TdtwSrv::SendMsg(CMsgPacker *pMsg, int Flags, int ClientID)
 {
-	m_NetBan.UnbanAll();
-	m_pConsole->ExecuteFile("master.cfg");
+	return SendMsgEx(pMsg, Flags, ClientID, false);
+}
+
+int TdtwSrv::SendMsgEx(CMsgPacker *pMsg, int Flags, int ClientID, bool System)
+{
+	CNetChunk Packet;
+	if (!pMsg)
+		return -1;
+
+	mem_zero(&Packet, sizeof(CNetChunk));
+
+	Packet.m_ClientID = ClientID;
+	Packet.m_pData = pMsg->Data();
+	Packet.m_DataSize = pMsg->Size();
+
+	// HACK: modify the message id in the packet and store the system flag
+	*((unsigned char*)Packet.m_pData) <<= 1;
+	if (System)
+		*((unsigned char*)Packet.m_pData) |= 1;
+
+	if (Flags&MSGFLAG_VITAL)
+		Packet.m_Flags |= NETSENDFLAG_VITAL;
+	if (Flags&MSGFLAG_FLUSH)
+		Packet.m_Flags |= NETSENDFLAG_FLUSH;
+
+	if (!(Flags&MSGFLAG_NOSEND))
+	{
+		if (ClientID == -1)
+		{
+			// broadcast
+			for (int i = 0; i < m_aClients.size(); i++)
+			{
+				if (m_aClients[i]->m_State == CClientTdtw::STATE_CONNECTED)
+				{
+					Packet.m_ClientID = i;
+					m_NetServer.Send(&Packet);
+				}
+			}
+		}
+		else
+			m_NetServer.Send(&Packet);
+	}
+	return 0;
+}
+
+int TdtwSrv::NewClientCallback(int ClientID, void *pUser)
+{
+	TdtwSrv *pThis = (TdtwSrv *)pUser;
+	CClientTdtw *NewClient = new CClientTdtw;
+	pThis->m_aClients.add(NewClient);
+	return 0;
+}
+
+int TdtwSrv::DelClientCallback(int ClientID, const char *pReason, void *pUser)
+{
+	TdtwSrv *pThis = (TdtwSrv *)pUser;
+
+	char aAddrStr[NETADDR_MAXSTRSIZE];
+	net_addr_str(pThis->m_NetServer.ClientAddr(ClientID), aAddrStr, sizeof(aAddrStr), true);
+
+	pThis->Console()->PrintArg(IConsole::OUTPUT_LEVEL_ADDINFO, "server",
+		"client dropped. cid=%d addr=%s reason='%s'", ClientID, aAddrStr, pReason);
+	
+	pThis->m_aClients.remove_index(ClientID);
+	return 0;
 }
 
 int TdtwSrv::Run()
 {
 	// start server
 	NETADDR BindAddr;
-	if (net_host_lookup("localhost:8000", &BindAddr, NETTYPE_ALL) == 0)
+	if (g_Config.m_Bindaddr[0] && net_host_lookup(g_Config.m_Bindaddr, &BindAddr, NETTYPE_ALL) == 0)
 	{
 		// sweet!
 		BindAddr.type = NETTYPE_ALL;
@@ -69,42 +161,51 @@ int TdtwSrv::Run()
 		BindAddr.port = TDTW_PORT;
 	}
 
-	if (!pNet.Open(BindAddr, 0, 0, 0, 0))
-		return 0;
+	if (!m_NetServer.Open(BindAddr, 0/*&m_ServerBan*/, g_Config.m_SvMaxClients, g_Config.m_SvMaxClientsPerIP, 0))
+	{
+		dbg_msg("server", "couldn't open socket. port %d might already be in use", g_Config.m_SvPort);
+		return -1;
+	}
+
+	m_NetServer.SetCallbacks(NewClientCallback, DelClientCallback, this);
+
+	//m_Econ.Init(Console(), &m_ServerBan); // TODO: Make this
 
 	while (1)
 	{
 		CNetChunk p;
-		pNet.Update();
-		while (pNet.Recv(&p))
+		m_NetServer.Update();
+		while (m_NetServer.Recv(&p))
 		{
-			Protocol(&p);
+			if (p.m_ClientID >= 0 && p.m_ClientID < m_aClients.size())
+				Protocol(&p);
 		}
 
-		if (time_get() - LastBanReload > time_freq() * 300)
-		{
-			LastBanReload = time_get();
+		//m_ServerBan.Update();
+		//m_Econ.Update();	// TODO: Make this
 
-			ReloadBans();
-		}
-		thread_sleep(1);
+		net_socket_read_wait(m_NetServer.Socket(), 5);
+	}
+
+	// disconnect all clients on shutdown
+	for (int i = 0; i < m_aClients.size(); ++i)
+	{
+		m_NetServer.Drop(i, "Server shutdown");
+
+		//m_Econ.Shutdown();	// TODO: Make this
 	}
 }
 
 void TdtwSrv::Protocol(CNetChunk *pPacket)
 {
-	// check if the server is banned
-	if (m_NetBan.IsBanned(&pPacket->m_Address, 0, 0))
-		return;
-
 	int ClientID = pPacket->m_ClientID;
 	CUnpacker Unpacker;
 	Unpacker.Reset(pPacket->m_pData, pPacket->m_DataSize);
 
 	// unpack msgid and system flag
-	int MsgID = Unpacker.GetInt();
-	int Sys = MsgID & 1;
-	MsgID >>= 1;
+	int Msg = Unpacker.GetInt();
+	int Sys = Msg & 1;
+	Msg >>= 1;
 
 	if (Unpacker.Error())
 		return;
@@ -339,14 +440,16 @@ void TdtwSrv::Protocol(CNetChunk *pPacket)
 				}
 			}
 		}
-		else if (Msg == NETMSG_PING)
+		else*/
+		if (Msg == NETMSG_PING)
 		{
 			CMsgPacker Msg(NETMSG_PING_REPLY);
-			SendMsgEx(&Msg, 0, ClientID, true);
+			SendMsgEx(&Msg, MSGFLAG_VITAL, ClientID, true);
+			Console()->PrintArg(IConsole::OUTPUT_LEVEL_STANDARD, "server", "[%d] NetPing", ClientID);
 		}
 		else
 		{
-			if (g_Config.m_Debug)
+			//if (g_Config.m_Debug)
 			{
 				char aHex[] = "0123456789ABCDEF";
 				char aBuf[512];
@@ -364,20 +467,23 @@ void TdtwSrv::Protocol(CNetChunk *pPacket)
 				Console()->Print(IConsole::OUTPUT_LEVEL_DEBUG, "server", aBufMsg);
 				Console()->Print(IConsole::OUTPUT_LEVEL_DEBUG, "server", aBuf);
 			}
-		}*/
+		}
 	}
 	else
 	{
-		void *pRawMsg = m_NetHandler.SecureUnpackMsg(MsgID, &Unpacker);
+		if (m_aClients[ClientID]->m_State == CClientTdtw::STATE_EMPTY)
+			return;
+
+		void *pRawMsg = m_NetHandler.SecureUnpackMsg(Msg, &Unpacker);
 		if (!pRawMsg)
 		{
 			m_pConsole->PrintArg(IConsole::OUTPUT_LEVEL_DEBUG, "server", 
-				"dropped weird message '%s' (%d), failed on '%s'", m_NetHandler.GetMsgName(MsgID), MsgID, m_NetHandler.FailedMsgOn());
+				"dropped weird message '%s' (%d), failed on '%s'", m_NetHandler.GetMsgName(Msg), Msg, m_NetHandler.FailedMsgOn());
 			
 			return;
 		}
 
-		if (MsgID == NETMSGTYPE_SYS_TDTW_SYSTESTCHAT)
+		if (Msg == NETMSGTYPE_SYS_TDTW_SYSTESTCHAT)
 		{
 			CNetMsg_SysTestChat *pMsg = (CNetMsg_SysTestChat *)pRawMsg;
 
@@ -389,7 +495,9 @@ void TdtwSrv::Protocol(CNetChunk *pPacket)
 
 int main(int argc, const char **argv)
 {
+//#if defined(CONF_FAMILY_WINDOWS) // TODO: проверить на другие системы
 	setlocale(LC_ALL, "Russian");
+//#endif
 	//SetConsoleOutputCP(1251);
 	TdtwSrv *TdtwServer = new TdtwSrv(argc, argv);
 	return TdtwServer->Run();

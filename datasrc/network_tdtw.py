@@ -1,6 +1,6 @@
 from datatypes import *
 
-PlayerFlags = ["TDTW_PLAYING", "TDTW_IN_MENU", "TDTW_CHATTING"]
+PlayerFlags = ["TDTW_JOYSTICK", "TDTW_SPECTATOR", "TDTW_FOLLOWER", "TDTW_PLAYING", "TDTW_IN_MENU", "TDTW_CHATTING", "TDTW_AFK"]
 
 
 RawHeader = '''

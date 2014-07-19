@@ -5,6 +5,7 @@
 
 #include "ringbuffer.h"
 #include "huffman.h"
+#include <base\tl\array.h>
 
 /*
 
@@ -239,6 +240,55 @@ public:
 	void Clear();
 	void Start(const NETADDR *pAddr, CNetConnection *pConnection, int ClientID);
 	int FetchChunk(CNetChunk *pChunk);
+};
+
+// tdtw server side
+class CNetTdtwServer
+{
+	struct CSlot
+	{
+	public:
+		CNetConnection m_Connection;
+	};
+
+	NETSOCKET m_Socket;
+	class CNetBan *m_pNetBan;
+
+	array <CSlot*> m_aSlots;
+	//CSlot m_aSlots[NET_MAX_CLIENTS];
+	int m_MaxClients;
+	int m_MaxClientsPerIP;
+
+	NETFUNC_NEWCLIENT m_pfnNewClient;
+	NETFUNC_DELCLIENT m_pfnDelClient;
+	void *m_UserPtr;
+
+	CNetRecvUnpacker m_RecvUnpacker;
+
+public:
+	int SetCallbacks(NETFUNC_NEWCLIENT pfnNewClient, NETFUNC_DELCLIENT pfnDelClient, void *pUser);
+
+	//
+	bool Open(NETADDR BindAddr, class CNetBan *pNetBan, int MaxClients, int MaxClientsPerIP, int Flags);
+	int Close();
+
+	//
+	int Recv(CNetChunk *pChunk);
+	int Send(CNetChunk *pChunk);
+	int Update();
+
+	//
+	int Drop(int ClientID, const char *pReason);
+
+	// status requests
+	const NETADDR *ClientAddr(int ClientID) const { return m_aSlots[ClientID]->m_Connection.PeerAddress(); }
+	NETSOCKET Socket() const { return m_Socket; }
+	class CNetBan *NetBan() const { return m_pNetBan; }
+	int NetType() const { return m_Socket.type; }
+	int MaxClients() const { return m_MaxClients; }
+
+	//
+	void SetMaxClientsPerIP(int Max);
 };
 
 // server side

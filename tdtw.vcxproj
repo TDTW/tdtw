@@ -428,6 +428,7 @@
     <ClInclude Include="src\game\voting.h" />
     <ClInclude Include="src\mastersrv\mastersrv.h" />
     <ClInclude Include="src\osxlaunch\client.h" />
+    <ClInclude Include="src\tdtwsrv\client.h" />
     <ClInclude Include="src\tdtwsrv\tdtwsrv.h" />
     <ClInclude Include="src\versionsrv\mapversions.h" />
     <ClInclude Include="src\versionsrv\versionsrv.h" />
@@ -499,6 +500,7 @@
     <ClCompile Include="src\engine\shared\network_console.cpp" />
     <ClCompile Include="src\engine\shared\network_console_conn.cpp" />
     <ClCompile Include="src\engine\shared\network_server.cpp" />
+    <ClCompile Include="src\engine\shared\network_tdtw_server.cpp" />
     <ClCompile Include="src\engine\shared\packer.cpp" />
     <ClCompile Include="src\engine\shared\ringbuffer.cpp" />
     <ClCompile Include="src\engine\shared\snapshot.cpp" />
@@ -572,6 +574,7 @@
     <ClCompile Include="src\game\server\gameworld.cpp" />
     <ClCompile Include="src\game\server\player.cpp" />
     <ClCompile Include="src\mastersrv\mastersrv.cpp" />
+    <ClCompile Include="src\tdtwsrv\client.cpp" />
     <ClCompile Include="src\tdtwsrv\tdtwsrv.cpp" />
     <ClCompile Include="src\tools\crapnet.cpp" />
     <ClCompile Include="src\tools\dilate.cpp" />
