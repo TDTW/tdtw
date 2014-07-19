@@ -16,9 +16,6 @@
 
 TdtwSrv::TdtwSrv(int argc, const char **argv)
 {
-	dbg_logger_stdout();
-	net_init();
-
 	pKernel = IKernel::Create();
 	pEngine = CreateEngine("TDTW Server");
 	m_pConsole = CreateConsole(CFGFLAG_MASTER | CFGFLAG_ECON);
@@ -61,7 +58,7 @@ TdtwSrv::TdtwSrv(int argc, const char **argv)
 	pEngine->InitLogfile();
 
 	// process pending commands
-	m_pConsole->StoreCommands(true);
+	m_pConsole->StoreCommands(false);
 
 	dbg_msg("TDTW srv", "started");
 }
