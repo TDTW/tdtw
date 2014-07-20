@@ -57,12 +57,10 @@ if gen_tdtw_network_header:
 		for l in create_flags_table(["%s_%s" % (e.name, v) for v in e.values]): print(l)
 		print("")
 
-	for l in create_enum_table(["NETOBJTYPE_TDTW_INVALID"]+[o.enum_name for o in network_tdtw.Objects], "NUM_NETOBJTYPES_TDTW"): print(l)
-	print("")
 	for l in create_enum_table(["NETMSGTYPE_TDTW_INVALID"]+[o.enum_name for o in network_tdtw.Messages], "NUM_NETMSGTYPES_TDTW"): print(l)
 	print("")
 
-	for item in network_tdtw.Objects + network_tdtw.Messages:
+	for item in network_tdtw.Messages:
 		for line in item.emit_declaration():
 			print(line)
 		print("")
@@ -73,23 +71,12 @@ class CNetObjHandlerTdtw
 {
 protected:
 	const char *m_pMsgFailedOn;
-	const char *m_pObjCorrectedOn;
 	char m_aMsgData[1024];
-	int m_NumObjCorrections;
-	int ClampInt(const char *pErrorMsg, int Value, int Min, int Max);
 private:
-	static const char *ms_apObjNames[];
-	static int ms_aObjSizes[];
 	static const char *ms_apMsgNames[];
 
 public:
 	CNetObjHandlerTdtw();
-
-	int ValidateObj(int Type, void *pData, int Size);
-	const char *GetObjName(int Type);
-	int GetObjSize(int Type);
-	int NumObjCorrections();
-	const char *CorrectedObjOn();
 
 	const char *GetMsgName(int Type);
 	void *SecureUnpackMsg(int Type, CUnpacker *pUnpacker);
@@ -112,12 +99,8 @@ if gen_tdtw_network_source:
 	lines += ['CNetObjHandlerTdtw::CNetObjHandlerTdtw()']
 	lines += ['{']
 	lines += ['\tm_pMsgFailedOn = "";']
-	lines += ['\tm_pObjCorrectedOn = "";']
-	lines += ['\tm_NumObjCorrections = 0;']
 	lines += ['}']
 	lines += ['']
-	lines += ['int CNetObjHandlerTdtw::NumObjCorrections() { return m_NumObjCorrections; }']
-	lines += ['const char *CNetObjHandlerTdtw::CorrectedObjOn() { return m_pObjCorrectedOn; }']
 	lines += ['const char *CNetObjHandlerTdtw::FailedMsgOn() { return m_pMsgFailedOn; }']
 	lines += ['']
 	lines += ['']
@@ -127,24 +110,6 @@ if gen_tdtw_network_source:
 
 	lines += ['static const int max_int = 0x7fffffff;']
 
-	lines += ['int CNetObjHandlerTdtw::ClampInt(const char *pErrorMsg, int Value, int Min, int Max)']
-	lines += ['{']
-	lines += ['\tif(Value < Min) { m_pObjCorrectedOn = pErrorMsg; m_NumObjCorrections++; return Min; }']
-	lines += ['\tif(Value > Max) { m_pObjCorrectedOn = pErrorMsg; m_NumObjCorrections++; return Max; }']
-	lines += ['\treturn Value;']
-	lines += ['}']
-
-	lines += ["const char *CNetObjHandlerTdtw::ms_apObjNames[] = {"]
-	lines += ['\t"invalid",']
-	lines += ['\t"%s",' % o.name for o in network_tdtw.Objects]
-	lines += ['\t""', "};", ""]
-
-	lines += ["int CNetObjHandlerTdtw::ms_aObjSizes[] = {"]
-	lines += ['\t0,']
-	lines += ['\tsizeof(%s),' % o.struct_name for o in network_tdtw.Objects]
-	lines += ['\t0', "};", ""]
-
-
 	lines += ['const char *CNetObjHandlerTdtw::ms_apMsgNames[] = {']
 	lines += ['\t"invalid",']
 	for msg in network_tdtw.Messages:
@@ -152,21 +117,6 @@ if gen_tdtw_network_source:
 	lines += ['\t""']
 	lines += ['};']
 	lines += ['']
-
-	lines += ['const char *CNetObjHandlerTdtw::GetObjName(int Type)']
-	lines += ['{']
-	lines += ['\tif(Type < 0 || Type >= NUM_NETOBJTYPES_TDTW) return "(out of range)";']
-	lines += ['\treturn ms_apObjNames[Type];']
-	lines += ['};']
-	lines += ['']
-
-	lines += ['int CNetObjHandlerTdtw::GetObjSize(int Type)']
-	lines += ['{']
-	lines += ['\tif(Type < 0 || Type >= NUM_NETOBJTYPES_TDTW) return 0;']
-	lines += ['\treturn ms_aObjSizes[Type];']
-	lines += ['};']
-	lines += ['']
-
 
 	lines += ['const char *CNetObjHandlerTdtw::GetMsgName(int Type)']
 	lines += ['{']
@@ -178,45 +128,7 @@ if gen_tdtw_network_source:
 
 	for l in lines:
 		print(l)
-
-	if 0:
-		for item in network_tdtw.Objects:
-			for line in item.emit_validate():
-				print(line)
-			print("")
-
-	# create validate tables
-		lines = []
-		lines += ['static int validate_invalid(void *data, int size) { return -1; }']
-		lines += ["typedef int(*VALIDATEFUNC)(void *data, int size);"]
-		lines += ["static VALIDATEFUNC validate_funcs[] = {"]
-		lines += ['\tvalidate_invalid,']
-		lines += ['\tvalidate_%s,' % o.name for o in network_tdtw.Objects]
-		lines += ["\t0x0", "};", ""]
-
-		lines += ["int netobj_validate(int type, void *data, int size)"]
-		lines += ["{"]
-		lines += ["\tif(type < 0 || type >= NUM_NETOBJTYPES_TDTW) return -1;"]
-		lines += ["\treturn validate_funcs[type](data, size);"]
-		lines += ["};", ""]
-
 	lines = []
-	lines += ['int CNetObjHandlerTdtw::ValidateObj(int Type, void *pData, int Size)']
-	lines += ['{']
-	lines += ['\tswitch(Type)']
-	lines += ['\t{']
-
-	for item in network_tdtw.Objects:
-		for line in item.emit_validate():
-			lines += ["\t" + line]
-		lines += ['\t']
-	lines += ['\t}']
-	lines += ['\treturn -1;']
-	lines += ['};']
-	lines += ['']
-
-#int Validate(int Type, void *pData, int Size);
-
 	if 0:
 		for item in network_tdtw.Messages:
 			for line in item.emit_unpack():

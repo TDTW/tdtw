@@ -1,0 +1,10 @@
+#ifndef GAME_CLIENT_TDTWSERVER_AUTOUPDATE_H
+#define GAME_CLIENT_TDTWSERVER_AUTOUPDATE_H
+
+class CAutoUpdate {
+public:
+	CAutoUpdate();
+private:
+};
+
+#endif //GAME_CLIENT_TDTWSERVER_AUTOUPDATE_H

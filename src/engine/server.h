@@ -34,16 +34,16 @@ public:
 	virtual void GetClientAddr(int ClientID, char *pAddrStr, int Size) = 0;
 
 	virtual int SendMsg(CMsgPacker *pMsg, int Flags, int ClientID) = 0;
+	virtual int SendMsgEx(CMsgPacker *pMsg, int Flags, int ClientID, bool System);
 
 	template<class T>
-	int SendPackMsg(T *pMsg, int Flags, int ClientID)
+	int SendPackMsg(T *pMsg, int Flags, int ClientID, bool System = false, bool Tdtw = false)
 	{
 		CMsgPacker Packer(pMsg->MsgID());
-		if(pMsg->Pack(&Packer))
+		if (pMsg->Pack(&Packer))
 			return -1;
-		return SendMsg(&Packer, Flags, ClientID);
+		return SendMsgEx(&Packer, Flags, ClientID, System, Tdtw);
 	}
-
 	virtual void SetClientName(int ClientID, char const *pName) = 0;
 	virtual void SetClientClan(int ClientID, char const *pClan) = 0;
 	virtual void SetClientCountry(int ClientID, int Country) = 0;

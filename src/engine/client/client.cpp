@@ -22,6 +22,7 @@
 #include <engine/sound.h>
 #include <engine/storage.h>
 #include <engine/textrender.h>
+#include <engine/tdtwserver.h>
 
 #include <engine/shared/config.h>
 #include <engine/shared/compression.h>
@@ -1475,14 +1476,7 @@ void CClient::PumpNetworkTdtw()
 	// process packets
 	CNetChunk Packet;
 	while (m_NetTdtw.Recv(&Packet))
-	{
-		// получение пакета, распаковка на переменные и дальнейшие действия по пакету
-/*
-		if (Packet.m_ClientID == -1)
-			ProcessConnlessPacket(&Packet);
-		else
-			ProcessServerPacket(&Packet);*/
-	}
+		TDTWServer()->Recv(&Packet); 
 }
 
 void CClient::OnDemoPlayerSnapshot(void *pData, int Size)
@@ -1782,7 +1776,7 @@ void CClient::Run()
 			return;
 		}
 	}
-
+	
 	// init sound, allowed to fail
 	m_SoundInitFailed = Sound()->Init() != 0;
 
@@ -1818,7 +1812,7 @@ void CClient::Run()
 			return;
 		}
 	}
-
+	m_pTDTWServer = Kernel()->RequestInterface<ITDTWServer>();
 	// init font rendering
 	Kernel()->RequestInterface<IEngineTextRender>()->Init();
 
@@ -2396,8 +2390,16 @@ int main(int argc, const char **argv) // ignore_convention
 	// register all console commands
 	pClient->RegisterCommands();
 
+
 	pKernel->RequestInterface<IGameClient>()->OnConsoleInit();
 
+	{
+		ITDTWServer *pTDTWServer = CreateTDTWServer();
+		bool RegisterFail = false;
+		RegisterFail = !pKernel->RegisterInterface(pTDTWServer);
+		if (RegisterFail)
+			return -1;
+	}
 	// init client's interfaces
 	pClient->InitInterfaces();
 

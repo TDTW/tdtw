@@ -3,7 +3,6 @@
 #ifndef ENGINE_CLIENT_H
 #define ENGINE_CLIENT_H
 #include "kernel.h"
-
 #include "message.h"
 
 class IClient : public IInterface
@@ -27,7 +26,6 @@ protected:
 
 	int m_GameTickSpeed;
 public:
-
 	class CSnapItem
 	{
 	public:
@@ -123,12 +121,12 @@ public:
 	virtual void SetPingStartTime(int64 Ping) = 0;
 
 	template<class T>
-	int SendPackMsg(T *pMsg, int Flags, bool Tdtw = false)
+	int SendPackMsg(T *pMsg, int Flags, bool System = false, bool Tdtw = false)
 	{
 		CMsgPacker Packer(pMsg->MsgID());
 		if(pMsg->Pack(&Packer))
 			return -1;
-		return SendMsg(&Packer, Flags, Tdtw);
+		return SendMsgEx(&Packer, Flags, System ,Tdtw);
 	}
 
 	//

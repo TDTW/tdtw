@@ -64,15 +64,14 @@ class CClient : public IClient, public CDemoPlayer::IListner
 	IConsole *m_pConsole;
 	IStorage *m_pStorage;
 	IEngineMasterServer *m_pMasterServer;
-
+	ITDTWServer *m_pTDTWServer;
 	enum
 	{
 		NUM_SNAPSHOT_TYPES=2,
 		PREDICTION_MARGIN=1000/50/2, // magic network prediction value
 	};
-
-	class CNetClient m_NetClient;
 	class CNetClient m_NetTdtw;
+	class CNetClient m_NetClient;
 	class CDemoPlayer m_DemoPlayer;
 	class CDemoRecorder m_DemoRecorder;
 	class CServerBrowser m_ServerBrowser;
@@ -189,6 +188,7 @@ public:
 	IGameClient *GameClient() { return m_pGameClient; }
 	IEngineMasterServer *MasterServer() { return m_pMasterServer; }
 	IStorage *Storage() { return m_pStorage; }
+	ITDTWServer *TDTWServer() { return m_pTDTWServer; }
 
 	CClient();
 

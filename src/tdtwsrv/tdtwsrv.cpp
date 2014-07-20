@@ -124,6 +124,9 @@ int TdtwSrv::NewClientCallback(int ClientID, void *pUser)
 	TdtwSrv *pThis = (TdtwSrv *)pUser;
 	CClientTdtw *NewClient = new CClientTdtw;
 	pThis->m_aClients.add(NewClient);
+	CNetMsg_Version Msg;
+	Msg.m_Version = GAME_VERSION;
+	pThis->SendPackMsg(&Msg, NETSENDFLAG_VITAL, ClientID, true);
 	return 0;
 }
 
@@ -209,6 +212,7 @@ void TdtwSrv::Protocol(CNetChunk *pPacket)
 
 	if (Sys)
 	{
+		
 		// system message
 /*
 		if (Msg == NETMSG_INFO)
@@ -444,6 +448,18 @@ void TdtwSrv::Protocol(CNetChunk *pPacket)
 			SendMsgEx(&Msg, MSGFLAG_VITAL, ClientID, true);
 			Console()->PrintArg(IConsole::OUTPUT_LEVEL_STANDARD, "server", "[%d] NetPing", ClientID);
 		}
+		else if (Msg == NETMSGTYPE_SYS_TDTW_VERSION)
+		{
+			void *pRawMsg = m_NetHandler.SecureUnpackMsg(Msg, &Unpacker);
+			if (!pRawMsg)
+			{
+				m_pConsole->PrintArg(IConsole::OUTPUT_LEVEL_DEBUG, "server",
+					"dropped weird message '%s' (%d), failed on '%s'", m_NetHandler.GetMsgName(Msg), Msg, m_NetHandler.FailedMsgOn());
+				return;
+			}
+			CNetMsg_Version *pMsg = (CNetMsg_Version *)pRawMsg;
+			m_pConsole->PrintArg(IConsole::OUTPUT_LEVEL_DEBUG, "server", "Client %d tdtw version: %s", ClientID, pMsg->m_Version);
+		}
 		else
 		{
 			//if (g_Config.m_Debug)
@@ -480,13 +496,14 @@ void TdtwSrv::Protocol(CNetChunk *pPacket)
 			return;
 		}
 
-		if (Msg == NETMSGTYPE_SYS_TDTW_SYSTESTCHAT)
+		if (Msg == NETMSGTYPE_SYS_TDTW_TESTCHAT)
 		{
-			CNetMsg_SysTestChat *pMsg = (CNetMsg_SysTestChat *)pRawMsg;
+			CNetMsg_TestChat *pMsg = (CNetMsg_TestChat *)pRawMsg;
 
 			m_pConsole->PrintArg(IConsole::OUTPUT_LEVEL_STANDARD, "chat",
 				"[%s]: %s", pMsg->m_Name, pMsg->m_pMessage);
 		}
+
 	}
 }
 

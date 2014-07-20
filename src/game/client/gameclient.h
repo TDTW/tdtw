@@ -9,7 +9,7 @@
 #include <game/layers.h>
 #include <game/gamecore.h>
 #include "render.h"
-
+#include "tdtwserver/tdtwserver.h"
 class CGameClient : public IGameClient
 {
 	class CStack
@@ -44,6 +44,8 @@ class CGameClient : public IGameClient
 	class IServerBrowser *m_pServerBrowser;
 	class IEditor *m_pEditor;
 	class IFriends *m_pFriends;
+
+	class ITDTWServer *m_pTDTWServer;
 
 	CLayers m_Layers;
 	class CCollision m_Collision;
@@ -83,6 +85,7 @@ public:
 	class CCollision *Collision() { return &m_Collision; };
 	class IEditor *Editor() { return m_pEditor; }
 	class IFriends *Friends() { return m_pFriends; }
+	class ITDTWServer *TDTWServer() { return m_pTDTWServer; }
 
 	int NetobjNumCorrections() { return m_NetObjHandler.NumObjCorrections(); }
 	const char *NetobjCorrectedOn() { return m_NetObjHandler.CorrectedObjOn(); }

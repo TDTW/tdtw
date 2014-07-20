@@ -110,6 +110,7 @@ void CGameClient::OnConsoleInit()
 	m_pEditor = Kernel()->RequestInterface<IEditor>();
 	m_pFriends = Kernel()->RequestInterface<IFriends>();
 
+
 	// setup pointers
 	m_pBinds = &::gs_Binds;
 	m_pGameConsole = &::gs_GameConsole;
@@ -227,8 +228,9 @@ void CGameClient::OnConsoleInit()
 
 void CGameClient::OnInit()
 {
+	m_pTDTWServer = Kernel()->RequestInterface<ITDTWServer>();
 	m_pGraphics = Kernel()->RequestInterface<IGraphics>();
-	
+	m_pTDTWServer->Init();
 	// Antiping
 	m_Average_Prediction_Offset = -1;
 	m_Prediction_Offset_Summ = 0;
@@ -463,7 +465,7 @@ void CGameClient::OnRender()
 {
 	if (Input()->KeyPressed(KEY_F11))
 	{
-		CNetMsg_SysTestChat Msg;
+		CNetMsg_TestChat Msg;
 		Msg.m_pMessage = "Hello Worlds of Teeworlds";
 		Msg.m_Name = "PsychoGod";
 		Client()->SendPackMsg(&Msg, MSGFLAG_VITAL, true);

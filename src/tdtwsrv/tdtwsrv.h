@@ -12,6 +12,7 @@
 #include <engine\storage.h>
 #include <engine\config.h>
 
+#include <game\version.h>
 #include <game\generated\protocol_tdtw.h>
 #include "client.h"
 
@@ -43,7 +44,15 @@ public:
 
 	int SendMsg(CMsgPacker *pMsg, int Flags, int ClientID);
 	int SendMsgEx(CMsgPacker *pMsg, int Flags, int ClientID, bool System);
-	
+
+	template<class T>
+	int SendPackMsg(T *pMsg, int Flags, int ClientID, bool System = false)
+	{
+		CMsgPacker Packer(pMsg->MsgID());
+		if (pMsg->Pack(&Packer))
+			return -1;
+		return SendMsgEx(&Packer, Flags, ClientID, System);
+	}
 	enum
 	{
 		AUTHED_NO = 0,

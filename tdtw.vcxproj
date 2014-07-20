@@ -66,10 +66,10 @@
   <PropertyGroup Label="UserMacros" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <IncludePath>$(ProjectDir)/src/engine/external/zlib/;$(ProjectDir)/other/sdl/include/;$(ProjectDir)/src/;$(IncludePath)</IncludePath>
-    <NMakeBuildCommandLine>..\bam\bam client_debug</NMakeBuildCommandLine>
-    <NMakeReBuildCommandLine>..\bam\bam -c all
+    <NMakeBuildCommandLine>.\bam\bam client_debug</NMakeBuildCommandLine>
+    <NMakeReBuildCommandLine>.\bam\bam -c all
 .\bam\bam client_debug</NMakeReBuildCommandLine>
-    <NMakeCleanCommandLine>..\bam\bam -c all</NMakeCleanCommandLine>
+    <NMakeCleanCommandLine>.\bam\bam -c all</NMakeCleanCommandLine>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Server(Debug)|Win32'">
     <IncludePath>$(ProjectDir)/src/engine/external/zlib/;$(ProjectDir)/other/sdl/include/;$(ProjectDir)/src/;$(IncludePath)</IncludePath>
@@ -362,6 +362,7 @@
     <ClInclude Include="src\engine\shared\snapshot.h" />
     <ClInclude Include="src\engine\sound.h" />
     <ClInclude Include="src\engine\storage.h" />
+    <ClInclude Include="src\engine\tdtwserver.h" />
     <ClInclude Include="src\engine\textrender.h" />
     <ClInclude Include="src\game\client\animstate.h" />
     <ClInclude Include="src\game\client\component.h" />
@@ -396,6 +397,8 @@
     <ClInclude Include="src\game\client\gameclient.h" />
     <ClInclude Include="src\game\client\lineinput.h" />
     <ClInclude Include="src\game\client\render.h" />
+    <ClInclude Include="src\game\client\tdtwserver\autoupdate.h" />
+    <ClInclude Include="src\game\client\tdtwserver\tdtwserver.h" />
     <ClInclude Include="src\game\client\ui.h" />
     <ClInclude Include="src\game\collision.h" />
     <ClInclude Include="src\game\editor\auto_map.h" />
@@ -542,6 +545,8 @@
     <ClCompile Include="src\game\client\lineinput.cpp" />
     <ClCompile Include="src\game\client\render.cpp" />
     <ClCompile Include="src\game\client\render_map.cpp" />
+    <ClCompile Include="src\game\client\tdtwserver\autoupdate.cpp" />
+    <ClCompile Include="src\game\client\tdtwserver\tdtwserver.cpp" />
     <ClCompile Include="src\game\client\ui.cpp" />
     <ClCompile Include="src\game\collision.cpp" />
     <ClCompile Include="src\game\editor\auto_map.cpp" />
