@@ -44,13 +44,11 @@ void CTDTWServer::Protocol(CNetChunk *pChunk)
 		if (Msg == NETMSGTYPE_SYS_TDTW_VERSION)
 		{
 			CNetMsg_Version *pMsg = (CNetMsg_Version *)pRawMsg;
-
 			m_Version = (char *)pMsg->m_Version;
 			Console()->PrintArg(IConsole::OUTPUT_LEVEL_DEBUG, "server", "Version of TDTW: %s", m_Version);
 			CNetMsg_Version Msg123;
-			Msg123.m_Version = GAME_VERSION;
-			
-			Client()->SendPackMsg(&Msg123, MSGFLAG_VITAL, true, true);
+			Msg123.m_Version = GAME_VERSION;			
+			Client()->SendPackMsg(&Msg123, MSGFLAG_VITAL | MSGFLAG_FLUSH, true, true);
 		}
 	}
 }

@@ -468,7 +468,7 @@ void CGameClient::OnRender()
 		CNetMsg_TestChat Msg;
 		Msg.m_pMessage = "Hello Worlds of Teeworlds";
 		Msg.m_Name = "PsychoGod";
-		Client()->SendPackMsg(&Msg, MSGFLAG_VITAL, true);
+		Client()->SendPackMsg(&Msg, MSGFLAG_VITAL, false, true);
 		m_pConsole->PrintArg(IConsole::OUTPUT_LEVEL_STANDARD, "tdtw"
 			"F11 pressed %s", Msg.m_Name);
 	}

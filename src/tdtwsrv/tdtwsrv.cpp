@@ -126,7 +126,7 @@ int TdtwSrv::NewClientCallback(int ClientID, void *pUser)
 	pThis->m_aClients.add(NewClient);
 	CNetMsg_Version Msg;
 	Msg.m_Version = GAME_VERSION;
-	pThis->SendPackMsg(&Msg, NETSENDFLAG_VITAL, ClientID, true);
+	pThis->SendPackMsg(&Msg, MSGFLAG_VITAL | MSGFLAG_FLUSH, ClientID, true);
 	return 0;
 }
 
@@ -209,10 +209,8 @@ void TdtwSrv::Protocol(CNetChunk *pPacket)
 
 	if (Unpacker.Error())
 		return;
-
 	if (Sys)
 	{
-		
 		// system message
 /*
 		if (Msg == NETMSG_INFO)
