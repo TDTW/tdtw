@@ -198,7 +198,7 @@ class Flags:
 		self.values = values
 
 class NetObject:
-	def __init__(self, name, variables, Tdtw=False):
+	def __init__(self, name, variables):
 		l = name.split(":")
 		self.name = l[0]
 		self.base = ""
@@ -206,10 +206,7 @@ class NetObject:
 			self.base = l[1]
 		self.base_struct_name = "CNetObj_%s" % self.base
 		self.struct_name = "CNetObj_%s" % self.name
-		if Tdtw:
-			self.enum_name = "NETOBJTYPE_TDTW_%s" % self.name.upper()
-		else:
-			self.enum_name = "NETOBJTYPE_%s" % self.name.upper()
+		self.enum_name = "NETOBJTYPE_%s" % self.name.upper()
 		self.variables = variables
 	def emit_declaration(self):
 		if self.base:
@@ -240,20 +237,14 @@ class NetEvent(NetObject):
 		self.enum_name = "NETEVENTTYPE_%s" % self.name.upper()
 
 class NetMessage(NetObject):
-	def __init__(self, name, variables, Sys=False, Tdtw=False):
+	def __init__(self, name, variables, Tdtw=False):
 		NetObject.__init__(self, name, variables)
 		self.base_struct_name = "CNetMsg_%s" % self.base
 		self.struct_name = "CNetMsg_%s" % self.name
-		if Sys:
-			if Tdtw:
-				self.enum_name = "NETMSGTYPE_SYS_TDTW_%s" % self.name.upper()
-			else:
-				self.enum_name = "NETMSGTYPE_SYS_%s" % self.name.upper()
+		if Tdtw:
+			self.enum_name = "NETMSGTYPE_TDTW_%s" % self.name.upper()
 		else:
-			if Tdtw:
-				self.enum_name = "NETMSGTYPE_TDTW_%s" % self.name.upper()
-			else:
-				self.enum_name = "NETMSGTYPE_%s" % self.name.upper()
+			self.enum_name = "NETMSGTYPE_%s" % self.name.upper()
 	def emit_unpack(self):
 		lines = []
 		lines += ["case %s:" % self.enum_name]

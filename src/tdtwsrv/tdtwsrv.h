@@ -1,4 +1,3 @@
-
 #ifndef TDTWSRV_H
 #define TDTWSRV_H
 
@@ -6,7 +5,6 @@
 
 #include <engine\shared\network.h>
 #include <engine\shared\netban.h>
-//#include <engine\server\server.h>
 
 #include <engine\console.h>
 #include <engine\storage.h>
@@ -14,13 +12,15 @@
 
 #include <game\version.h>
 #include <game\generated\protocol_tdtw.h>
+
+#include "autoupdate.h"
 #include "client.h"
 
-class TdtwSrv
+class CTdtwSrv
 {
 public:
-	TdtwSrv(int argc, const char **argv);
-	~TdtwSrv();
+	CTdtwSrv(int argc, const char **argv);
+	~CTdtwSrv();
 
 private:
 	class IKernel *pKernel;
@@ -84,9 +84,11 @@ public:
 	/* TODO: Add admin functions
 	Kick
 	*/
+	class CAutoUpdate *AutoUpdate() { return m_pAutoUpdate; }
 private:
 	CNetTdtwServer m_NetServer;
 	CNetObjHandlerTdtw m_NetHandler;
+	CAutoUpdate *m_pAutoUpdate;
 //	CServerBan m_ServerBan;
 	
 };

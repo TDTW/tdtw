@@ -397,7 +397,6 @@
     <ClInclude Include="src\game\client\gameclient.h" />
     <ClInclude Include="src\game\client\lineinput.h" />
     <ClInclude Include="src\game\client\render.h" />
-    <ClInclude Include="src\game\client\tdtwserver\autoupdate.h" />
     <ClInclude Include="src\game\client\tdtwserver\tdtwserver.h" />
     <ClInclude Include="src\game\client\ui.h" />
     <ClInclude Include="src\game\collision.h" />
@@ -431,6 +430,7 @@
     <ClInclude Include="src\game\voting.h" />
     <ClInclude Include="src\mastersrv\mastersrv.h" />
     <ClInclude Include="src\osxlaunch\client.h" />
+    <ClInclude Include="src\tdtwsrv\autoupdate.h" />
     <ClInclude Include="src\tdtwsrv\client.h" />
     <ClInclude Include="src\tdtwsrv\tdtwsrv.h" />
     <ClInclude Include="src\versionsrv\mapversions.h" />
@@ -545,7 +545,6 @@
     <ClCompile Include="src\game\client\lineinput.cpp" />
     <ClCompile Include="src\game\client\render.cpp" />
     <ClCompile Include="src\game\client\render_map.cpp" />
-    <ClCompile Include="src\game\client\tdtwserver\autoupdate.cpp" />
     <ClCompile Include="src\game\client\tdtwserver\tdtwserver.cpp" />
     <ClCompile Include="src\game\client\ui.cpp" />
     <ClCompile Include="src\game\collision.cpp" />
@@ -579,6 +578,7 @@
     <ClCompile Include="src\game\server\gameworld.cpp" />
     <ClCompile Include="src\game\server\player.cpp" />
     <ClCompile Include="src\mastersrv\mastersrv.cpp" />
+    <ClCompile Include="src\tdtwsrv\autoupdate.cpp" />
     <ClCompile Include="src\tdtwsrv\client.cpp" />
     <ClCompile Include="src\tdtwsrv\tdtwsrv.cpp" />
     <ClCompile Include="src\tools\crapnet.cpp" />

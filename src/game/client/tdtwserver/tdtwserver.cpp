@@ -1,5 +1,5 @@
 #include "tdtwserver.h"
-
+#include <engine/shared/config.h>
 
 CTDTWServer::CTDTWServer()
 {
@@ -33,22 +33,15 @@ void CTDTWServer::Protocol(CNetChunk *pChunk)
 
 	if (Sys)
 	{
-		void *pRawMsg = m_NetHandler.SecureUnpackMsg(Msg, &Unpacker);
-		if (!pRawMsg)
+		if (Msg == NETMSG_VERSION)
 		{
-			Console()->PrintArg(IConsole::OUTPUT_LEVEL_DEBUG, "server",
-				"dropped weird message '%s' (%d), failed on '%s'", m_NetHandler.GetMsgName(Msg), Msg, m_NetHandler.FailedMsgOn());
+			m_Version = (char *)Unpacker.GetString(CUnpacker::SANITIZE_CC);
+			Console()->PrintArg(IConsole::OUTPUT_LEVEL_DEBUG, "tdtwserver", "Latest version: %s", m_Version);
 
-			return;
-		}
-		if (Msg == NETMSGTYPE_SYS_TDTW_VERSION)
-		{
-			CNetMsg_Version *pMsg = (CNetMsg_Version *)pRawMsg;
-			m_Version = (char *)pMsg->m_Version;
-			Console()->PrintArg(IConsole::OUTPUT_LEVEL_DEBUG, "server", "Version of TDTW: %s", m_Version);
-			CNetMsg_Version Msg123;
-			Msg123.m_Version = GAME_VERSION;			
-			Client()->SendPackMsg(&Msg123, MSGFLAG_VITAL | MSGFLAG_FLUSH, true, true);
+			CMsgPacker Msg(NETMSG_VERSION);
+			Msg.AddString(GAME_VERSION, 64);
+			Msg.AddString(g_Config.m_PlayerName, 16);
+			Client()->SendMsgEx(&Msg, MSGFLAG_VITAL | MSGFLAG_FLUSH, true, true);
 		}
 	}
 }

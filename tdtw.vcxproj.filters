@@ -997,14 +997,14 @@
     <ClInclude Include="src\tdtwsrv\client.h">
       <Filter>src\tdtwsrv</Filter>
     </ClInclude>
-    <ClInclude Include="src\game\client\tdtwserver\autoupdate.h">
-      <Filter>src\game\client\tdtwserver</Filter>
-    </ClInclude>
     <ClInclude Include="src\game\client\tdtwserver\tdtwserver.h">
       <Filter>src\game\client\tdtwserver</Filter>
     </ClInclude>
     <ClInclude Include="src\engine\tdtwserver.h">
       <Filter>src\engine</Filter>
+    </ClInclude>
+    <ClInclude Include="src\tdtwsrv\autoupdate.h">
+      <Filter>src\tdtwsrv</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -1455,11 +1455,11 @@
     <ClCompile Include="src\tdtwsrv\client.cpp">
       <Filter>src\tdtwsrv</Filter>
     </ClCompile>
-    <ClCompile Include="src\game\client\tdtwserver\autoupdate.cpp">
-      <Filter>src\game\client\tdtwserver</Filter>
-    </ClCompile>
     <ClCompile Include="src\game\client\tdtwserver\tdtwserver.cpp">
       <Filter>src\game\client\tdtwserver</Filter>
+    </ClCompile>
+    <ClCompile Include="src\tdtwsrv\autoupdate.cpp">
+      <Filter>src\tdtwsrv</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

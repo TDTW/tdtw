@@ -72,6 +72,10 @@ enum
 	NETMSG_RCON_CMD_REM,
 };
 
+enum
+{
+	NETMSG_VERSION,
+};
 // this should be revised
 enum
 {
