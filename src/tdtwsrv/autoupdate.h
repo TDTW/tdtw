@@ -13,30 +13,27 @@ class CAutoUpdate
 {	
 public:
 	CAutoUpdate(class CTdtwSrv *Server, IStorage *Storage);
-	struct FileInfo
+	
+	struct CInfo
 	{
 		char Name[128];
 		int Crc;
 		int Size;
-	};
-	struct DirInfo
-	{
-		char Name[128];
-		int Crc;
-		int Size;
-		array <FileInfo> m_aFiles;
+		int ID;
+		int ParentID;
 	};
 	void CheckHash();
 
 	class CTdtwSrv *Server() { return m_pServer; }
 	class IStorage *Storage() { return m_pStorage; }
-	static int ParseFilesCallback(const char *pFileName, int IsDir, int Type, void *pUser);
-	static int ParseFolderCallback(const char *pFileName, int IsDir, int Type, void *pUser);
+	static int ParseFilesCallback(const char *pFileName, int IsDir, void *pUser, int folder_id);
 private:
-	array <FileInfo> m_aFiles;
-	array <DirInfo> m_aDir;
+
+	array <CInfo> m_aDir;
 	class CTdtwSrv *m_pServer;
 	class IStorage *m_pStorage;
+	IOHANDLE File;
+	int TempID;
 };
 
 #endif

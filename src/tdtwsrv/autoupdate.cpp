@@ -38,72 +38,64 @@ CAutoUpdate::CAutoUpdate(class CTdtwSrv *Server, IStorage *Storage)
 {
 	m_pServer = Server;
 	m_pStorage = Storage;
-	m_aFiles.clear();
 	m_aDir.clear();
+	File = io_open("Server.log", IOFLAG_WRITE);
+	TempID = 0;
 }
-int CAutoUpdate::ParseFilesCallback(const char *pFileName, int IsDir, int Type, void *pUser)
+int CAutoUpdate::ParseFilesCallback(const char *pFileName, int IsDir, void *pUser, int folder_id)
 {
 	const int PathLength = str_length(pFileName);
-	if (str_comp(pFileName, ".") || str_comp(pFileName, ".."))
+	if (pFileName[0] == '.')
 		return 0;
-	CAutoUpdate *pThis = (CAutoUpdate *)pUser;
-	if (!IsDir)
-	{
-		for (int i = 0; i < pThis->m_aFiles.size(); i++)
-			if (!str_comp(pThis->m_aFiles[i].Name, pFileName))
-				return 0;
-		CAutoUpdate::FileInfo *temp = new CAutoUpdate::FileInfo();
-		str_copy(temp->Name, pFileName, sizeof(temp->Name));
-		CDataFileReader::GetCrcSize(pThis->Storage(), pFileName, IStorage::TYPE_ALL, (unsigned int *)&temp->Crc, (unsigned int *)&temp->Size);
-		pThis->m_aFiles.add(*temp);
-	}
-	else
-	{
-		for (int i = 0; i < pThis.m_aDir.size(); i++)
-			if (!str_comp(pThis->m_aDir[i].Name, pFileName))
-				return 0;
-		CAutoUpdate::DirInfo *temp = new CAutoUpdate::DirInfo();
-		str_copy(temp->Name, pFileName, sizeof(temp->Name));
-		CDataFileReader::GetCrcSize(pThis->Storage(), pFileName, IStorage::TYPE_ALL, (unsigned int *)&temp->Crc, (unsigned int *)&temp->Size);
-		pThis->m_aDir.add(*temp);
-		pThis->Storage()->ListDirectory(IStorage::TYPE_ALL, pFileName, ParseFilesCallback, pThis);
-	}
-	
-	return 0;
-}
-int CAutoUpdate::ParseFolderCallback(const char *pFileName, int IsDir, int Type, void *pUser)
-{
-	const int PathLength = str_length(pFileName);
-	if (str_comp(pFileName, ".") || str_comp(pFileName, ".."))
-		return 0;
-	CAutoUpdate *pThis = (CAutoUpdate *)pUser;
-	if (!IsDir)
-	{
-		for (int i = 0; i < pThis->m_aFiles.size(); i++)
-			if (!str_comp(pThis->m_aFiles[i].Name, pFileName))
-				return 0;
-		CAutoUpdate::FileInfo *temp = new CAutoUpdate::FileInfo();
-		str_copy(temp->Name, pFileName, sizeof(temp->Name));
-		CDataFileReader::GetCrcSize(pThis->Storage(), pFileName, IStorage::TYPE_ALL, (unsigned int *)&temp->Crc, (unsigned int *)&temp->Size);
-		pThis->m_aFiles.add(*temp);
-	}
-	else
-	{
-		for (int i = 0; i < pThis.m_aDir.size(); i++)
-			if (!str_comp(pThis->m_aDir[i].Name, pFileName))
-				return 0;
-		CAutoUpdate::DirInfo *temp = new CAutoUpdate::DirInfo();
-		str_copy(temp->Name, pFileName, sizeof(temp->Name));
-		CDataFileReader::GetCrcSize(pThis->Storage(), pFileName, IStorage::TYPE_ALL, (unsigned int *)&temp->Crc, (unsigned int *)&temp->Size);
-		pThis->m_aDir.add(*temp);
-		pThis->Storage()->ListDirectory(IStorage::TYPE_ALL, pFileName, ParseFilesCallback, pThis);
-	}
 
+	CAutoUpdate *pThis = (CAutoUpdate *)pUser;
+
+	if (!IsDir)
+	{
+		CInfo *Temp = new CInfo();
+		str_copy(Temp->Name, pFileName, sizeof(Temp->Name));
+		Temp->ID = pThis->TempID;
+		Temp->ParentID = folder_id;
+		CDataFileReader::GetCrcSize(pThis->Storage(), Temp->Name, IStorage::TYPE_ALL, (unsigned int *)&Temp->Crc, (unsigned int *)&Temp->Size);
+		pThis->m_aDir.add(*Temp);
+		pThis->TempID++;
+		
+		char parent_name[128];
+		for (int i = 0; i < pThis->m_aDir.size(); i++)
+			if (pThis->m_aDir[i].ID == folder_id)
+				str_copy(parent_name, pThis->m_aDir[i].Name, sizeof(parent_name));
+
+		char abuf[128];
+		str_format(abuf, sizeof(abuf), "----[%d]%s  Name: %s    CRC: %d", Temp->ID ,parent_name, Temp->Name, Temp->Crc);
+		io_write(pThis->File, abuf, str_length(abuf));
+		io_write_newline(pThis->File);
+	}
+	else
+	{		
+		char aBuf[128];
+		str_copy(aBuf, pFileName, sizeof(aBuf));
+		for (int i = 0; i < pThis->m_aDir.size(); i++)
+			if (pThis->m_aDir[i].ID == folder_id)
+				str_format(aBuf, sizeof(aBuf), "update/%s/%s", pThis->m_aDir[i].Name, pFileName);
+
+		CInfo *Temp = new CInfo();
+		str_copy(Temp->Name, aBuf, sizeof(Temp->Name));
+		Temp->ID = pThis->TempID;
+		Temp->ParentID = folder_id;
+		pThis->m_aDir.add(*Temp);
+
+		char abuf[128];
+		str_format(abuf, sizeof(abuf), "[DIR] %s", Temp->Name);
+		io_write(pThis->File, abuf, str_length(abuf));
+		io_write_newline(pThis->File);
+		pThis->TempID++;
+		fs_listdir2(Temp->Name, ParseFilesCallback, pThis, Temp->ID);
+	}
 	return 0;
 }
+
 void CAutoUpdate::CheckHash()
 {
-	Storage()->ListDirectory(IStorage::TYPE_ALL, "update", ParseFolderCallback, this);
-	for (int i = 0; i < m_aFiles.size();  i++)
-		Server()->Console()->PrintArg(IConsole::OUTPUT_LEVEL_DEBUG, "server", "[%d] Name: %s : CRC: %d", i, m_aFiles[i].Name, m_aFiles[i].Crc);
+	fs_listdir2("update", ParseFilesCallback, this, -1);
+	io_close(File);
 }

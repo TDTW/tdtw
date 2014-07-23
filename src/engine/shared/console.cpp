@@ -219,6 +219,7 @@ void CheckProcent(char* message)
 		}
 	}
 }
+
 void CConsole::PrintArg(int Level, const char *pFrom, const char *pStr, ...)
 {
 	char Message[1024];
@@ -230,6 +231,7 @@ void CConsole::PrintArg(int Level, const char *pFrom, const char *pStr, ...)
 
 	Print(Level, pFrom, Message);
 }
+
 
 bool CConsole::LineIsValid(const char *pStr)
 {

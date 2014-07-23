@@ -1293,6 +1293,58 @@ int net_init()
 	return 0;
 }
 
+int fs_listdir2(const char *dir, FS_LISTDIR_CALLBACK2 cb, void *user, int folder_id)
+{
+#if defined(CONF_FAMILY_WINDOWS)
+	WIN32_FIND_DATA finddata;
+	HANDLE handle;
+	char buffer[1024 * 2];
+	int length;
+	str_format(buffer, sizeof(buffer), "%s/*", dir);
+
+	handle = FindFirstFileA(buffer, &finddata);
+
+	if (handle == INVALID_HANDLE_VALUE)
+		return 0;
+
+	str_format(buffer, sizeof(buffer), "%s/", dir);
+	length = str_length(buffer);
+
+	/* add all the entries */
+	do
+	{
+		str_copy(buffer + length, finddata.cFileName, (int)sizeof(buffer) - length);
+		if (cb(finddata.cFileName, fs_is_dir(buffer), user, folder_id))
+			break;
+	} while (FindNextFileA(handle, &finddata));
+
+	FindClose(handle);
+	return 0;
+#else
+	struct dirent *entry;
+	char buffer[1024 * 2];
+	int length;
+	DIR *d = opendir(dir);
+
+	if (!d)
+		return 0;
+
+	str_format(buffer, sizeof(buffer), "%s/", dir);
+	length = str_length(buffer);
+
+	while ((entry = readdir(d)) != NULL)
+	{
+		str_copy(buffer + length, entry->d_name, (int)sizeof(buffer) - length);
+		if (cb(entry->d_name, fs_is_dir(buffer), user, folder_id))
+			break;
+	}
+
+	/* close the directory and return */
+	closedir(d);
+	return 0;
+#endif
+}
+
 int fs_listdir(const char *dir, FS_LISTDIR_CALLBACK cb, int type, void *user)
 {
 #if defined(CONF_FAMILY_WINDOWS)
