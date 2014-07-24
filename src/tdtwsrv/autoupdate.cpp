@@ -52,21 +52,23 @@ int CAutoUpdate::ParseFilesCallback(const char *pFileName, int IsDir, void *pUse
 
 	if (!IsDir)
 	{
+		
+		char aBuf[128];
+		str_copy(aBuf, pFileName, sizeof(aBuf));
+		for (int i = 0; i < pThis->m_aDir.size(); i++)
+			if (pThis->m_aDir[i].ID == folder_id)
+				if (folder_id != -1)
+					str_format(aBuf, sizeof(aBuf), "%s/%s", pThis->m_aDir[i].Name, pFileName);
+				else str_format(aBuf, sizeof(aBuf), "update/%s/%s", pThis->m_aDir[i].Name, pFileName);
 		CInfo *Temp = new CInfo();
-		str_copy(Temp->Name, pFileName, sizeof(Temp->Name));
+		str_copy(Temp->Name, aBuf, sizeof(Temp->Name));
 		Temp->ID = pThis->TempID;
 		Temp->ParentID = folder_id;
 		CDataFileReader::GetCrcSize(pThis->Storage(), Temp->Name, IStorage::TYPE_ALL, (unsigned int *)&Temp->Crc, (unsigned int *)&Temp->Size);
 		pThis->m_aDir.add(*Temp);
 		pThis->TempID++;
-		
-		char parent_name[128];
-		for (int i = 0; i < pThis->m_aDir.size(); i++)
-			if (pThis->m_aDir[i].ID == folder_id)
-				str_copy(parent_name, pThis->m_aDir[i].Name, sizeof(parent_name));
-
 		char abuf[128];
-		str_format(abuf, sizeof(abuf), "----[%d]%s  Name: %s    CRC: %d", Temp->ID ,parent_name, Temp->Name, Temp->Crc);
+		str_format(abuf, sizeof(abuf), "----[%d]Name: %s    CRC: %d", Temp->ID , Temp->Name, Temp->Crc);
 		io_write(pThis->File, abuf, str_length(abuf));
 		io_write_newline(pThis->File);
 	}
@@ -76,7 +78,10 @@ int CAutoUpdate::ParseFilesCallback(const char *pFileName, int IsDir, void *pUse
 		str_copy(aBuf, pFileName, sizeof(aBuf));
 		for (int i = 0; i < pThis->m_aDir.size(); i++)
 			if (pThis->m_aDir[i].ID == folder_id)
-				str_format(aBuf, sizeof(aBuf), "update/%s/%s", pThis->m_aDir[i].Name, pFileName);
+				str_format(aBuf, sizeof(aBuf), "%s/%s", pThis->m_aDir[i].Name, pFileName);
+
+		if (folder_id == -1)					
+			str_format(aBuf, sizeof(aBuf), "update/%s", pFileName);
 
 		CInfo *Temp = new CInfo();
 		str_copy(Temp->Name, aBuf, sizeof(Temp->Name));
@@ -88,6 +93,7 @@ int CAutoUpdate::ParseFilesCallback(const char *pFileName, int IsDir, void *pUse
 		str_format(abuf, sizeof(abuf), "[DIR] %s", Temp->Name);
 		io_write(pThis->File, abuf, str_length(abuf));
 		io_write_newline(pThis->File);
+
 		pThis->TempID++;
 		fs_listdir2(Temp->Name, ParseFilesCallback, pThis, Temp->ID);
 	}
