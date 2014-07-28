@@ -182,6 +182,7 @@ enum {
 	IOFLAG_READ = 1,
 	IOFLAG_WRITE = 2,
 	IOFLAG_RANDOM = 4,
+	IOFLAG_LOGGER = 10,
 
 	IOSEEK_START = 0,
 	IOSEEK_CUR = 1,
@@ -1001,6 +1002,32 @@ void str_hex(char *dst, int dst_size, const void *data, int data_size);
 		- Guarantees that buffer string will contain zero-termination.
 */
 void str_timestamp(char *buffer, int buffer_size);
+
+/*
+Function: str_timestamp
+Copies a time stamp in the format year-month-day to the string.
+
+Parameters:
+buffer - Pointer to a buffer that shall receive the time stamp string.
+buffer_size - Size of the buffer.
+
+Remarks:
+- Guarantees that buffer string will contain zero-termination.
+*/
+void str_timestamp_day(char *buffer, int buffer_size);
+
+/*
+Function: str_timestamp
+Copies a time stamp in the format hour-minute-second to the string.
+
+Parameters:
+buffer - Pointer to a buffer that shall receive the time stamp string.
+buffer_size - Size of the buffer.
+
+Remarks:
+- Guarantees that buffer string will contain zero-termination.
+*/
+void str_timestamp_hour(char *buffer, int buffer_size);
 
 /* Group: Filesystem */
 

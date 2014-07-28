@@ -201,10 +201,20 @@ void CConsole::Print(int Level, const char *pFrom, const char *pStr)
 	{
 		if (Level <= m_aPrintCB[i].m_OutputLevel && m_aPrintCB[i].m_pfnPrintCallback)
 		{
-			char aBuf[1024];
+			char aBuf[1024] = { 0 };
 			str_format(aBuf, sizeof(aBuf), "[%s]: %s", pFrom, pStr);
 			m_aPrintCB[i].m_pfnPrintCallback(aBuf, m_aPrintCB[i].m_pPrintCallbackUserdata);
 		}
+	}
+
+	if (m_LoggerFile)
+	{
+		char time[64] = { 0 };
+		char aBuf[1024] = { 0 };
+		str_timestamp_hour(time, sizeof(time));
+		str_format(aBuf, sizeof(aBuf), "[%s][%s]: %s\n", time, pFrom, pStr);
+		io_write(m_LoggerFile, aBuf, strlen(aBuf));
+		io_flush(m_LoggerFile);
 	}
 }
 
@@ -686,6 +696,8 @@ CConsole::CConsole(int FlagMask)
 	m_NumPrintCB = 0;
 
 	m_pStorage = 0;
+	
+	m_LoggerFile = 0;
 
 	// register some basic commands
 	Register("echo", "r", CFGFLAG_SERVER|CFGFLAG_CLIENT, Con_Echo, this, "Echo the text");
@@ -931,5 +943,20 @@ const IConsole::CCommandInfo *CConsole::GetCommandInfo(const char *pName, int Fl
 	return 0;
 }
 
+void CConsole::ExecuteLogger(const char *pFileName, int IOFLAG)
+{
+	if (!m_pStorage)
+		m_pStorage = Kernel()->RequestInterface<IStorage>();
+	if (!m_pStorage)
+		return;
+
+	m_LoggerFile = m_pStorage->OpenFile(pFileName, IOFLAG, IStorage::STORAGETYPE_BASIC);
+}
+
+void CConsole::SaveLogger()
+{
+	if (m_LoggerFile)
+		io_close(m_LoggerFile);
+}
 
 extern IConsole *CreateConsole(int FlagMask) { return new CConsole(FlagMask); }

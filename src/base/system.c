@@ -90,7 +90,9 @@ void dbg_msg(const char *sys, const char *fmt, ...)
 	char *msg;
 	int i, len;
 
-	str_format(str, sizeof(str), "[%08x][%s]: ", (int)time(0), sys);
+	char time[64];
+	str_timestamp_hour(time, sizeof(time));
+	str_format(str, sizeof(str), "[%s][%s]: ", time, sys);
 	len = strlen(str);
 	msg = (char *)str + len;
 
@@ -294,6 +296,8 @@ IOHANDLE io_open(const char *filename, int flags)
 	}
 	if(flags == IOFLAG_WRITE)
 		return (IOHANDLE)fopen(filename, "wb");
+	if (flags == IOFLAG_LOGGER)
+		return (IOHANDLE)fopen(filename, "a+t");
 	return 0x0;
 }
 
@@ -1807,8 +1811,30 @@ void str_timestamp(char *buffer, int buffer_size)
 
 	time(&time_data);
 	time_info = localtime(&time_data);
-	strftime(buffer, buffer_size, "%Y-%m-%d_%H-%M-%S", time_info);
+	strftime(buffer, buffer_size, "%Y-%m-%d_%H:%M:%S", time_info);
 	buffer[buffer_size-1] = 0;	/* assure null termination */
+}
+
+void str_timestamp_day(char *buffer, int buffer_size)
+{
+	time_t time_data;
+	struct tm *time_info;
+
+	time(&time_data);
+	time_info = localtime(&time_data);
+	strftime(buffer, buffer_size, "%Y-%m-%d", time_info);
+	buffer[buffer_size - 1] = 0;	/* assure null termination */
+}
+
+void str_timestamp_hour(char *buffer, int buffer_size)
+{
+	time_t time_data;
+	struct tm *time_info;
+
+	time(&time_data);
+	time_info = localtime(&time_data);
+	strftime(buffer, buffer_size, "%H:%M:%S", time_info);
+	buffer[buffer_size - 1] = 0;	/* assure null termination */
 }
 
 int mem_comp(const void *a, const void *b, int size)

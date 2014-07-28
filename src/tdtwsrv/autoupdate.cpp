@@ -39,7 +39,6 @@ CAutoUpdate::CAutoUpdate(class CTdtwSrv *Server, IStorage *Storage)
 	m_pServer = Server;
 	m_pStorage = Storage;
 	m_aDir.clear();
-	File = io_open("Server.log", IOFLAG_WRITE);
 	TempID = 0;
 }
 int CAutoUpdate::ParseFilesCallback(const char *pFileName, int IsDir, void *pUser, int folder_id)
@@ -67,10 +66,8 @@ int CAutoUpdate::ParseFilesCallback(const char *pFileName, int IsDir, void *pUse
 		CDataFileReader::GetCrcSize(pThis->Storage(), Temp->Name, IStorage::TYPE_ALL, (unsigned int *)&Temp->Crc, (unsigned int *)&Temp->Size);
 		pThis->m_aDir.add(*Temp);
 		pThis->TempID++;
-		char abuf[128];
-		str_format(abuf, sizeof(abuf), "----[%d]Name: %s    CRC: %d", Temp->ID , Temp->Name, Temp->Crc);
-		io_write(pThis->File, abuf, str_length(abuf));
-		io_write_newline(pThis->File);
+
+		pThis->Server()->Console()->PrintArg(IConsole::OUTPUT_LEVEL_STANDARD, "updater", "----[%d]Name: %s    CRC: %d", Temp->ID, Temp->Name, Temp->Crc);
 	}
 	else
 	{		
@@ -89,10 +86,7 @@ int CAutoUpdate::ParseFilesCallback(const char *pFileName, int IsDir, void *pUse
 		Temp->ParentID = folder_id;
 		pThis->m_aDir.add(*Temp);
 
-		char abuf[128];
-		str_format(abuf, sizeof(abuf), "[DIR] %s", Temp->Name);
-		io_write(pThis->File, abuf, str_length(abuf));
-		io_write_newline(pThis->File);
+		pThis->Server()->Console()->PrintArg(IConsole::OUTPUT_LEVEL_STANDARD, "updater", "[DIR] %s", Temp->Name);
 
 		pThis->TempID++;
 		fs_listdir2(Temp->Name, ParseFilesCallback, pThis, Temp->ID);
@@ -103,5 +97,4 @@ int CAutoUpdate::ParseFilesCallback(const char *pFileName, int IsDir, void *pUse
 void CAutoUpdate::CheckHash()
 {
 	fs_listdir2("update", ParseFilesCallback, this, -1);
-	io_close(File);
 }

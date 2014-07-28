@@ -82,6 +82,9 @@ public:
 	virtual void ExecuteLineStroked(int Stroke, const char *pStr) = 0;
 	virtual void ExecuteFile(const char *pFilename) = 0;
 
+	virtual void ExecuteLogger(const char *pFileName, int IOFLAG) = 0;
+	virtual void SaveLogger() = 0;
+
 	virtual int RegisterPrintCallback(int OutputLevel, FPrintCallback pfnPrintCallback, void *pUserData) = 0;
 	virtual void SetPrintOutputLevel(int Index, int OutputLevel) = 0;
 	virtual void Print(int Level, const char *pFrom, const char *pStr) = 0;

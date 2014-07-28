@@ -154,6 +154,7 @@ class CConsole : public IConsole
 	void AddCommandSorted(CCommand *pCommand);
 	CCommand *FindCommand(const char *pName, int FlagMask);
 
+	IOHANDLE m_LoggerFile;
 public:
 	CConsole(int FlagMask);
 
@@ -173,6 +174,9 @@ public:
 	virtual void ExecuteLine(const char *pStr);
 	virtual void ExecuteLineFlag(const char *pStr, int FlagMask);
 	virtual void ExecuteFile(const char *pFilename);
+
+	virtual void ExecuteLogger(const char *pFileName, int IOFLAG);
+	virtual void SaveLogger();
 
 	virtual int RegisterPrintCallback(int OutputLevel, FPrintCallback pfnPrintCallback, void *pUserData);
 	virtual void SetPrintOutputLevel(int Index, int OutputLevel);

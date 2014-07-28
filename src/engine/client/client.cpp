@@ -2382,6 +2382,9 @@ int main(int argc, const char **argv) // ignore_convention
 			return -1;
 	}
 
+	// execute logger file
+	pConsole->ExecuteLogger("client.log", IOFLAG_WRITE);
+
 	pEngine->Init();
 	pConfig->Init();
 	pEngineMasterServer->Init();
@@ -2426,6 +2429,9 @@ int main(int argc, const char **argv) // ignore_convention
 	// write down the config and quit
 	pConfig->Save();
 	pConfig->SaveTDTW();
+
+	// save logger file
+	pConsole->SaveLogger();
 	
 	return 0;
 }

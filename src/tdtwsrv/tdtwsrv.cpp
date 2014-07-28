@@ -59,13 +59,24 @@ CTdtwSrv::CTdtwSrv(int argc, const char **argv)
 	// process pending commands
 	m_pConsole->StoreCommands(false);
 
+	// execute logger file	
+	char ConsoleLog[125];
+	char time[64];
+	str_timestamp_day(time, sizeof(time));
+	sprintf(ConsoleLog, "\\Logs\\TDTW-Server %s.log", time);
+
+	m_pConsole->ExecuteLogger(ConsoleLog, IOFLAG_LOGGER);
+
 	m_pAutoUpdate = new CAutoUpdate(this, Storage());
 	AutoUpdate()->CheckHash();
-	dbg_msg("TDTW srv", "started");
+	m_pConsole->PrintArg(IConsole::OUTPUT_LEVEL_STANDARD, "TDTW srv", "started");
 }
 
 CTdtwSrv::~CTdtwSrv()
 {
+	// save logger file
+	m_pConsole->SaveLogger();
+
 	delete pKernel;
 	delete pEngine;
 	delete pStorage;
@@ -165,7 +176,7 @@ int CTdtwSrv::Run()
 
 	if (!m_NetServer.Open(BindAddr, 0/*&m_ServerBan*/, g_Config.m_SvMaxClients, g_Config.m_SvMaxClientsPerIP, 0))
 	{
-		dbg_msg("server", "couldn't open socket. port %d might already be in use", g_Config.m_SvPort);
+		m_pConsole->PrintArg(IConsole::OUTPUT_LEVEL_STANDARD, "server", "couldn't open socket. port %d might already be in use", g_Config.m_SvPort);
 		return -1;
 	}
 
@@ -219,7 +230,7 @@ void CTdtwSrv::Protocol(CNetChunk *pPacket)
 		{
 			CMsgPacker Msg(NETMSG_PING_REPLY);
 			SendMsgEx(&Msg, MSGFLAG_VITAL, ClientID, true);
-			Console()->PrintArg(IConsole::OUTPUT_LEVEL_STANDARD, "server", "[%d] NetPing", ClientID);
+			m_pConsole->PrintArg(IConsole::OUTPUT_LEVEL_STANDARD, "server", "[%d] NetPing", ClientID);
 		}
 		else if (Msg == NETMSG_VERSION)
 		{
@@ -244,8 +255,8 @@ void CTdtwSrv::Protocol(CNetChunk *pPacket)
 
 			char aBufMsg[256];
 			str_format(aBufMsg, sizeof(aBufMsg), "strange message ClientID=%d msg=%d data_size=%d", ClientID, Msg, pPacket->m_DataSize);
-			Console()->Print(IConsole::OUTPUT_LEVEL_DEBUG, "server", aBufMsg);
-			Console()->Print(IConsole::OUTPUT_LEVEL_DEBUG, "server", aBuf);
+			m_pConsole->Print(IConsole::OUTPUT_LEVEL_DEBUG, "server", aBufMsg);
+			m_pConsole->Print(IConsole::OUTPUT_LEVEL_DEBUG, "server", aBuf);
 			
 		}
 	}

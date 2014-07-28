@@ -32,7 +32,6 @@ private:
 	array <CInfo> m_aDir;
 	class CTdtwSrv *m_pServer;
 	class IStorage *m_pStorage;
-	IOHANDLE File;
 	int TempID;
 };
 
