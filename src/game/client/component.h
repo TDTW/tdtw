@@ -33,6 +33,7 @@ public:
 	virtual ~CComponent() {}
 
 	virtual void OnStateChange(int NewState, int OldState) {};
+	virtual void OnStateTdtwChange(int NewState, int OldState) {};
 	virtual void OnConsoleInit() {};
 	virtual void OnInit() {};
 	virtual void OnReset() {};

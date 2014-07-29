@@ -11,6 +11,7 @@ class IClient : public IInterface
 protected:
 	// quick access to state of the client
 	int m_State;
+	int m_StateTdtw;
 
 	// quick access to time variables
 	int m_PrevGameTick;
@@ -53,8 +54,19 @@ public:
 		STATE_QUITING,
 	};
 
+	enum
+	{
+		STATE_TDTW_OFFLINE = 0,
+		STATE_TDTW_CONNECTING,
+		STATE_TDTW_LOADING,
+		STATE_TDTW_ONLINE,
+		STATE_TDTW_DEMOPLAYBACK,
+		STATE_TDTW_QUITING,
+	};
+
 	//
 	inline int State() const { return m_State; }
+	inline int StateTdtw() const { return m_StateTdtw; }
 
 	// tick time access
 	inline int PrevGameTick() const { return m_PrevGameTick; }
@@ -153,6 +165,7 @@ public:
 	virtual void OnShutdown() = 0;
 	virtual void OnRender() = 0;
 	virtual void OnStateChange(int NewState, int OldState) = 0;
+	virtual void OnStateTdtwChange(int NewState, int OldState) = 0;
 	virtual void OnConnected() = 0;
 	virtual void OnMessage(int MsgID, CUnpacker *pUnpacker) = 0;
 	virtual void OnPredict() = 0;

@@ -630,6 +630,18 @@ void CGameClient::OnStateChange(int NewState, int OldState)
 		m_All.m_paComponents[i]->OnStateChange(NewState, OldState);
 }
 
+void CGameClient::OnStateTdtwChange(int NewState, int OldState)
+{
+	// reset everything when not already connected (to keep gathered stuff)
+/* // TODO: Позже добавить при отключении, обнуление всякой хрени
+	if (NewState < IClient::STATE_ONLINE)
+		OnReset();*/
+
+	// then change the state
+	for (int i = 0; i < m_All.m_Num; i++)
+		m_All.m_paComponents[i]->OnStateTdtwChange(NewState, OldState);
+}
+
 void CGameClient::OnShutdown() {}
 void CGameClient::OnEnterGame() {}
 

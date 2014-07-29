@@ -297,6 +297,7 @@ CClient::CClient() : m_DemoPlayer(&m_SnapshotDelta), m_DemoRecorder(&m_SnapshotD
 	m_CurrentInput = 0;
 
 	m_State = IClient::STATE_OFFLINE;
+	m_StateTdtw = IClient::STATE_TDTW_OFFLINE;
 	m_aServerAddressStr[0] = 0;
 
 	mem_zero(m_aSnapshots, sizeof(m_aSnapshots));
@@ -316,8 +317,16 @@ int CClient::SendMsgEx(CMsgPacker *pMsg, int Flags, bool System, bool TDTW)
 {
 	CNetChunk Packet;
 
-	if(State() == IClient::STATE_OFFLINE && !TDTW)
-		return 0;
+	if (TDTW)
+	{
+		if (StateTdtw() == IClient::STATE_TDTW_OFFLINE && TDTW)
+			return 0;
+	}
+	else
+	{
+		if (State() == IClient::STATE_OFFLINE && !TDTW)
+			return 0;
+	}	
 
 	mem_zero(&Packet, sizeof(CNetChunk));
 
@@ -485,6 +494,23 @@ void CClient::SetState(int s)
 		GameClient()->OnStateChange(m_State, Old);
 }
 
+void CClient::SetStateTdtw(int s)
+{
+	if (m_StateTdtw == IClient::STATE_TDTW_QUITING)
+		return;
+
+	int Old = m_StateTdtw;
+	if (g_Config.m_Debug)
+	{
+		char aBuf[128];
+		str_format(aBuf, sizeof(aBuf), "state tdtw change. last=%d current=%d", m_StateTdtw, s);
+		m_pConsole->Print(IConsole::OUTPUT_LEVEL_DEBUG, "tdtw", aBuf);
+	}
+	m_StateTdtw = s;
+	if (Old != s)
+		GameClient()->OnStateTdtwChange(m_StateTdtw, Old);
+}
+
 // called when the map is loaded and we should init for a new round
 void CClient::OnEnterGame()
 {
@@ -554,7 +580,7 @@ void CClient::Connect(const char *pAddress)
 
 void CClient::ConnectTdtw(const char *pAddress)
 {
-	m_NetTdtw.Disconnect("Null");
+	m_NetTdtw.Disconnect(0);
 
 	m_pConsole->Print(IConsole::OUTPUT_LEVEL_STANDARD, "tdtw", "connecting to Tdtw Server");
 	
@@ -567,7 +593,7 @@ void CClient::ConnectTdtw(const char *pAddress)
 	if (m_ServerTdtwAddress.port == 0)
 		m_ServerTdtwAddress.port = TDTW_PORT;
 	m_NetTdtw.Connect(&m_ServerTdtwAddress);
-	//SetState(IClient::STATE_CONNECTING);	// TODO: SetState TDTW
+	SetStateTdtw(IClient::STATE_TDTW_CONNECTING);
 }
 
 void CClient::DisconnectWithReason(const char *pReason)
@@ -785,6 +811,7 @@ void CClient::DebugRender()
 void CClient::Quit()
 {
 	SetState(IClient::STATE_QUITING);
+	SetStateTdtw(IClient::STATE_TDTW_QUITING);
 }
 
 const char *CClient::ErrorString()
@@ -1472,6 +1499,40 @@ void CClient::PumpNetwork()
 void CClient::PumpNetworkTdtw()
 {
 	m_NetTdtw.Update();
+
+	// check for errors
+	if ((m_NetTdtw.State() == NETSTATE_OFFLINE && StateTdtw() != IClient::STATE_TDTW_OFFLINE) || (m_NetTdtw.State() != NETSTATE_OFFLINE && m_NetTdtw.GotProblems()))
+	{
+		SetStateTdtw(IClient::STATE_TDTW_OFFLINE);
+		//Disconnect();
+		m_NetTdtw.Disconnect("TDTW Server offline");
+		m_pConsole->PrintArg(IConsole::OUTPUT_LEVEL_STANDARD, "tdtw", "TDTW Server offline error='%s'", m_NetTdtw.ErrorString());
+	}
+
+/*
+
+	if (StateTdtw() == IClient::STATE_TDTW_CONNECTING && m_NetTdtw.State() == NETSTATE_CONNECTING)
+	{
+		if (time_get() % (time_freq() * 5000))
+			ConnectTdtw(TDTW_IP);
+		return;
+	}*/
+
+	if (StateTdtw() == IClient::STATE_TDTW_OFFLINE)
+	{
+		if (time_get() % (time_freq() * 5) == 0)
+			ConnectTdtw(TDTW_IP);
+		return;
+	}
+
+	//
+	if (StateTdtw() == IClient::STATE_TDTW_CONNECTING && m_NetTdtw.State() == NETSTATE_ONLINE)
+	{
+		// we switched to online
+		m_pConsole->Print(IConsole::OUTPUT_LEVEL_STANDARD, "tdtw", "TDTW Server connected");
+		SetStateTdtw(IClient::STATE_TDTW_ONLINE);
+		SendInfo();
+	}
 
 	// process packets
 	CNetChunk Packet;
