@@ -1811,7 +1811,7 @@ void str_timestamp(char *buffer, int buffer_size)
 
 	time(&time_data);
 	time_info = localtime(&time_data);
-	strftime(buffer, buffer_size, "%Y-%m-%d_%H:%M:%S", time_info);
+	strftime(buffer, buffer_size, "%Y-%m-%d_%H-%M-%S", time_info);
 	buffer[buffer_size-1] = 0;	/* assure null termination */
 }
 
