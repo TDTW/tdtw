@@ -269,6 +269,8 @@ CClient::CClient() : m_DemoPlayer(&m_SnapshotDelta), m_DemoRecorder(&m_SnapshotD
 	m_CurrentRecvTick = 0;
 	m_RconAuthed = 0;
 
+	m_ReconnectTick = 0;
+
 	// version-checking
 	m_aVersionStr[0] = '0';
 	m_aVersionStr[1] = 0;
@@ -592,8 +594,9 @@ void CClient::ConnectTdtw(const char *pAddress)
 
 	if (m_ServerTdtwAddress.port == 0)
 		m_ServerTdtwAddress.port = TDTW_PORT;
-	m_NetTdtw.Connect(&m_ServerTdtwAddress);
 	SetStateTdtw(IClient::STATE_TDTW_CONNECTING);
+	m_NetTdtw.Connect(&m_ServerTdtwAddress);
+
 }
 
 void CClient::DisconnectWithReason(const char *pReason)
@@ -1501,37 +1504,29 @@ void CClient::PumpNetworkTdtw()
 	m_NetTdtw.Update();
 
 	// check for errors
-	if ((m_NetTdtw.State() == NETSTATE_OFFLINE && StateTdtw() != IClient::STATE_TDTW_OFFLINE) || (m_NetTdtw.State() != NETSTATE_OFFLINE && m_NetTdtw.GotProblems()))
+	if (StateTdtw() != IClient::STATE_OFFLINE && StateTdtw() != IClient::STATE_QUITING && m_NetTdtw.State() == NETSTATE_OFFLINE)
 	{
 		SetStateTdtw(IClient::STATE_TDTW_OFFLINE);
 		//Disconnect();
-		m_NetTdtw.Disconnect("TDTW Server offline");
-		m_pConsole->PrintArg(IConsole::OUTPUT_LEVEL_STANDARD, "tdtw", "TDTW Server offline error='%s'", m_NetTdtw.ErrorString());
+		m_NetTdtw.Disconnect(0);
+		char aBuf[256];
+		str_format(aBuf, sizeof(aBuf), "offline error='%s'", m_NetTdtw.ErrorString());
+		m_pConsole->Print(IConsole::OUTPUT_LEVEL_STANDARD, "client", aBuf);
+
 	}
-
-/*
-
-	if (StateTdtw() == IClient::STATE_TDTW_CONNECTING && m_NetTdtw.State() == NETSTATE_CONNECTING)
+	if (StateTdtw() != IClient::STATE_TDTW_ONLINE && m_NetTdtw.State() != NETSTATE_ONLINE)
 	{
-		if (time_get() % (time_freq() * 5000))
+		if (time_get() >= m_ReconnectTick)
+		{
 			ConnectTdtw(TDTW_IP);
-		return;
-	}*/
-
-	if (StateTdtw() == IClient::STATE_TDTW_OFFLINE)
-	{
-		if (time_get() % (time_freq() * 5) == 0)
-			ConnectTdtw(TDTW_IP);
-		return;
+			m_ReconnectTick = time_get() + time_freq() * 5;
+		}
 	}
-
-	//
 	if (StateTdtw() == IClient::STATE_TDTW_CONNECTING && m_NetTdtw.State() == NETSTATE_ONLINE)
 	{
 		// we switched to online
 		m_pConsole->Print(IConsole::OUTPUT_LEVEL_STANDARD, "tdtw", "TDTW Server connected");
 		SetStateTdtw(IClient::STATE_TDTW_ONLINE);
-		SendInfo();
 	}
 
 	// process packets

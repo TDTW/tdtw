@@ -104,6 +104,9 @@ class CClient : public IClient, public CDemoPlayer::IListner
 	int m_RconAuthed;
 	int m_UseTempRconCommands;
 
+	//TDTW reconnect
+	int64 m_ReconnectTick;
+
 	// version-checking
 	char m_aVersionStr[10];
 

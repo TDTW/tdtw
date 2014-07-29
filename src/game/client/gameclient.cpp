@@ -296,7 +296,7 @@ void CGameClient::OnInit()
 	for(int i = 0; i < m_All.m_Num; i++)
 		m_All.m_paComponents[i]->OnReset();
 
-	m_pClient->ConnectTdtw(TDTW_IP);
+	//m_pClient->ConnectTdtw(TDTW_IP);
 
 	int64 End = time_get();
 	char aBuf[256];
