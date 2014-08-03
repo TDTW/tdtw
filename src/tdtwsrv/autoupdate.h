@@ -28,16 +28,15 @@ public:
 		int Size;
 		int FolderID;
 		int ParentFolderID;
+		array <CInfoFiles> m_aFiles;
 	};
 	void CheckHash();
 
 	class CTdtwSrv *Server() { return m_pServer; }
 	class IStorage *Storage() { return m_pStorage; }
-	//static int ParseFilesCallback(const char *pFileName, int IsDir, void *pUser, int folder_id);
 private:
 
 	array <CInfoFolders> m_aDir;
-	array <CInfoFiles> m_aFiles;
 	class CTdtwSrv *m_pServer;
 	class IStorage *m_pStorage;
 };
