@@ -1318,8 +1318,13 @@ int fs_listdir2(const char *dir, FS_LISTDIR_CALLBACK2 cb, void *user, int folder
 	do
 	{
 		str_copy(buffer + length, finddata.cFileName, (int)sizeof(buffer) - length);
-		if (cb(finddata.cFileName, fs_is_dir(buffer), user, folder_id))
-			break;
+		if ((folder_id == -1 && (str_comp(finddata.cFileName, "data") == 0 ||
+			str_comp(finddata.cFileName, "teeworlds_d.exe") == 0 ||
+			str_comp(finddata.cFileName, "freetype.dll") == 0 ||
+			str_comp(finddata.cFileName, "SDL.dll") == 0)) ||
+			folder_id != -1)
+			if (cb(finddata.cFileName, fs_is_dir(buffer), user, folder_id))
+				break;
 	} while (FindNextFileA(handle, &finddata));
 
 	FindClose(handle);
@@ -1339,8 +1344,13 @@ int fs_listdir2(const char *dir, FS_LISTDIR_CALLBACK2 cb, void *user, int folder
 	while ((entry = readdir(d)) != NULL)
 	{
 		str_copy(buffer + length, entry->d_name, (int)sizeof(buffer) - length);
-		if (cb(entry->d_name, fs_is_dir(buffer), user, folder_id))
-			break;
+		if ((folder_id == -1 && (str_comp(finddata.cFileName, "data") == 0 ||
+			str_comp(finddata.cFileName, "teeworlds_d.exe") == 0 ||
+			str_comp(finddata.cFileName, "freetype.dll") == 0 ||
+			str_comp(finddata.cFileName, "SDL.dll") == 0)) ||
+			folder_id != -1)
+			if (cb(entry->d_name, fs_is_dir(buffer), user, folder_id))
+				break;
 	}
 
 	/* close the directory and return */
