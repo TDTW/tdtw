@@ -252,6 +252,8 @@ CClient::CClient() : m_DemoPlayer(&m_SnapshotDelta), m_DemoRecorder(&m_SnapshotD
 	m_pMap = 0;
 	m_pConsole = 0;
 
+	m_pThreadTDTW = 0x0;
+
 	m_RenderFrameTime = 0.0001f;
 	m_RenderFrameTimeLow = 1.0f;
 	m_RenderFrameTimeHigh = 0.0f;
@@ -1499,40 +1501,43 @@ void CClient::PumpNetwork()
 	}
 }
 
-void CClient::PumpNetworkTdtw()
+void CClient::PumpNetworkTdtw(void *pUser)
 {
-	m_NetTdtw.Update();
-
+	CClient *pThis = (CClient *)pUser;
+	pThis->m_NetTdtw.Update();
+	
 	// check for errors
-	if (StateTdtw() != IClient::STATE_OFFLINE && StateTdtw() != IClient::STATE_QUITING && m_NetTdtw.State() == NETSTATE_OFFLINE)
+	if (pThis->StateTdtw() != IClient::STATE_OFFLINE && pThis->StateTdtw() != IClient::STATE_QUITING && pThis->m_NetTdtw.State() == NETSTATE_OFFLINE)
 	{
-		SetStateTdtw(IClient::STATE_TDTW_OFFLINE);
+		pThis->SetStateTdtw(IClient::STATE_TDTW_OFFLINE);
 		//Disconnect();
-		m_NetTdtw.Disconnect(0);
+		pThis->m_NetTdtw.Disconnect(0);
 		char aBuf[256];
-		str_format(aBuf, sizeof(aBuf), "offline error='%s'", m_NetTdtw.ErrorString());
-		m_pConsole->Print(IConsole::OUTPUT_LEVEL_STANDARD, "client", aBuf);
+		str_format(aBuf, sizeof(aBuf), "offline error='%s'", pThis->m_NetTdtw.ErrorString());
+		pThis->m_pConsole->Print(IConsole::OUTPUT_LEVEL_STANDARD, "client", aBuf);
 
 	}
-	if (StateTdtw() != IClient::STATE_TDTW_ONLINE && m_NetTdtw.State() != NETSTATE_ONLINE)
+	if (pThis->StateTdtw() != IClient::STATE_TDTW_ONLINE && pThis->m_NetTdtw.State() != NETSTATE_ONLINE)
 	{
-		if (time_get() >= m_ReconnectTick)
+		if (time_get() >= pThis->m_ReconnectTick)
 		{
-			ConnectTdtw(TDTW_IP);
-			m_ReconnectTick = time_get() + time_freq() * 5;
+			pThis->ConnectTdtw(TDTW_IP);
+			pThis->m_ReconnectTick = time_get() + time_freq() * 5;
 		}
 	}
-	if (StateTdtw() == IClient::STATE_TDTW_CONNECTING && m_NetTdtw.State() == NETSTATE_ONLINE)
+	if (pThis->StateTdtw() == IClient::STATE_TDTW_CONNECTING && pThis->m_NetTdtw.State() == NETSTATE_ONLINE)
 	{
 		// we switched to online
-		m_pConsole->Print(IConsole::OUTPUT_LEVEL_STANDARD, "tdtw", "TDTW Server connected");
-		SetStateTdtw(IClient::STATE_TDTW_ONLINE);
+		pThis->m_pConsole->Print(IConsole::OUTPUT_LEVEL_STANDARD, "tdtw", "TDTW Server connected");
+		pThis->SetStateTdtw(IClient::STATE_TDTW_ONLINE);
 	}
 
 	// process packets
 	CNetChunk Packet;
-	while (m_NetTdtw.Recv(&Packet))
-		TDTWServer()->Recv(&Packet); 
+	while (pThis->m_NetTdtw.Recv(&Packet))
+		pThis->TDTWServer()->Recv(&Packet);
+
+	thread_sleep(5);
 }
 
 void CClient::OnDemoPlayerSnapshot(void *pData, int Size)
@@ -1734,7 +1739,7 @@ void CClient::Update()
 
 	// pump the network
 	PumpNetwork();
-	PumpNetworkTdtw();
+	
 
 	// update the maser server registry
 	MasterServer()->Update();
@@ -1909,7 +1914,7 @@ void CClient::Run()
 
 	// process pending commands
 	m_pConsole->StoreCommands(false);
-
+	m_pThreadTDTW = thread_create(PumpNetworkTdtw, this);
 	while (1)
 	{
 		//
@@ -2082,7 +2087,7 @@ void CClient::Run()
 
 	GameClient()->OnShutdown();
 	Disconnect();
-
+	thread_destroy(m_pThreadTDTW);
 	m_pGraphics->Shutdown();
 	m_pSound->Shutdown();
 

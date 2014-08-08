@@ -270,7 +270,9 @@ public:
 	virtual int MapDownloadTotalsize() { return m_MapdownloadTotalsize; }
 
 	void PumpNetwork();
-	void PumpNetworkTdtw();
+
+	void *m_pThreadTDTW;
+	static void PumpNetworkTdtw(void *pUser);
 
 	virtual void OnDemoPlayerSnapshot(void *pData, int Size);
 	virtual void OnDemoPlayerMessage(void *pData, int Size);

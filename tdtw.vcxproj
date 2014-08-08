@@ -29,6 +29,12 @@
     <PlatformToolset>v120</PlatformToolset>
     <CharacterSet>MultiByte</CharacterSet>
   </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" Label="Configuration">
+    <ConfigurationType>Makefile</ConfigurationType>
+    <UseDebugLibraries>true</UseDebugLibraries>
+    <PlatformToolset>v120</PlatformToolset>
+    <CharacterSet>MultiByte</CharacterSet>
+  </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Server(Debug)|Win32'" Label="Configuration">
     <ConfigurationType>Makefile</ConfigurationType>
     <UseDebugLibraries>true</UseDebugLibraries>
@@ -41,17 +47,13 @@
     <PlatformToolset>v120</PlatformToolset>
     <CharacterSet>MultiByte</CharacterSet>
   </PropertyGroup>
-  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" Label="Configuration">
-    <ConfigurationType>Application</ConfigurationType>
-    <UseDebugLibraries>false</UseDebugLibraries>
-    <PlatformToolset>v120</PlatformToolset>
-    <WholeProgramOptimization>true</WholeProgramOptimization>
-    <CharacterSet>MultiByte</CharacterSet>
-  </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.props" />
   <ImportGroup Label="ExtensionSettings">
   </ImportGroup>
   <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <ImportGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" Label="PropertySheets">
     <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
   </ImportGroup>
   <ImportGroup Condition="'$(Configuration)|$(Platform)'=='Server(Debug)|Win32'" Label="PropertySheets">
@@ -60,34 +62,48 @@
   <ImportGroup Condition="'$(Configuration)|$(Platform)'=='TDTWServer(Debug)|Win32'" Label="PropertySheets">
     <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
   </ImportGroup>
-  <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
-    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
-  </ImportGroup>
   <PropertyGroup Label="UserMacros" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <IncludePath>$(ProjectDir)/src/engine/external/zlib/;$(ProjectDir)/other/sdl/include/;$(ProjectDir)/src/;$(IncludePath)</IncludePath>
-    <NMakeBuildCommandLine>.\bam\bam client_debug</NMakeBuildCommandLine>
-    <NMakeReBuildCommandLine>.\bam\bam -c all
-.\bam\bam client_debug</NMakeReBuildCommandLine>
-    <NMakeCleanCommandLine>.\bam\bam -c all</NMakeCleanCommandLine>
+    <NMakeBuildCommandLine>..\bam\bam client_debug</NMakeBuildCommandLine>
+    <NMakeReBuildCommandLine>..\bam\bam -c all
+..\bam\bam client_debug</NMakeReBuildCommandLine>
+    <NMakeCleanCommandLine>..\bam\bam -c all</NMakeCleanCommandLine>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+    <IncludePath>$(ProjectDir)/src/engine/external/zlib/;$(ProjectDir)/other/sdl/include/;$(ProjectDir)/src/;$(IncludePath)</IncludePath>
+    <NMakeBuildCommandLine>..\bam\bam client_release</NMakeBuildCommandLine>
+    <NMakeReBuildCommandLine>..\bam\bam -c all
+..\bam\bam client_release</NMakeReBuildCommandLine>
+    <NMakeCleanCommandLine>..\bam\bam -c all</NMakeCleanCommandLine>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Server(Debug)|Win32'">
     <IncludePath>$(ProjectDir)/src/engine/external/zlib/;$(ProjectDir)/other/sdl/include/;$(ProjectDir)/src/;$(IncludePath)</IncludePath>
-    <NMakeBuildCommandLine>.\bam\bam server_debug</NMakeBuildCommandLine>
-    <NMakeReBuildCommandLine>.\bam\bam -c all
-.\bam\bam server_debug</NMakeReBuildCommandLine>
-    <NMakeCleanCommandLine>.\bam\bam -c all</NMakeCleanCommandLine>
+    <NMakeBuildCommandLine>..\bam\bam server_debug</NMakeBuildCommandLine>
+    <NMakeReBuildCommandLine>..\bam\bam -c all
+..\bam\bam server_debug</NMakeReBuildCommandLine>
+    <NMakeCleanCommandLine>..\bam\bam -c all</NMakeCleanCommandLine>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='TDTWServer(Debug)|Win32'">
     <IncludePath>$(ProjectDir)/src/engine/external/zlib/;$(ProjectDir)/other/sdl/include/;$(ProjectDir)/src/;$(IncludePath)</IncludePath>
-    <NMakeBuildCommandLine>.\bam\bam tdtwserver_debug</NMakeBuildCommandLine>
-    <NMakeReBuildCommandLine>.\bam\bam -c all
- .\bam\bam tdtwserver_debug</NMakeReBuildCommandLine>
-    <NMakeCleanCommandLine>.\bam\bam -c all</NMakeCleanCommandLine>
+    <NMakeBuildCommandLine>..\bam\bam tdtwserver_debug</NMakeBuildCommandLine>
+    <NMakeReBuildCommandLine>..\bam\bam -c all
+ ..\bam\bam tdtwserver_debug</NMakeReBuildCommandLine>
+    <NMakeCleanCommandLine>..\bam\bam -c all</NMakeCleanCommandLine>
     <OutDir>objs\</OutDir>
     <IntDir>objs\</IntDir>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+    <ClCompile>
+      <WarningLevel>Level3</WarningLevel>
+      <Optimization>Disabled</Optimization>
+      <SDLCheck>true</SDLCheck>
+    </ClCompile>
+    <Link>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+    </Link>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <ClCompile>
       <WarningLevel>Level3</WarningLevel>
       <Optimization>Disabled</Optimization>
@@ -119,20 +135,6 @@
     <BuildLog>
       <Path />
     </BuildLog>
-  </ItemDefinitionGroup>
-  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
-    <ClCompile>
-      <WarningLevel>Level3</WarningLevel>
-      <Optimization>MaxSpeed</Optimization>
-      <FunctionLevelLinking>true</FunctionLevelLinking>
-      <IntrinsicFunctions>true</IntrinsicFunctions>
-      <SDLCheck>true</SDLCheck>
-    </ClCompile>
-    <Link>
-      <GenerateDebugInformation>true</GenerateDebugInformation>
-      <EnableCOMDATFolding>true</EnableCOMDATFolding>
-      <OptimizeReferences>true</OptimizeReferences>
-    </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
     <None Include="bam.lua" />
