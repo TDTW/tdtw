@@ -1,5 +1,4 @@
 #include "tdtwsrv.h"
-#include "client.h"
 
 #include <base\system.h>
 
@@ -14,62 +13,16 @@
 #include <iostream>
 
 
-CTdtwSrv::CTdtwSrv(int argc, const char **argv)
+CTdtwSrv::CTdtwSrv()
 {
-	pKernel = IKernel::Create();
-	pEngine = CreateEngine("TDTW Server");
-	m_pConsole = CreateConsole(CFGFLAG_MASTER | CFGFLAG_ECON);
-	pStorage = CreateStorage("Teeworlds", IStorage::STORAGETYPE_SERVER, argc, argv);
-	pConfig = CreateConfig();
+	m_pGame = CreateGame();
+	m_pConfig = NULL;
+	m_pConsole = NULL;
+	m_pEngine = NULL;
+	m_pStorage = NULL;
 
-	m_aClients.clear();
 
-	m_CurrentGameTick = 0;
-	m_TickSpeed = SERVER_TICK_SPEED;
-/*	// TODO: ADD
-	m_RconClientID = IServer::RCON_CID_SERV;
-	m_RconAuthLevel = AUTHED_ADMIN;*/
-	{
-		bool RegisterFail = false;
 
-		RegisterFail = RegisterFail || !pKernel->RegisterInterface(pEngine);
-		RegisterFail = RegisterFail || !pKernel->RegisterInterface(m_pConsole);
-		RegisterFail = RegisterFail || !pKernel->RegisterInterface(pStorage);
-		RegisterFail = RegisterFail || !pKernel->RegisterInterface(pConfig);
-
-		if (RegisterFail)
-			::exit(0);
-	}
-
-	pEngine->Init();
-	pConfig->Init();
-
-	//RegisterCommands(); // TODO: ADD from server.cpp
-/*	m_pConsole->ExecuteFile("tdtwexec.cfg"); // TODO: Make config
-	// parse the command line arguments
-
-	if (argc > 1) // ignore_convention
-		m_pConsole->ParseArguments(argc - 1, &argv[1]); // ignore_convention
-
-	// restore empty config strings to their defaults
-	pConfig->RestoreStrings();*/
-	
-	pEngine->InitLogfile();
-
-	// process pending commands
-	m_pConsole->StoreCommands(false);
-
-	// execute logger file	
-	char ConsoleLog[125];
-	char time[64];
-	str_timestamp_day(time, sizeof(time));
-	sprintf(ConsoleLog, "\\Logs\\TDTW-Server %s.log", time);
-
-	m_pConsole->ExecuteLogger(ConsoleLog, IOFLAG_LOGGER);
-
-	m_pAutoUpdate = new CAutoUpdate(this, Storage());
-	AutoUpdate()->CheckHash();
-	m_pConsole->PrintArg(IConsole::OUTPUT_LEVEL_STANDARD, "TDTW srv", "started");
 }
 
 CTdtwSrv::~CTdtwSrv()
@@ -77,11 +30,7 @@ CTdtwSrv::~CTdtwSrv()
 	// save logger file
 	m_pConsole->SaveLogger();
 
-	delete pKernel;
-	delete pEngine;
-	delete pStorage;
-	delete pConfig;
-	delete m_pConsole;
+	delete m_pAutoUpdate;
 }
 
 int CTdtwSrv::SendMsg(CMsgPacker *pMsg, int Flags, int ClientID)
@@ -116,9 +65,9 @@ int CTdtwSrv::SendMsgEx(CMsgPacker *pMsg, int Flags, int ClientID, bool System)
 		if (ClientID == -1)
 		{
 			// broadcast
-			for (int i = 0; i < m_aClients.size(); i++)
+			for (int i = 0; i < Game()->ClientsNum(); i++)
 			{
-				if (m_aClients[i]->m_State == CClientTdtw::STATE_CONNECTED)
+				if (Game()->ClientState(i) == CClientTdtw::STATE_CONNECTED)
 				{
 					Packet.m_ClientID = i;
 					m_NetServer.Send(&Packet);
@@ -134,8 +83,7 @@ int CTdtwSrv::SendMsgEx(CMsgPacker *pMsg, int Flags, int ClientID, bool System)
 int CTdtwSrv::NewClientCallback(int ClientID, void *pUser)
 {
 	CTdtwSrv *pThis = (CTdtwSrv *)pUser;
-	CClientTdtw *NewClient = new CClientTdtw;
-	pThis->m_aClients.add(NewClient);
+	pThis->Game()->AddClient();
 
 	CMsgPacker Msg(NETMSG_VERSION);
 	Msg.AddString(GAME_VERSION, 64);
@@ -153,11 +101,11 @@ int CTdtwSrv::DelClientCallback(int ClientID, const char *pReason, void *pUser)
 	pThis->Console()->PrintArg(IConsole::OUTPUT_LEVEL_ADDINFO, "server",
 		"client dropped. cid=%d addr=%s reason='%s'", ClientID, aAddrStr, pReason);
 	
-	pThis->m_aClients.remove_index(ClientID);
+	pThis->Game()->DeleteClient(ClientID);
 	return 0;
 }
 
-int CTdtwSrv::Run()
+void CTdtwSrv::Run()
 {
 	// start server
 	NETADDR BindAddr;
@@ -177,12 +125,12 @@ int CTdtwSrv::Run()
 	if (!m_NetServer.Open(BindAddr, 0/*&m_ServerBan*/, g_Config.m_SvMaxClients, g_Config.m_SvMaxClientsPerIP, 0))
 	{
 		m_pConsole->PrintArg(IConsole::OUTPUT_LEVEL_STANDARD, "server", "couldn't open socket. port %d might already be in use", g_Config.m_SvPort);
-		return -1;
+		return;
 	}
 
 	m_NetServer.SetCallbacks(NewClientCallback, DelClientCallback, this);
 
-	//m_Econ.Init(Console(), &m_ServerBan); // TODO: Make this
+	AutoUpdate()->CheckHash();
 
 	while (1)
 	{
@@ -190,23 +138,17 @@ int CTdtwSrv::Run()
 		m_NetServer.Update();
 		while (m_NetServer.Recv(&p))
 		{
-			if (p.m_ClientID >= 0 && p.m_ClientID < m_aClients.size())
+			if (p.m_ClientID >= 0 && p.m_ClientID < Game()->ClientsNum())
 				Protocol(&p);
 		}
 
-		//m_ServerBan.Update();
-		//m_Econ.Update();	// TODO: Make this
 
 		net_socket_read_wait(m_NetServer.Socket(), 5);
 	}
 
 	// disconnect all clients on shutdown
-	for (int i = 0; i < m_aClients.size(); ++i)
-	{
+	for (int i = 0; i < Game()->ClientsNum(); ++i)
 		m_NetServer.Drop(i, "Server shutdown");
-
-		//m_Econ.Shutdown();	// TODO: Make this
-	}
 }
 
 void CTdtwSrv::Protocol(CNetChunk *pPacket)
@@ -237,7 +179,7 @@ void CTdtwSrv::Protocol(CNetChunk *pPacket)
 			char *Version = (char *)Unpacker.GetString(CUnpacker::SANITIZE_CC);
 			char *Name = (char *)Unpacker.GetString(CUnpacker::SANITIZE_CC);
 			m_pConsole->PrintArg(IConsole::OUTPUT_LEVEL_DEBUG, "server", "[%d]:[%s] Client version: %s", ClientID, Name, Version);
-			str_copy(m_aClients[ClientID]->m_aName, Name, sizeof(Name));
+			//str_copy(m_aClients[ClientID]->m_aName, Name, sizeof(Name));
 		}
 		else
 		{
@@ -262,7 +204,7 @@ void CTdtwSrv::Protocol(CNetChunk *pPacket)
 	}
 	else
 	{
-		if (m_aClients[ClientID]->m_State == CClientTdtw::STATE_EMPTY)
+		if (Game()->ClientState(ClientID) == CClientTdtw::STATE_EMPTY)
 			return;
 
 		void *pRawMsg = m_NetHandler.SecureUnpackMsg(Msg, &Unpacker);
@@ -274,15 +216,45 @@ void CTdtwSrv::Protocol(CNetChunk *pPacket)
 			return;
 		}
 
+		/*
 		if (Msg == NETMSGTYPE_TDTW_TESTCHAT)
 		{
 			CNetMsg_TestChat *pMsg = (CNetMsg_TestChat *)pRawMsg;
 
 			m_pConsole->PrintArg(IConsole::OUTPUT_LEVEL_STANDARD, "chat",
 				"[%s]: %s", pMsg->m_Name, pMsg->m_pMessage);
-		}
+		}*/
 
 	}
+}
+
+void CTdtwSrv::RequestInterfaces()
+{
+	m_pEngine = Kernel()->RequestInterface<IEngine>();
+	m_pStorage = Kernel()->RequestInterface<IStorage>();
+	m_pConfig = Kernel()->RequestInterface<IConfig>();
+	m_pConsole = Kernel()->RequestInterface<IConsole>();
+	m_pAutoUpdate = Kernel()->RequestInterface<IAutoUpdate>();
+
+	m_pConsole->StoreCommands(false);
+	// process pending commands
+
+
+	// execute logger file	
+	char ConsoleLog[125];
+	char time[64];
+	str_timestamp_day(time, sizeof(time));
+	sprintf(ConsoleLog, "\\Logs\\TDTW-Server %s.log", time);
+	m_pConsole->ExecuteLogger(ConsoleLog, IOFLAG_LOGGER);
+
+	m_pConsole->PrintArg(IConsole::OUTPUT_LEVEL_STANDARD, "TDTW srv", "started");
+}
+
+static ITDTWSrv *CreateTDTWServer() 
+{
+	CTdtwSrv *pTDTWServer = static_cast<CTdtwSrv *>(mem_alloc(sizeof(CTdtwSrv), 1));
+	mem_zero(pTDTWServer, sizeof(CTdtwSrv));
+	return new(pTDTWServer)CTdtwSrv;
 }
 
 int main(int argc, const char **argv)
@@ -291,6 +263,44 @@ int main(int argc, const char **argv)
 	setlocale(LC_ALL, "Russian");
 //#endif
 	//SetConsoleOutputCP(1251);
-	CTdtwSrv *TdtwServer = new CTdtwSrv(argc, argv);
-	return TdtwServer->Run();
+	ITDTWSrv *pServer = CreateTDTWServer();
+	IKernel *pKernel = IKernel::Create();
+	IEngine *pEngine = CreateEngine("TDTW Server");
+	IConsole *pConsole = CreateConsole(CFGFLAG_SERVERTDTW);
+	IStorage *pStorage = CreateStorage("Teeworlds", IStorage::STORAGETYPE_SERVER, argc, argv);
+	IConfig *pConfig = CreateConfig();
+	IAutoUpdate *pAutoUpdate = CreateAutoUpdate();
+
+	{
+		bool RegisterFail = false;
+
+		RegisterFail = RegisterFail || !pKernel->RegisterInterface(pServer);
+		RegisterFail = RegisterFail || !pKernel->RegisterInterface(pEngine);
+		RegisterFail = RegisterFail || !pKernel->RegisterInterface(pConsole);
+		RegisterFail = RegisterFail || !pKernel->RegisterInterface(pStorage);
+		RegisterFail = RegisterFail || !pKernel->RegisterInterface(pConfig);
+		RegisterFail = RegisterFail || !pKernel->RegisterInterface(pAutoUpdate);
+
+		if (RegisterFail)
+			::exit(0);
+	}
+	pEngine->Init();
+	pConfig->Init();
+
+	pServer->RequestInterfaces();
+
+	pAutoUpdate->RequestInterfaces();
+
+	pEngine->InitLogfile();
+
+	
+	pServer->Run();
+
+	delete pKernel;
+	delete pEngine;
+	delete pStorage;
+	delete pConfig;
+	delete pConsole;
+	delete pServer;
+	return 0;
 }

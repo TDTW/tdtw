@@ -1,5 +1,4 @@
 #include "autoupdate.h"
-#include <base/system.h>
 /*
 MINI TUTORIAL HAW WARK THES ABDUTER BAI MIXA POBEDIATEL EVROVIDENYA 2008
 	server->client | srv_ver
@@ -34,20 +33,18 @@ MINI TUTORIAL HAW WARK THES ABDUTER BAI MIXA POBEDIATEL EVROVIDENYA 2008
 
 */
 
-CAutoUpdate::CAutoUpdate(class CTdtwSrv *Server, IStorage *Storage)
+CAutoUpdate::CAutoUpdate()
 {
-	m_pServer = Server;
-	m_pStorage = Storage;
-	{
-		m_aDir.clear();
 
-		CInfoFolders *Temp = new CInfoFolders();
-		str_copy(Temp->Name, ".", sizeof(Temp->Name));
+	m_aDir.clear();
 
-		Temp->FolderID = 0;
-		Temp->ParentFolderID = -1;
-		m_aDir.add(*Temp);
-	}
+	CInfoFolders *Temp = new CInfoFolders();
+	str_copy(Temp->Name, ".", sizeof(Temp->Name));
+
+	Temp->FolderID = 0;
+	Temp->ParentFolderID = -1;
+	m_aDir.add(*Temp);
+	
 }
 
 void CAutoUpdate::CheckHash()
@@ -93,13 +90,21 @@ void CAutoUpdate::CheckHash()
 	};
 	fs_listdir2("./", ParseFilesCallback, this, 0);
 
-/*	// Logger of updated files with CRC and folders
+	// Logger of updated files with CRC and folders
 	for (int i = 0; i < m_aDir.size(); i++)
 	{
-		Server()->Console()->PrintArg(IConsole::OUTPUT_LEVEL_STANDARD, "updater", "[%d][%d] [%08x] %s", m_aDir[i].ParentFolderID, m_aDir[i].FolderID, m_aDir[i].Crc, m_aDir[i].Name);
+		Console()->PrintArg(IConsole::OUTPUT_LEVEL_STANDARD, "updater", "[%d][%d] [%08x] %s", m_aDir[i].ParentFolderID, m_aDir[i].FolderID, m_aDir[i].Crc, m_aDir[i].Name);
 		for (int j = 0; j < m_aDir[i].m_aFiles.size(); j++)
 		{
-			Server()->Console()->PrintArg(IConsole::OUTPUT_LEVEL_STANDARD, "updater", "   [%d] [%08x] %s", m_aDir[i].m_aFiles[j].FolderID, m_aDir[i].m_aFiles[j].Crc, m_aDir[i].m_aFiles[j].Name);
+			Console()->PrintArg(IConsole::OUTPUT_LEVEL_STANDARD, "updater", "   [%d] [%08x] %s", m_aDir[i].m_aFiles[j].FolderID, m_aDir[i].m_aFiles[j].Crc, m_aDir[i].m_aFiles[j].Name);
 		}
-	}*/
+	}
 }
+
+void CAutoUpdate::RequestInterfaces()
+{
+	m_pConsole = Kernel()->RequestInterface<IConsole>();
+	m_pStorage = Kernel()->RequestInterface<IStorage>();
+}
+
+IAutoUpdate *CreateAutoUpdate() { return new CAutoUpdate(); }

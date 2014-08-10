@@ -1504,40 +1504,42 @@ void CClient::PumpNetwork()
 void CClient::PumpNetworkTdtw(void *pUser)
 {
 	CClient *pThis = (CClient *)pUser;
-	pThis->m_NetTdtw.Update();
-	
-	// check for errors
-	if (pThis->StateTdtw() != IClient::STATE_OFFLINE && pThis->StateTdtw() != IClient::STATE_QUITING && pThis->m_NetTdtw.State() == NETSTATE_OFFLINE)
+	while (1)
 	{
-		pThis->SetStateTdtw(IClient::STATE_TDTW_OFFLINE);
-		//Disconnect();
-		pThis->m_NetTdtw.Disconnect(0);
-		char aBuf[256];
-		str_format(aBuf, sizeof(aBuf), "offline error='%s'", pThis->m_NetTdtw.ErrorString());
-		pThis->m_pConsole->Print(IConsole::OUTPUT_LEVEL_STANDARD, "client", aBuf);
+		pThis->m_NetTdtw.Update();
 
-	}
-	if (pThis->StateTdtw() != IClient::STATE_TDTW_ONLINE && pThis->m_NetTdtw.State() != NETSTATE_ONLINE)
-	{
-		if (time_get() >= pThis->m_ReconnectTick)
+		// check for errors
+		if (pThis->StateTdtw() != IClient::STATE_OFFLINE && pThis->StateTdtw() != IClient::STATE_QUITING && pThis->m_NetTdtw.State() == NETSTATE_OFFLINE)
 		{
-			pThis->ConnectTdtw(TDTW_IP);
-			pThis->m_ReconnectTick = time_get() + time_freq() * 5;
+			pThis->SetStateTdtw(IClient::STATE_TDTW_OFFLINE);
+			//Disconnect();
+			pThis->m_NetTdtw.Disconnect(0);
+			char aBuf[256];
+			str_format(aBuf, sizeof(aBuf), "offline error='%s'", pThis->m_NetTdtw.ErrorString());
+			pThis->m_pConsole->Print(IConsole::OUTPUT_LEVEL_STANDARD, "client", aBuf);
+
 		}
-	}
-	if (pThis->StateTdtw() == IClient::STATE_TDTW_CONNECTING && pThis->m_NetTdtw.State() == NETSTATE_ONLINE)
-	{
-		// we switched to online
-		pThis->m_pConsole->Print(IConsole::OUTPUT_LEVEL_STANDARD, "tdtw", "TDTW Server connected");
-		pThis->SetStateTdtw(IClient::STATE_TDTW_ONLINE);
-	}
+		if (pThis->StateTdtw() != IClient::STATE_TDTW_ONLINE && pThis->m_NetTdtw.State() != NETSTATE_ONLINE)
+		{
+			if (time_get() >= pThis->m_ReconnectTick)
+			{
+				pThis->ConnectTdtw(TDTW_IP);
+				pThis->m_ReconnectTick = time_get() + time_freq() * 5;
+			}
+		}
+		if (pThis->StateTdtw() == IClient::STATE_TDTW_CONNECTING && pThis->m_NetTdtw.State() == NETSTATE_ONLINE)
+		{
+			// we switched to online
+			pThis->m_pConsole->Print(IConsole::OUTPUT_LEVEL_STANDARD, "tdtw", "TDTW Server connected");
+			pThis->SetStateTdtw(IClient::STATE_TDTW_ONLINE);
+		}
 
-	// process packets
-	CNetChunk Packet;
-	while (pThis->m_NetTdtw.Recv(&Packet))
-		pThis->TDTWServer()->Recv(&Packet);
-
-	thread_sleep(5);
+		// process packets
+		CNetChunk Packet;
+		while (pThis->m_NetTdtw.Recv(&Packet))
+			pThis->TDTWServer()->Recv(&Packet);
+		thread_sleep(5);
+	}
 }
 
 void CClient::OnDemoPlayerSnapshot(void *pData, int Size)

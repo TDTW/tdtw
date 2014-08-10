@@ -259,7 +259,7 @@ function build(settings)
 
 	versionserver = Compile(settings, Collect("src/versionsrv/*.cpp"))
 	masterserver = Compile(settings, Collect("src/mastersrv/*.cpp"))
-	tdtwserver = Compile(settings, Collect("src/tdtwsrv/*.cpp"))
+	tdtwserver = Compile(settings, CollectRecursive("src/tdtwsrv/*.cpp"))
 	game_shared = Compile(settings, Collect("src/game/*.cpp"), nethash, network_source, network_tdtw_source)
 	game_client = Compile(settings, CollectRecursive("src/game/client/*.cpp"), client_content_source)
 	game_server = Compile(settings, CollectRecursive("src/game/server/*.cpp"), server_content_source)
@@ -311,7 +311,7 @@ function build(settings)
 	ts = PseudoTarget("tdtwserver".."_"..settings.config_name, tdtwserver_exe)
 	t = PseudoTarget("tools".."_"..settings.config_name, tools)
 
-	all = PseudoTarget(settings.config_name, c, s, v, m, t)
+	all = PseudoTarget(settings.config_name, c, s, v, m, ts, t)
 	return all
 end
 

@@ -1,6 +1,5 @@
-
-#ifndef TDTWSRV_CLIENT_H
-#define TDTWSRV_CLIENT_H
+#ifndef TDTWSRV_TDTWSRV_CLIENT_H
+#define TDTWSRV_TDTWSRV_CLIENT_H
 
 #include <engine\shared\protocol.h>
 #include <engine\console.h>
