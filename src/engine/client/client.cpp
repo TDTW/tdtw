@@ -23,6 +23,7 @@
 #include <engine/storage.h>
 #include <engine/textrender.h>
 #include <engine/tdtwserver.h>
+#include <engine/autoupdate.h>
 
 #include <engine/shared/config.h>
 #include <engine/shared/compression.h>
@@ -1800,7 +1801,8 @@ void CClient::InitInterfaces()
 	m_pMap = Kernel()->RequestInterface<IEngineMap>();
 	m_pMasterServer = Kernel()->RequestInterface<IEngineMasterServer>();
 	m_pStorage = Kernel()->RequestInterface<IStorage>();
-
+	m_pTDTWServer = Kernel()->RequestInterface<ITDTWServer>();
+	m_pAutoUpdate = Kernel()->RequestInterface<IAutoUpdate>();
 	//
 	m_ServerBrowser.SetBaseInfo(&m_NetClient, m_pGameClient->NetVersion());
 	m_Friends.Init();
@@ -1875,7 +1877,6 @@ void CClient::Run()
 			return;
 		}
 	}
-	m_pTDTWServer = Kernel()->RequestInterface<ITDTWServer>();
 	// init font rendering
 	Kernel()->RequestInterface<IEngineTextRender>()->Init();
 
@@ -1916,6 +1917,7 @@ void CClient::Run()
 
 	// process pending commands
 	m_pConsole->StoreCommands(false);
+	AutoUpdate()->CheckHash();
 	m_pThreadTDTW = thread_create(PumpNetworkTdtw, this);
 	while (1)
 	{
@@ -2414,6 +2416,8 @@ int main(int argc, const char **argv) // ignore_convention
 	IEngineTextRender *pEngineTextRender = CreateEngineTextRender();
 	IEngineMap *pEngineMap = CreateEngineMap();
 	IEngineMasterServer *pEngineMasterServer = CreateEngineMasterServer();
+	ITDTWServer *pTDTWServer = CreateTDTWServer();
+	IAutoUpdate *pAutoUpdate = CreateAutoUpdate();
 
 	{
 		bool RegisterFail = false;
@@ -2440,6 +2444,8 @@ int main(int argc, const char **argv) // ignore_convention
 		RegisterFail = RegisterFail || !pKernel->RegisterInterface(CreateEditor());
 		RegisterFail = RegisterFail || !pKernel->RegisterInterface(CreateGameClient());
 		RegisterFail = RegisterFail || !pKernel->RegisterInterface(pStorage);
+		RegisterFail = RegisterFail || !pKernel->RegisterInterface(pTDTWServer);
+		RegisterFail = RegisterFail || !pKernel->RegisterInterface(pAutoUpdate);
 
 		if(RegisterFail)
 			return -1;
@@ -2455,17 +2461,10 @@ int main(int argc, const char **argv) // ignore_convention
 
 	// register all console commands
 	pClient->RegisterCommands();
-
+	pAutoUpdate->RequestInterfaces();
 
 	pKernel->RequestInterface<IGameClient>()->OnConsoleInit();
 
-	{
-		ITDTWServer *pTDTWServer = CreateTDTWServer();
-		bool RegisterFail = false;
-		RegisterFail = !pKernel->RegisterInterface(pTDTWServer);
-		if (RegisterFail)
-			return -1;
-	}
 	// init client's interfaces
 	pClient->InitInterfaces();
 

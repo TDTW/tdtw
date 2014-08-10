@@ -21,12 +21,14 @@ public:
 
 	class IClient *Client() { return m_pClient; }
 	class IConsole *Console() { return m_pConsole; }
+	class IAutoUpdate *AutoUpdate() { return m_pAutoUpdate; }
 	IKernel *Kernel() { return IInterface::Kernel(); }
 private:
 	CNetObjHandlerTdtw m_NetHandler;
 	char *m_Version;
 	class IClient *m_pClient;
 	class IConsole *m_pConsole;
+	class IAutoUpdate *m_pAutoUpdate;
 };
 
 #endif //GAME_CLIENT_TDTWSERVER_TDTWSERVER_H

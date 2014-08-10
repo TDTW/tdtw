@@ -10,6 +10,7 @@ void CTDTWServer::Init()
 	m_Version = 0x0;
 	m_pClient = Kernel()->RequestInterface<IClient>();
 	m_pConsole = Kernel()->RequestInterface<IConsole>();
+	m_pAutoUpdate = Kernel()->RequestInterface<IAutoUpdate>();
 }
 void CTDTWServer::Recv(CNetChunk *pChunk)
 {

@@ -91,14 +91,14 @@ void CAutoUpdate::CheckHash()
 	fs_listdir2("./", ParseFilesCallback, this, 0);
 
 	// Logger of updated files with CRC and folders
-	for (int i = 0; i < m_aDir.size(); i++)
+	/*for (int i = 0; i < m_aDir.size(); i++)
 	{
 		Console()->PrintArg(IConsole::OUTPUT_LEVEL_STANDARD, "updater", "[%d][%d] [%08x] %s", m_aDir[i].ParentFolderID, m_aDir[i].FolderID, m_aDir[i].Crc, m_aDir[i].Name);
 		for (int j = 0; j < m_aDir[i].m_aFiles.size(); j++)
 		{
 			Console()->PrintArg(IConsole::OUTPUT_LEVEL_STANDARD, "updater", "   [%d] [%08x] %s", m_aDir[i].m_aFiles[j].FolderID, m_aDir[i].m_aFiles[j].Crc, m_aDir[i].m_aFiles[j].Name);
 		}
-	}
+	}*/
 }
 
 void CAutoUpdate::RequestInterfaces()

@@ -303,6 +303,7 @@
     <ClInclude Include="src\base\tl\string.h" />
     <ClInclude Include="src\base\tl\threading.h" />
     <ClInclude Include="src\base\vmath.h" />
+    <ClInclude Include="src\engine\autoupdate.h" />
     <ClInclude Include="src\engine\client.h" />
     <ClInclude Include="src\engine\client\backend_sdl.h" />
     <ClInclude Include="src\engine\client\client.h" />
@@ -342,6 +343,7 @@
     <ClInclude Include="src\engine\serverbrowser.h" />
     <ClInclude Include="src\engine\server\register.h" />
     <ClInclude Include="src\engine\server\server.h" />
+    <ClInclude Include="src\engine\shared\autoupdate.h" />
     <ClInclude Include="src\engine\shared\compression.h" />
     <ClInclude Include="src\engine\shared\config.h" />
     <ClInclude Include="src\engine\shared\config_variables.h" />
@@ -432,8 +434,10 @@
     <ClInclude Include="src\game\voting.h" />
     <ClInclude Include="src\mastersrv\mastersrv.h" />
     <ClInclude Include="src\osxlaunch\client.h" />
-    <ClInclude Include="src\tdtwsrv\autoupdate.h" />
-    <ClInclude Include="src\tdtwsrv\client.h" />
+    <ClInclude Include="src\tdtwsrv\game.h" />
+    <ClInclude Include="src\tdtwsrv\game\client.h" />
+    <ClInclude Include="src\tdtwsrv\game\game.h" />
+    <ClInclude Include="src\tdtwsrv\server\tdtwsrv.h" />
     <ClInclude Include="src\tdtwsrv\tdtwsrv.h" />
     <ClInclude Include="src\versionsrv\mapversions.h" />
     <ClInclude Include="src\versionsrv\versionsrv.h" />
@@ -482,6 +486,7 @@
     <ClCompile Include="src\engine\external\zlib\zutil.c" />
     <ClCompile Include="src\engine\server\register.cpp" />
     <ClCompile Include="src\engine\server\server.cpp" />
+    <ClCompile Include="src\engine\shared\autoupdate.cpp" />
     <ClCompile Include="src\engine\shared\compression.cpp" />
     <ClCompile Include="src\engine\shared\config.cpp" />
     <ClCompile Include="src\engine\shared\console.cpp" />
@@ -580,9 +585,9 @@
     <ClCompile Include="src\game\server\gameworld.cpp" />
     <ClCompile Include="src\game\server\player.cpp" />
     <ClCompile Include="src\mastersrv\mastersrv.cpp" />
-    <ClCompile Include="src\tdtwsrv\autoupdate.cpp" />
-    <ClCompile Include="src\tdtwsrv\client.cpp" />
-    <ClCompile Include="src\tdtwsrv\tdtwsrv.cpp" />
+    <ClCompile Include="src\tdtwsrv\game\client.cpp" />
+    <ClCompile Include="src\tdtwsrv\game\game.cpp" />
+    <ClCompile Include="src\tdtwsrv\server\tdtwsrv.cpp" />
     <ClCompile Include="src\tools\crapnet.cpp" />
     <ClCompile Include="src\tools\dilate.cpp" />
     <ClCompile Include="src\tools\fake_server.cpp" />

@@ -18,9 +18,8 @@ Flags = [
 ]
 
 Messages = [
-	NetMessage("TestChat",[
-		NetString("m_Name"),
-		NetStringStrict("m_pMessage"),
+	NetMessage("AutoUpdate",[
+        NetString("m_Version"),
+        NetString("m_WantUpdate"),
 	], True),
-
 ]

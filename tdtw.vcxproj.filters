@@ -112,6 +112,12 @@
     <Filter Include="src\game\client\tdtwserver">
       <UniqueIdentifier>{855ffe81-4263-4cae-8be1-9d0864486bc9}</UniqueIdentifier>
     </Filter>
+    <Filter Include="src\tdtwsrv\server">
+      <UniqueIdentifier>{bfb0d3d8-a398-4236-b009-43fbcd8f7687}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src\tdtwsrv\game">
+      <UniqueIdentifier>{7838a494-5ed4-447b-beb7-daceee915a30}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <None Include="datasrc\compile.py">
@@ -991,20 +997,32 @@
     <ClInclude Include="src\game\generated\protocol_tdtw.h">
       <Filter>src\game\generated</Filter>
     </ClInclude>
-    <ClInclude Include="src\tdtwsrv\tdtwsrv.h">
-      <Filter>src\tdtwsrv</Filter>
-    </ClInclude>
-    <ClInclude Include="src\tdtwsrv\client.h">
-      <Filter>src\tdtwsrv</Filter>
-    </ClInclude>
     <ClInclude Include="src\game\client\tdtwserver\tdtwserver.h">
       <Filter>src\game\client\tdtwserver</Filter>
     </ClInclude>
     <ClInclude Include="src\engine\tdtwserver.h">
       <Filter>src\engine</Filter>
     </ClInclude>
-    <ClInclude Include="src\tdtwsrv\autoupdate.h">
+    <ClInclude Include="src\engine\autoupdate.h">
+      <Filter>src\engine</Filter>
+    </ClInclude>
+    <ClInclude Include="src\engine\shared\autoupdate.h">
+      <Filter>src\engine\shared</Filter>
+    </ClInclude>
+    <ClInclude Include="src\tdtwsrv\tdtwsrv.h">
       <Filter>src\tdtwsrv</Filter>
+    </ClInclude>
+    <ClInclude Include="src\tdtwsrv\server\tdtwsrv.h">
+      <Filter>src\tdtwsrv\server</Filter>
+    </ClInclude>
+    <ClInclude Include="src\tdtwsrv\game\client.h">
+      <Filter>src\tdtwsrv\game</Filter>
+    </ClInclude>
+    <ClInclude Include="src\tdtwsrv\game.h">
+      <Filter>src\tdtwsrv</Filter>
+    </ClInclude>
+    <ClInclude Include="src\tdtwsrv\game\game.h">
+      <Filter>src\tdtwsrv\game</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -1446,20 +1464,23 @@
     <ClCompile Include="src\game\generated\protocol_tdtw.cpp">
       <Filter>src\game\generated</Filter>
     </ClCompile>
-    <ClCompile Include="src\tdtwsrv\tdtwsrv.cpp">
-      <Filter>src\tdtwsrv</Filter>
-    </ClCompile>
     <ClCompile Include="src\engine\shared\network_tdtw_server.cpp">
       <Filter>src\engine\shared</Filter>
-    </ClCompile>
-    <ClCompile Include="src\tdtwsrv\client.cpp">
-      <Filter>src\tdtwsrv</Filter>
     </ClCompile>
     <ClCompile Include="src\game\client\tdtwserver\tdtwserver.cpp">
       <Filter>src\game\client\tdtwserver</Filter>
     </ClCompile>
-    <ClCompile Include="src\tdtwsrv\autoupdate.cpp">
-      <Filter>src\tdtwsrv</Filter>
+    <ClCompile Include="src\engine\shared\autoupdate.cpp">
+      <Filter>src\engine\shared</Filter>
+    </ClCompile>
+    <ClCompile Include="src\tdtwsrv\server\tdtwsrv.cpp">
+      <Filter>src\tdtwsrv\server</Filter>
+    </ClCompile>
+    <ClCompile Include="src\tdtwsrv\game\client.cpp">
+      <Filter>src\tdtwsrv\game</Filter>
+    </ClCompile>
+    <ClCompile Include="src\tdtwsrv\game\game.cpp">
+      <Filter>src\tdtwsrv\game</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

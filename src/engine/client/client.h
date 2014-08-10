@@ -65,6 +65,8 @@ class CClient : public IClient, public CDemoPlayer::IListner
 	IStorage *m_pStorage;
 	IEngineMasterServer *m_pMasterServer;
 	ITDTWServer *m_pTDTWServer;
+	IAutoUpdate *m_pAutoUpdate;
+
 	enum
 	{
 		NUM_SNAPSHOT_TYPES=2,
@@ -192,6 +194,7 @@ public:
 	IEngineMasterServer *MasterServer() { return m_pMasterServer; }
 	IStorage *Storage() { return m_pStorage; }
 	ITDTWServer *TDTWServer() { return m_pTDTWServer; }
+	IAutoUpdate *AutoUpdate() { return m_pAutoUpdate; }
 
 	CClient();
 
