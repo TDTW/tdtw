@@ -193,7 +193,7 @@ int CMenus::DoButton_Toggle(const void *pID, int Checked, const CUIRect *pRect, 
 	}
 	Graphics()->QuadsEnd();
 
-	return Active ? UI()->DoButtonLogic(pID, "", Checked, pRect) : 0;
+	return Active ? UI()->DoButtonLogic(pID, Checked, pRect) : 0;
 }
 
 int CMenus::DoButton_Menu(const void *pID, const char *pText, int Checked, const CUIRect *pRect, int Corners)
@@ -206,7 +206,7 @@ int CMenus::DoButton_Menu(const void *pID, const char *pText, int Checked, const
 	CUIRect Temp;
 	pRect->HMargin(pRect->h>=20.0f?2.0f:1.0f, &Temp);
 	UI()->DoLabel(&Temp, pText, Temp.h*ms_FontmodHeight, 0);
-	return UI()->DoButtonLogic(pID, pText, Checked, pRect);
+	return UI()->DoButtonLogic(pID, Checked, pRect);
 }
 
 void CMenus::DoButton_KeySelect(const void *pID, const char *pText, int Checked, const CUIRect *pRect, int Corners)
@@ -239,7 +239,7 @@ int CMenus::DoButton_MenuTab(const void *pID, const char *pText, int Checked, co
 
 	TextRender()->TextColor(1.0f, 1.0f, 1.0f, 1.0f);
 
-	return UI()->DoButtonLogic(pID, pText, Checked, pRect);
+	return UI()->DoButtonLogic(pID, Checked, pRect);
 }
 
 int CMenus::DoButton_GridHeader(const void *pID, const char *pText, int Checked, const CUIRect *pRect, int Sort)
@@ -258,7 +258,7 @@ int CMenus::DoButton_GridHeader(const void *pID, const char *pText, int Checked,
 	TextRender()->TextColor(1.0f, 1.0f, 1.0f, 0.7f+0.3f*FadeVal);
 	UI()->DoLabel(&t, pText, pRect->h*ms_FontmodHeight, -1);
 	TextRender()->TextColor(1.0f, 1.0f, 1.0f, 1.0f);
-	return UI()->DoButtonLogic(pID, pText, Checked, pRect);
+	return UI()->DoButtonLogic(pID, Checked, pRect);
 }
 
 int CMenus::DoButton_CheckBox_Common(const void *pID, const void *s_CheckBox, const char *pText, const char *pBoxText, int Checked, const CUIRect *pRect)
@@ -291,7 +291,7 @@ int CMenus::DoButton_CheckBox_Common(const void *pID, const void *s_CheckBox, co
 	c.y += 2;
 	UI()->DoLabel(&c, pBoxText, pRect->h*ms_FontmodHeight*0.6f, 0);
 	UI()->DoLabel(&t, pText, pRect->h*ms_FontmodHeight*0.8f, -1);
-	return UI()->DoButtonLogic(pID, pText, 0, pRect);
+	return UI()->DoButtonLogic(pID, 0, pRect);
 }
 
 int CMenus::DoButton_CheckBox(const void *pID, const void *s_CheckBox, const char *pText, int Checked, const CUIRect *pRect)

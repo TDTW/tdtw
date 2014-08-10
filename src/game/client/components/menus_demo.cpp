@@ -24,7 +24,7 @@ int CMenus::DoButton_DemoPlayer(const void *pID, const char *pText, int Checked,
 {
 	RenderTools()->DrawUIRect(pRect, vec4(1,1,1, Checked ? 0.10f : 0.5f)*ButtonColorMul(pID), CUI::CORNER_ALL, 5.0f);
 	UI()->DoLabel(pRect, pText, 14.0f, 0);
-	return UI()->DoButtonLogic(pID, pText, Checked, pRect);
+	return UI()->DoButtonLogic(pID, Checked, pRect);
 }
 
 int CMenus::DoButton_Sprite(const void *pID, int ImageID, int SpriteID, int Checked, const CUIRect *pRect, int Corners)
@@ -39,7 +39,7 @@ int CMenus::DoButton_Sprite(const void *pID, int ImageID, int SpriteID, int Chec
 	Graphics()->QuadsDrawTL(&QuadItem, 1);
 	Graphics()->QuadsEnd();
 
-	return UI()->DoButtonLogic(pID, "", Checked, pRect);
+	return UI()->DoButtonLogic(pID, Checked, pRect);
 }
 
 void CMenus::RenderDemoPlayer(CUIRect MainView)
@@ -389,7 +389,7 @@ CMenus::CListboxItem CMenus::UiDoListboxNextItem(const void *pId, bool Selected)
 
 	CListboxItem Item = UiDoListboxNextRow();
 
-	if(Item.m_Visible && UI()->DoButtonLogic(pId, "", gs_ListBoxSelectedIndex == gs_ListBoxItemIndex, &Item.m_HitRect))
+	if(Item.m_Visible && UI()->DoButtonLogic(pId, gs_ListBoxSelectedIndex == gs_ListBoxItemIndex, &Item.m_HitRect))
 	{
 		gs_ListBoxNewSelected = ThisItemIndex;
 		CheckedID = MineID;		
@@ -471,7 +471,7 @@ CMenus::CListboxItem CMenus::UiDoListboxNextItem(const void *pId, const float *p
 
 	CListboxItem Item = UiDoListboxNextRow();
 
-	if(Item.m_Visible && UI()->DoButtonLogic(pId, "", gs_ListBoxSelectedIndex == gs_ListBoxItemIndex, &Item.m_HitRect))
+	if(Item.m_Visible && UI()->DoButtonLogic(pId, gs_ListBoxSelectedIndex == gs_ListBoxItemIndex, &Item.m_HitRect))
 	{
 		gs_ListBoxNewSelected = ThisItemIndex;
 		CheckedID = MineID;

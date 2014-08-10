@@ -294,7 +294,7 @@ void CMenus::RenderServerbrowserServerList(CUIRect View)
 			else if(SelectHitBox.y+SelectHitBox.h > OriginalView.y+OriginalView.h) // bottom
 				SelectHitBox.h = OriginalView.y+OriginalView.h-SelectHitBox.y;
 
-			if(UI()->DoButtonLogic(pItem, "", Selected, &SelectHitBox))
+			if(UI()->DoButtonLogic(pItem, Selected, &SelectHitBox))
 			{
 				NewSelected = ItemIndex;
 			}
@@ -505,7 +505,7 @@ void CMenus::RenderServerbrowserServerList(CUIRect View)
 		static int s_ClearButton = 0;
 		RenderTools()->DrawUIRect(&Button, vec4(1,1,1,0.33f)*ButtonColorMul(&s_ClearButton), CUI::CORNER_R, 3.0f);
 		UI()->DoLabel(&Button, "x", Button.h*ms_FontmodHeight, 0);
-		if(UI()->DoButtonLogic(&s_ClearButton, "x", 0, &Button))
+		if(UI()->DoButtonLogic(&s_ClearButton, 0, &Button))
 		{
 			g_Config.m_BrFilterString[0] = 0;
 			UI()->SetActiveItem(&g_Config.m_BrFilterString);
@@ -627,7 +627,7 @@ void CMenus::RenderServerbrowserFilters(CUIRect View)
 		vec4 Color(1.0f, 1.0f, 1.0f, g_Config.m_BrFilterCountry?1.0f: 0.5f);
 		m_pClient->m_pCountryFlags->Render(g_Config.m_BrFilterCountryIndex, &Color, Rect.x, Rect.y, Rect.w, Rect.h);
 
-		if(g_Config.m_BrFilterCountry && UI()->DoButtonLogic(&g_Config.m_BrFilterCountryIndex, "", 0, &Rect))
+		if(g_Config.m_BrFilterCountry && UI()->DoButtonLogic(&g_Config.m_BrFilterCountryIndex, 0, &Rect))
 			m_Popup = POPUP_COUNTRY;
 	}
 
@@ -743,7 +743,7 @@ void CMenus::RenderServerbrowserServerDetail(CUIRect View)
 		{
 			CUIRect Name, Clan, Score, Flag;
 			ServerScoreBoard.HSplitTop(25.0f, &Name, &ServerScoreBoard);
-			if(UI()->DoButtonLogic(&pSelectedServer->m_aClients[i], "", 0, &Name))
+			if(UI()->DoButtonLogic(&pSelectedServer->m_aClients[i], 0, &Name))
 			{
 				if(pSelectedServer->m_aClients[i].m_FriendState == IFriends::FRIEND_PLAYER)
 					m_pClient->Friends()->RemoveFriend(pSelectedServer->m_aClients[i].m_aName, pSelectedServer->m_aClients[i].m_aClan);

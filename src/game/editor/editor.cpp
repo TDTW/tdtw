@@ -462,7 +462,7 @@ int CEditor::DoButton_Editor_Common(const void *pID, const char *pText, int Chec
 	if(UI()->HotItem() == pID && pToolTip)
 		m_pTooltip = (const char *)pToolTip;
 
-	return UI()->DoButtonLogic(pID, pText, Checked, pRect);
+	return UI()->DoButtonLogic(pID, Checked, pRect);
 
 	// Draw here
 	//return UI()->DoButton(id, text, checked, r, draw_func, 0);
