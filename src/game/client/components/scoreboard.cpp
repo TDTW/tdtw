@@ -189,7 +189,7 @@ void CScoreboard::RenderScoreboard(float x, float y, float w, int Team, const ch
 		Spacing = 8.0f;
 	}
 
-	float ScoreOffset = x+10.0f, ScoreLength = 60.0f;
+	float ScoreOffset = x+10.0f, ScoreLength = 80.0f;
 	float TeeOffset = ScoreOffset+ScoreLength, TeeLength = 60*TeeSizeMod;
 	float NameOffset = TeeOffset+TeeLength, NameLength = 300.0f-TeeLength;
 	float PingOffset = x+610.0f, PingLength = 65.0f;
@@ -233,7 +233,7 @@ void CScoreboard::RenderScoreboard(float x, float y, float w, int Team, const ch
 		}
 
 		// score
-		str_format(aBuf, sizeof(aBuf), "%d", clamp(pInfo->m_Score, -999, 999));
+		str_format(aBuf, sizeof(aBuf), "%d", pInfo->m_Score);
 		tw = TextRender()->TextWidth(0, FontSize, aBuf, -1);
 		TextRender()->SetCursor(&Cursor, ScoreOffset+ScoreLength-tw, y+Spacing, FontSize, TEXTFLAG_RENDER|TEXTFLAG_STOP_AT_END);
 		Cursor.m_LineWidth = ScoreLength;
