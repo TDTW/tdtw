@@ -15,12 +15,12 @@ public:
 	virtual void RequestInterfaces() = 0;
 
 	template<class T>
-	int SendPackMsg(T *pMsg, int Flags, bool System = false, bool Tdtw = false)
+	int SendPackMsg(T *pMsg, int Flags, int ClientID, bool System = false)
 	{
 		CMsgPacker Packer(pMsg->MsgID());
 		if (pMsg->Pack(&Packer))
 			return -1;
-		return SendMsgEx(&Packer, Flags, System, Tdtw);
+		return SendMsgEx(&Packer, Flags, ClientID, System);
 	}
 	virtual const char *LatestVersion() = 0;
 };

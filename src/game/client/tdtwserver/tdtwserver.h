@@ -7,6 +7,7 @@
 #include <engine/kernel.h>
 #include <engine/client.h>
 #include <engine/console.h>
+#include <engine/autoupdate.h>
 #include <engine/shared/protocol.h>
 #include <game/generated/protocol_tdtw.h>
 #include <game/version.h>
@@ -16,7 +17,7 @@ class CTDTWServer : public ITDTWServer
 public:
 	CTDTWServer();
 	virtual void Recv(CNetChunk *pChunk);
-	virtual void Init();
+	virtual void Init(); 
 	void Protocol(CNetChunk *pChunk);
 
 	class IClient *Client() { return m_pClient; }

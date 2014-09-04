@@ -85,9 +85,10 @@ int CTdtwSrv::NewClientCallback(int ClientID, void *pUser)
 	CTdtwSrv *pThis = (CTdtwSrv *)pUser;
 	pThis->Game()->AddClient();
 
-	CMsgPacker Msg(NETMSG_VERSION);
-	Msg.AddString(GAME_VERSION, 64);
-	pThis->SendMsgEx(&Msg, MSGFLAG_VITAL | MSGFLAG_FLUSH, ClientID, true);
+
+	CNetMsg_AutoUpdate Msg;
+	Msg.m_Version = GAME_VERSION;
+	pThis->SendPackMsg(&Msg, MSGFLAG_VITAL | MSGFLAG_FLUSH, ClientID, false);
 	return 0;
 }
 
@@ -180,6 +181,7 @@ void CTdtwSrv::Protocol(CNetChunk *pPacket)
 			char *Name = (char *)Unpacker.GetString(CUnpacker::SANITIZE_CC);
 			m_pConsole->PrintArg(IConsole::OUTPUT_LEVEL_DEBUG, "server", "[%d]:[%s] Client version: %s", ClientID, Name, Version);
 			//str_copy(m_aClients[ClientID]->m_aName, Name, sizeof(Name));
+
 		}
 		else
 		{
@@ -215,7 +217,12 @@ void CTdtwSrv::Protocol(CNetChunk *pPacket)
 			
 			return;
 		}
+		if (Msg == NETMSGTYPE_TDTW_AUTOUPDATE)
+		{
+			CNetMsg_AutoUpdate *pMsg = (CNetMsg_AutoUpdate *)pRawMsg;
 
+			
+		}
 		/*
 		if (Msg == NETMSGTYPE_TDTW_TESTCHAT)
 		{
@@ -270,7 +277,6 @@ int main(int argc, const char **argv)
 	IStorage *pStorage = CreateStorage("Teeworlds", IStorage::STORAGETYPE_SERVER, argc, argv);
 	IConfig *pConfig = CreateConfig();
 	IAutoUpdate *pAutoUpdate = CreateAutoUpdate();
-
 	{
 		bool RegisterFail = false;
 
