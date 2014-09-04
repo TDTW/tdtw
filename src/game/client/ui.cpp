@@ -273,7 +273,7 @@ void CUIRect::HMargin(float Cut, CUIRect *pOtherRect) const
 	pOtherRect->h = r.h - 2*Cut;
 }
 
-int CUI::DoButtonLogic(const void *pID, const char *pText, int Checked, const CUIRect *pRect)
+int CUI::DoButtonLogic(const void *pID, int Checked, const CUIRect *pRect)
 {
 	// logic
 	int ReturnValue = 0;

@@ -90,7 +90,7 @@ public:
 	void SetScale(float s);
 	float Scale();
 
-	int DoButtonLogic(const void *pID, const char *pText /* TODO: Refactor: Remove */, int Checked, const CUIRect *pRect);
+	int DoButtonLogic(const void *pID, int Checked, const CUIRect *pRect);
 
 	// TODO: Refactor: Remove this?
 	void DoLabel(const CUIRect *pRect, const char *pText, float Size, int Align, int MaxWidth = -1);
