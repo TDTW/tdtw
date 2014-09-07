@@ -86,9 +86,6 @@ int CTdtwSrv::NewClientCallback(int ClientID, void *pUser)
 	pThis->Game()->AddClient();
 
 
-	CNetMsg_AutoUpdate Msg;
-	Msg.m_Version = GAME_VERSION;
-	pThis->SendPackMsg(&Msg, MSGFLAG_VITAL | MSGFLAG_FLUSH, ClientID, false);
 	return 0;
 }
 
@@ -175,13 +172,15 @@ void CTdtwSrv::Protocol(CNetChunk *pPacket)
 			SendMsgEx(&Msg, MSGFLAG_VITAL, ClientID, true);
 			m_pConsole->PrintArg(IConsole::OUTPUT_LEVEL_STANDARD, "server", "[%d] NetPing", ClientID);
 		}
-		else if (Msg == NETMSG_VERSION)
+		else if (Msg == NETMSG_TDTW_VERSION)
 		{
 			char *Version = (char *)Unpacker.GetString(CUnpacker::SANITIZE_CC);
-			char *Name = (char *)Unpacker.GetString(CUnpacker::SANITIZE_CC);
-			m_pConsole->PrintArg(IConsole::OUTPUT_LEVEL_DEBUG, "server", "[%d]:[%s] Client version: %s", ClientID, Name, Version);
-			//str_copy(m_aClients[ClientID]->m_aName, Name, sizeof(Name));
-
+			m_pConsole->PrintArg(IConsole::OUTPUT_LEVEL_DEBUG, "server", "[%d] Client version: %s", ClientID, Version);
+			if (AutoUpdate()->CheckVersion(Version))
+			{
+				CMsgPacker Msg(NETMSG_TDTW_WANT_UPDATE);
+				SendMsgEx(&Msg, MSGFLAG_VITAL | MSGFLAG_FLUSH, ClientID, false);
+			}
 		}
 		else
 		{

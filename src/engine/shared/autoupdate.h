@@ -9,7 +9,7 @@
 #include <engine\storage.h>
 #include <engine\console.h>
 #include <engine\autoupdate.h>
-
+#include <game\version.h>
 class CAutoUpdate : public IAutoUpdate
 {	
 public:
@@ -17,6 +17,7 @@ public:
 
 	virtual void RequestInterfaces();
 	virtual void CheckHash();
+	virtual bool CheckVesrion(char *Version);
 
 	class IConsole *Console() { return m_pConsole; }
 	class IStorage *Storage() { return m_pStorage; }

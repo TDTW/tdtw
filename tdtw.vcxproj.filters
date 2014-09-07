@@ -1024,6 +1024,9 @@
     <ClInclude Include="src\tdtwsrv\game\game.h">
       <Filter>src\tdtwsrv\game</Filter>
     </ClInclude>
+    <ClInclude Include="src\engine\shared\protocol_tdtw.h">
+      <Filter>src\engine\shared</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Image Include="other\icons\Teeworlds_srv.ico">

@@ -1,33 +1,21 @@
 /* (c) Magnus Auvinen. See licence.txt in the root of the distribution for more information. */
 /* If you are missing that file, acquire a complete release at teeworlds.com.                */
-#ifndef ENGINE_SHARED_PROTOCOL_H
-#define ENGINE_SHARED_PROTOCOL_H
+#ifndef ENGINE_SHARED_PROTOCOL_TDTW_H
+#define ENGINE_SHARED_PROTOCOL_TDTW_H
 
 #include <base/system.h>
-#include "protocol_tdtw.h"
+
+
+enum 
+{
+	NETMSG_TDTW_NULL = 0,
+	NETMSG_TDTW_VERSION,
+	NETMSG_TDTW_WANT_UPDATE,
+	NETMSG_TDTW_UPDATE_DATA,
+
+};
+
 /*
-	Connection diagram - How the initilization works.
-	s
-	Client -> INFO -> Server
-		Contains version info, name, and some other info.
-
-	Client <- MAP <- Server
-		Contains current map.
-
-	Client -> READY -> Server
-		The client has loaded the map and is ready to go,
-		but the mod needs to send it's information aswell.
-		modc_connected is called on the client and
-		mods_connected is called on the server.
-		The client should call client_entergame when the
-		mod has done it's initilization.
-
-	Client -> ENTERGAME -> Server
-		Tells the server to start sending snapshots.
-		client_entergame and server_client_enter is called.
-*/
-
-
 enum
 {
 	NETMSG_NULL=0,
@@ -50,8 +38,6 @@ enum
 
 	NETMSG_AUTH_CHALLANGE,	//
 	NETMSG_AUTH_RESULT,		//
-
-
 
 	// sent by client
 	NETMSG_READY,			//
@@ -98,6 +84,6 @@ enum
 	MSGFLAG_NORECORD=4,
 	MSGFLAG_RECORD=8,
 	MSGFLAG_NOSEND=16
-};
+};*/
 
 #endif

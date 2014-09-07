@@ -1533,6 +1533,9 @@ void CClient::PumpNetworkTdtw(void *pUser)
 			// we switched to online
 			pThis->m_pConsole->Print(IConsole::OUTPUT_LEVEL_STANDARD, "tdtw", "TDTW Server connected");
 			pThis->SetStateTdtw(IClient::STATE_TDTW_ONLINE);
+			CMsgPacker Msg(NETMSG_TDTW_VERSION);
+			Msg.AddString(GAME_VERSION, 30);
+			pThis->SendMsgEx(&Msg, MSGFLAG_VITAL | MSGFLAG_FLUSH, true, true);
 		}
 
 		// process packets

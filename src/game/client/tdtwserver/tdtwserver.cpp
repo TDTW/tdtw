@@ -34,16 +34,24 @@ void CTDTWServer::Protocol(CNetChunk *pChunk)
 
 	if (Sys)
 	{
-		if (Msg == NETMSG_VERSION)
-		{
-			m_Version = (char *)Unpacker.GetString(CUnpacker::SANITIZE_CC);
-			Console()->PrintArg(IConsole::OUTPUT_LEVEL_DEBUG, "tdtwserver", "Latest version: %s", m_Version);
 
-			CMsgPacker Msg(NETMSG_VERSION);
-			Msg.AddString(GAME_VERSION, 64);
-			Msg.AddString(g_Config.m_PlayerName, 16);
-			Client()->SendMsgEx(&Msg, MSGFLAG_VITAL | MSGFLAG_FLUSH, true, true);
+	}
+	else
+	{
+		void *pRawMsg = m_NetHandler.SecureUnpackMsg(Msg, &Unpacker);
+		if (!pRawMsg)
+		{
+			m_pConsole->PrintArg(IConsole::OUTPUT_LEVEL_DEBUG, "client",
+				"dropped weird message '%s' (%d), failed on '%s'", m_NetHandler.GetMsgName(Msg), Msg, m_NetHandler.FailedMsgOn());
+
+			return;
 		}
+
+		if (Msg == NETMSG_TDTW_WANT_UPDATE)
+		{
+			
+		}
+
 	}
 }
 

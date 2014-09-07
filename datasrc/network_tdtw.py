@@ -18,8 +18,8 @@ Flags = [
 ]
 
 Messages = [
+
 	NetMessage("AutoUpdate",[
-        NetString("m_Version"),
         NetString("m_WantUpdate"),
 	], True),
 ]

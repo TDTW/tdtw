@@ -30,6 +30,7 @@ public:
 	array <CInfoFolders> m_aDir;
 	virtual void CheckHash() = 0;
 	virtual void RequestInterfaces() = 0;
+	virtual bool CheckVersion(char *Version) = 0;
 };
 
 extern IAutoUpdate *CreateAutoUpdate();

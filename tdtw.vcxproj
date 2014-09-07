@@ -362,6 +362,7 @@
     <ClInclude Include="src\engine\shared\network.h" />
     <ClInclude Include="src\engine\shared\packer.h" />
     <ClInclude Include="src\engine\shared\protocol.h" />
+    <ClInclude Include="src\engine\shared\protocol_tdtw.h" />
     <ClInclude Include="src\engine\shared\ringbuffer.h" />
     <ClInclude Include="src\engine\shared\snapshot.h" />
     <ClInclude Include="src\engine\sound.h" />

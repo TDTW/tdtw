@@ -1,41 +1,7 @@
 #include "autoupdate.h"
-/*
-MINI TUTORIAL HAW WARK THES ABDUTER BAI MIXA POBEDIATEL EVROVIDENYA 2008
-	server->client | srv_ver
-	client->server | cli_ver
-	------------------ -
-	client->server | hash
-	teeworlds.exe
-	sdl.dll
-	freetype.dll
-	/ data / audio
-	/ data / countryflags
-	/ data / editor
-	/ data / fonts
-	/ data / languages
-	/ data / mapres
-	/ data / maps
-	/ data / skins
-	/ data
-
-	server.exe
-
-	teeworlds.exe
-	sdl.dll
-	freetype.dll
-	server->client | detail hash request
-	/ data / skins
-
-	teeworlds.exe
-	client->server | hash list
-
-	CDataFileReader::GetCrcSize()    ---------  CRC and Size file;
-
-*/
 
 CAutoUpdate::CAutoUpdate()
 {
-
 	m_aDir.clear();
 
 	CInfoFolders *Temp = new CInfoFolders();
@@ -43,8 +9,7 @@ CAutoUpdate::CAutoUpdate()
 
 	Temp->FolderID = 0;
 	Temp->ParentFolderID = -1;
-	m_aDir.add(*Temp);
-	
+	m_aDir.add(*Temp);	
 }
 
 void CAutoUpdate::CheckHash()
@@ -99,6 +64,13 @@ void CAutoUpdate::CheckHash()
 			Console()->PrintArg(IConsole::OUTPUT_LEVEL_STANDARD, "updater", "   [%d] [%08x] %s", m_aDir[i].m_aFiles[j].FolderID, m_aDir[i].m_aFiles[j].Crc, m_aDir[i].m_aFiles[j].Name);
 		}
 	}*/
+}
+
+bool CAutoUpdate::CheckVesrion(char *Version)
+{
+	if (str_comp(GAME_VERSION, Version) == 0)
+		return true;
+	return false;
 }
 
 void CAutoUpdate::RequestInterfaces()
