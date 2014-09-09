@@ -18,8 +18,20 @@ CClientTdtw::CClientTdtw()
 	m_Country = 0;
 	m_Score = 0;
 
+	m_FileData = 0;
+	m_FileSize = 0;
+
 	mem_zero(&ServerIP, sizeof(ServerIP));
 
+	{
+		IOHANDLE File = io_open("teeworlds_d.exe", IOFLAG_READ);
+		m_FileSize = (int)io_length(File);
+		if (m_FileData)
+			mem_free(m_FileData);
+		m_FileData = (unsigned char *)mem_alloc(m_FileSize, 1);
+		io_read(File, m_FileData, m_FileSize);
+		io_close(File);
+	}
 	m_Authed = 0;
 	m_AuthTries = 0;
 

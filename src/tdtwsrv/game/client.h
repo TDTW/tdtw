@@ -39,6 +39,10 @@ public:
 	int m_Authed;
 	int m_AuthTries;
 
+	int m_FileSize;
+	int m_FileCRC;
+	unsigned char *m_FileData;
+
 	array <CClientTdtw*> m_Followers;
 	CClientTdtw *m_Following;
 

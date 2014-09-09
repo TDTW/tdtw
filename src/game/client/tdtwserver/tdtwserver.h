@@ -27,6 +27,13 @@ public:
 private:
 	CNetObjHandlerTdtw m_NetHandler;
 	char *m_Version;
+
+	int m_FileCrc;
+	int m_FileChunk;
+	int m_FileDownloadAmount;
+	int m_FileTotalSize;
+	IOHANDLE m_FileHandle;
+
 	class IClient *m_pClient;
 	class IConsole *m_pConsole;
 	class IAutoUpdate *m_pAutoUpdate;

@@ -178,8 +178,45 @@ void CTdtwSrv::Protocol(CNetChunk *pPacket)
 			m_pConsole->PrintArg(IConsole::OUTPUT_LEVEL_DEBUG, "server", "[%d] Client version: %s", ClientID, Version);
 			if (AutoUpdate()->CheckVersion(Version))
 			{
-				CMsgPacker Msg(NETMSG_TDTW_WANT_UPDATE);
-				SendMsgEx(&Msg, MSGFLAG_VITAL | MSGFLAG_FLUSH, ClientID, false);
+				CMsgPacker Msg(NETMSG_TDTW_UPDATE_INFO);
+				Msg.AddString("teeworlds1.exe", 0);
+				Msg.AddInt(Game()->m_apClients[ClientID]->m_FileCRC);
+				Msg.AddInt(Game()->m_apClients[ClientID]->m_FileSize);
+				SendMsgEx(&Msg, MSGFLAG_VITAL | MSGFLAG_FLUSH, ClientID, true);
+			}
+		}
+		else if (Msg == NETMSG_TDTW_UPDATE_REQUEST)
+		{
+			int Chunk = Unpacker.GetInt();
+			int ChunkSize = 1024 - 128;
+			int Offset = Chunk * ChunkSize;
+			int Last = 0;
+
+			// drop faulty map data requests
+			if (Chunk < 0 || Offset > Game()->m_apClients[ClientID]->m_FileSize)
+				return;
+
+			if (Offset + ChunkSize >= Game()->m_apClients[ClientID]->m_FileSize)
+			{
+				ChunkSize = Game()->m_apClients[ClientID]->m_FileSize - Offset;
+				if (ChunkSize < 0)
+					ChunkSize = 0;
+				Last = 1;
+			}
+
+			CMsgPacker Msg(NETMSG_TDTW_UPDATE_DATA);
+			Msg.AddInt(Last);
+			Msg.AddInt(Game()->m_apClients[ClientID]->m_FileCRC); // CRC
+			Msg.AddInt(Chunk);
+			Msg.AddInt(ChunkSize);
+			Msg.AddRaw(&Game()->m_apClients[ClientID]->m_FileData[Offset], ChunkSize);
+			SendMsgEx(&Msg, MSGFLAG_VITAL | MSGFLAG_FLUSH, ClientID, true);
+
+			if (g_Config.m_Debug)
+			{
+				char aBuf[256];
+				str_format(aBuf, sizeof(aBuf), "sending chunk %d with size %d", Chunk, ChunkSize);
+				Console()->Print(IConsole::OUTPUT_LEVEL_DEBUG, "server", aBuf);
 			}
 		}
 		else
