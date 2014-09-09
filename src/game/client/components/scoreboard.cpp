@@ -236,7 +236,7 @@ void CScoreboard::RenderScoreboard(float x, float y, float w, int Team, const ch
 		str_format(aBuf, sizeof(aBuf), "%d", pInfo->m_Score);
 		tw = TextRender()->TextWidth(0, FontSize, aBuf, -1);
 		TextRender()->SetCursor(&Cursor, ScoreOffset+ScoreLength-tw, y+Spacing, FontSize, TEXTFLAG_RENDER|TEXTFLAG_STOP_AT_END);
-		Cursor.m_LineWidth = ScoreLength;
+		Cursor.m_LineWidth = tw;
 		TextRender()->TextEx(&Cursor, aBuf, -1);
 
 		// flag

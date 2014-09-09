@@ -66,7 +66,7 @@ void CAutoUpdate::CheckHash()
 	}*/
 }
 
-bool CAutoUpdate::CheckVesrion(char *Version)
+bool CAutoUpdate::CheckVersion(char *Version)
 {
 	if (str_comp(GAME_VERSION, Version) == 0)
 		return true;

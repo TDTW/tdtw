@@ -17,7 +17,7 @@ public:
 
 	virtual void RequestInterfaces();
 	virtual void CheckHash();
-	virtual bool CheckVesrion(char *Version);
+	virtual bool CheckVersion(char *Version);
 
 	class IConsole *Console() { return m_pConsole; }
 	class IStorage *Storage() { return m_pStorage; }
