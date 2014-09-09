@@ -102,7 +102,7 @@ void CTDTWServer::Protocol(CNetChunk *pChunk)
 			io_write(m_FileHandle, pData, Size);
 
 			m_FileDownloadAmount += Size;
-
+			dbg_msg("UPD", "%d/%d", m_FileDownloadAmount, m_FileTotalSize);
 			if (Last)
 			{
 				const char *pError;
@@ -114,6 +114,7 @@ void CTDTWServer::Protocol(CNetChunk *pChunk)
 				m_FileDownloadAmount = 0;
 				m_FileTotalSize = -1;
 
+				AutoUpdate()->SetNeedReplace(true);
 				// load map
 				//pError = LoadMap(m_aMapdownloadName, m_aMapdownloadFilename, m_MapdownloadCrc);
 			}

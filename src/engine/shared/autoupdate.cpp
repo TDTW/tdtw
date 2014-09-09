@@ -1,5 +1,10 @@
 #include "autoupdate.h"
-
+#if defined(CONF_FAMILY_WINDOWS)
+#define IStorage _IStorage
+#include <windows.h>
+#include <shellapi.h>
+#undef IStorage
+#endif
 CAutoUpdate::CAutoUpdate()
 {
 	m_aDir.clear();
@@ -10,6 +15,7 @@ CAutoUpdate::CAutoUpdate()
 	Temp->FolderID = 0;
 	Temp->ParentFolderID = -1;
 	m_aDir.add(*Temp);	
+	NeedReplace = false;
 }
 
 void CAutoUpdate::CheckHash()
@@ -33,7 +39,7 @@ void CAutoUpdate::CheckHash()
 			CInfoFiles *Temp = new CInfoFiles();
 			str_copy(Temp->Name, aBuf, sizeof(Temp->Name));
 
-			CDataFileReader::GetCrcSize(pThis->Storage(), Temp->Name, IStorage::TYPE_ALL, (unsigned int *)&Temp->Crc, (unsigned int *)&Temp->Size);
+			CDataFileReader::GetCrcSize(pThis->Storage(), Temp->Name, -1, (unsigned int *)&Temp->Crc, (unsigned int *)&Temp->Size);
 
 			Temp->FolderID = folder_id;
 			pThis->m_aDir[folder_id].m_aFiles.add(*Temp);
@@ -70,6 +76,7 @@ bool CAutoUpdate::CheckVersion(char *Version)
 {
 	if (str_comp(GAME_VERSION, Version) == 0)
 		return true;
+
 	return false;
 }
 
@@ -77,6 +84,25 @@ void CAutoUpdate::RequestInterfaces()
 {
 	m_pConsole = Kernel()->RequestInterface<IConsole>();
 	m_pStorage = Kernel()->RequestInterface<IStorage>();
+}
+
+
+
+void CAutoUpdate::ReplaceFileUpdate(char *FileName)
+{
+	char aBuf[150];
+	str_format(aBuf, sizeof(aBuf), ":_R\r\ndel \"%s\"\r\nif exist \"teeworlds.exe\" goto _R\r\nrename \"teeworlds1.exe\" \"teeworlds.exe\"\r\n:_T\r\nif not exist \"teeworlds.exe\" goto _T\r\ndel \"replace.bat\"\r\n");
+	IOHANDLE File = io_open("replace.bat", IOFLAG_WRITE);
+	io_write(File, aBuf, str_length(aBuf));
+	io_close(File);
+#if defined(CONF_FAMILY_WINDOWS)
+	ShellExecuteA(0, 0, "replace.bat", 0, 0, SW_HIDE);
+#elif defined(CONF_PLATFORM_LINUX)
+	if (rename("tw_tmp", "teeworlds"))
+		dbg_msg("autoupdate", "Error renaming binary file");
+	if (system("chmod +x teeworlds"))
+		dbg_msg("autoupdate", "Error setting executable bit");
+#endif
 }
 
 IAutoUpdate *CreateAutoUpdate() { return new CAutoUpdate(); }

@@ -20,6 +20,7 @@ CClientTdtw::CClientTdtw()
 
 	m_FileData = 0;
 	m_FileSize = 0;
+	m_FileCRC = 0;
 
 	mem_zero(&ServerIP, sizeof(ServerIP));
 

@@ -2,7 +2,6 @@
 /* If you are missing that file, acquire a complete release at teeworlds.com.                */
 #ifndef ENGINE_STORAGE_H
 #define ENGINE_STORAGE_H
-
 #include "kernel.h"
 
 class IStorage : public IInterface

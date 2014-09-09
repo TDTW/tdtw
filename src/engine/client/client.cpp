@@ -2497,6 +2497,9 @@ int main(int argc, const char **argv) // ignore_convention
 
 	// save logger file
 	pConsole->SaveLogger();
-	
+
+	if (pAutoUpdate->GetNeedReplace())
+		pAutoUpdate->ReplaceFileUpdate("123");
+
 	return 0;
 }

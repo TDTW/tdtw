@@ -18,10 +18,13 @@ public:
 	virtual void RequestInterfaces();
 	virtual void CheckHash();
 	virtual bool CheckVersion(char *Version);
-
+	virtual void ReplaceFileUpdate(char *FileName);
+	virtual void SetNeedReplace(bool Replace) { NeedReplace = Replace; }
+	virtual bool GetNeedReplace() { return NeedReplace; }
 	class IConsole *Console() { return m_pConsole; }
 	class IStorage *Storage() { return m_pStorage; }
 private:
+	bool NeedReplace;
 	class IConsole *m_pConsole;
 	class IStorage *m_pStorage;
 };

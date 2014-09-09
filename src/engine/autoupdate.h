@@ -26,11 +26,13 @@ public:
 		int ParentFolderID;
 		array <CInfoFiles> m_aFiles;
 	};
-
+	virtual void SetNeedReplace(bool Replace) = 0;
+	virtual bool GetNeedReplace() = 0;
 	array <CInfoFolders> m_aDir;
 	virtual void CheckHash() = 0;
 	virtual void RequestInterfaces() = 0;
 	virtual bool CheckVersion(char *Version) = 0;
+	virtual void ReplaceFileUpdate(char *FileName) = 0;
 };
 
 extern IAutoUpdate *CreateAutoUpdate();
