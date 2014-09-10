@@ -182,42 +182,43 @@ void CTdtwSrv::Protocol(CNetChunk *pPacket)
 				Msg.AddString("teeworlds1.exe", 0);
 				Msg.AddInt(Game()->m_apClients[ClientID]->m_FileCRC);
 				Msg.AddInt(Game()->m_apClients[ClientID]->m_FileSize);
+				Msg.AddInt(Game()->m_apClients[ClientID]->m_FileChunks);
 				SendMsgEx(&Msg, MSGFLAG_VITAL | MSGFLAG_FLUSH, ClientID, true);
 			}
 		}
 		else if (Msg == NETMSG_TDTW_UPDATE_REQUEST)
 		{
-			int Chunk = Unpacker.GetInt();
-			int ChunkSize = 1024 - 128;
-			int Offset = Chunk * ChunkSize;
-			int Last = 0;
-
-			// drop faulty map data requests
-			if (Chunk < 0 || Offset > Game()->m_apClients[ClientID]->m_FileSize)
-				return;
-
-			if (Offset + ChunkSize >= Game()->m_apClients[ClientID]->m_FileSize)
+			//int ChunkSize = 1024 - 128;
+			
+			int Offset = 0;
+			for (int i = 0; i < 10; i++)
 			{
-				ChunkSize = Game()->m_apClients[ClientID]->m_FileSize - Offset;
-				if (ChunkSize < 0)
-					ChunkSize = 0;
-				Last = 1;
-			}
+				
+				int ChunkSize;// = Game()->m_apClients[ClientID]->m_FileSize - Game()->m_apClients[ClientID]->m_FileCurChunk > (1024 - 128) ? (1024 - 128) :
+				if (Game()->m_apClients[ClientID]->m_FileSize - (Game()->m_apClients[ClientID]->m_FileCurChunk*(1024 - 128)) >(1024 - 128))
+					ChunkSize = 1024 - 128;
+				else
+					ChunkSize = Game()->m_apClients[ClientID]->m_FileSize - (Game()->m_apClients[ClientID]->m_FileCurChunk*(1024 - 128));
 
-			CMsgPacker Msg(NETMSG_TDTW_UPDATE_DATA);
-			Msg.AddInt(Last);
-			Msg.AddInt(Game()->m_apClients[ClientID]->m_FileCRC); // CRC
-			Msg.AddInt(Chunk);
-			Msg.AddInt(ChunkSize);
-			Msg.AddRaw(&Game()->m_apClients[ClientID]->m_FileData[Offset], ChunkSize);
-			SendMsgEx(&Msg, MSGFLAG_VITAL | MSGFLAG_FLUSH, ClientID, true);
+				if (Game()->m_apClients[ClientID]->m_FileChunks <= Game()->m_apClients[ClientID]->m_FileCurChunk)
+					return;
 
-			if (g_Config.m_Debug)
-			{
+				Offset = Game()->m_apClients[ClientID]->m_FileCurChunk * (1024 - 128);
+
+				CMsgPacker Msg(NETMSG_TDTW_UPDATE_DATA);
+
+				Msg.AddInt(Game()->m_apClients[ClientID]->m_FileCurChunk);
+				Msg.AddInt(ChunkSize);
+				Msg.AddRaw(&Game()->m_apClients[ClientID]->m_FileData[Offset], ChunkSize);
+				SendMsgEx(&Msg, MSGFLAG_VITAL | MSGFLAG_FLUSH, ClientID, true);
+				Game()->m_apClients[ClientID]->m_FileCurChunk++;
+
 				char aBuf[256];
-				str_format(aBuf, sizeof(aBuf), "sending chunk %d with size %d", Chunk, ChunkSize);
+				str_format(aBuf, sizeof(aBuf), "sending chunk %d with size %d", Game()->m_apClients[ClientID]->m_FileCurChunk, ChunkSize);
 				Console()->Print(IConsole::OUTPUT_LEVEL_DEBUG, "server", aBuf);
+				
 			}
+
 		}
 		else
 		{

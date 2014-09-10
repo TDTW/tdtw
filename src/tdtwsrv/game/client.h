@@ -41,6 +41,8 @@ public:
 
 	int m_FileSize;
 	int m_FileCRC;
+	int m_FileChunks;
+	int m_FileCurChunk;
 	unsigned char *m_FileData;
 
 	array <CClientTdtw*> m_Followers;

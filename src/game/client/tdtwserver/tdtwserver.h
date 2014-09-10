@@ -31,7 +31,11 @@ private:
 	int m_FileCrc;
 	int m_FileChunk;
 	int m_FileDownloadAmount;
+	int m_FileTotalChunks;
 	int m_FileTotalSize;
+	int tempInt;
+	unsigned char *m_FileData[10];
+	int m_FileChunkSize[10];
 	IOHANDLE m_FileHandle;
 
 	class IClient *m_pClient;

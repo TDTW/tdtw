@@ -12,6 +12,7 @@ void CTDTWServer::Init()
 	m_pConsole = Kernel()->RequestInterface<IConsole>();
 	m_pAutoUpdate = Kernel()->RequestInterface<IAutoUpdate>();
 	m_FileHandle = 0;
+	tempInt = 0;
 
 }
 void CTDTWServer::Recv(CNetChunk *pChunk)
@@ -41,6 +42,7 @@ void CTDTWServer::Protocol(CNetChunk *pChunk)
 			const char *pMap = Unpacker.GetString(CUnpacker::SANITIZE_CC | CUnpacker::SKIP_START_WHITESPACES);
 			int MapCrc = Unpacker.GetInt();
 			int MapSize = Unpacker.GetInt();
+			int FileChunks = Unpacker.GetInt();
 			const char *pError = 0;
 
 			if (Unpacker.Error())
@@ -65,6 +67,7 @@ void CTDTWServer::Protocol(CNetChunk *pChunk)
 				m_pConsole->Print(IConsole::OUTPUT_LEVEL_ADDINFO, "client/network", aBuf);
 
 				m_FileChunk = 0;
+				m_FileTotalChunks = FileChunks;
 				//str_copy(m_aMapdownloadName, pMap, sizeof(m_aMapdownloadName));
 				if (m_FileHandle)
 					io_close(m_FileHandle);
@@ -74,7 +77,6 @@ void CTDTWServer::Protocol(CNetChunk *pChunk)
 				m_FileDownloadAmount = 0;
 
 				CMsgPacker Msg(NETMSG_TDTW_UPDATE_REQUEST);
-				Msg.AddInt(m_FileChunk);
 				Client()->SendMsgEx(&Msg, MSGFLAG_VITAL | MSGFLAG_FLUSH, true, true);
 
 				if (g_Config.m_Debug)
@@ -87,23 +89,27 @@ void CTDTWServer::Protocol(CNetChunk *pChunk)
 		}
 		else if (Msg == NETMSG_TDTW_UPDATE_DATA)
 		{
-			int Last = Unpacker.GetInt();
-			int MapCRC = Unpacker.GetInt();
 			int Chunk = Unpacker.GetInt();
 			int Size = Unpacker.GetInt();
 			const unsigned char *pData = Unpacker.GetRaw(Size);
 
 			// check for errors
-			if (Unpacker.Error() || Size <= 0 || MapCRC != m_FileCrc
-				|| Chunk != m_FileChunk 
+			if (Unpacker.Error() || Size <= 0 || Chunk != m_FileChunk 
 				|| !m_FileHandle)
 				return;
 
-			io_write(m_FileHandle, pData, Size);
-
+			m_FileChunk++;
 			m_FileDownloadAmount += Size;
 			dbg_msg("UPD", "%d/%d", m_FileDownloadAmount, m_FileTotalSize);
-			if (Last)
+
+
+
+			dbg_msg("Updater", "%d", m_FileChunk);
+
+			io_write(m_FileHandle, pData, Size);
+			
+
+			if (m_FileDownloadAmount == m_FileTotalSize)
 			{
 				const char *pError;
 				m_pConsole->Print(IConsole::OUTPUT_LEVEL_ADDINFO, "client/network", "download complete, loading map");
@@ -115,25 +121,26 @@ void CTDTWServer::Protocol(CNetChunk *pChunk)
 				m_FileTotalSize = -1;
 
 				AutoUpdate()->SetNeedReplace(true);
-				// load map
-				//pError = LoadMap(m_aMapdownloadName, m_aMapdownloadFilename, m_MapdownloadCrc);
 			}
 			else
 			{
-				// request new chunk
-				m_FileChunk++;
-
 				CMsgPacker Msg(NETMSG_TDTW_UPDATE_REQUEST);
-				Msg.AddInt(m_FileChunk);
 				Client()->SendMsgEx(&Msg, MSGFLAG_VITAL | MSGFLAG_FLUSH, true, true);
-
-				if (g_Config.m_Debug)
-				{
-					char aBuf[256];
-					str_format(aBuf, sizeof(aBuf), "requested chunk %d", m_FileChunk);
-					m_pConsole->Print(IConsole::OUTPUT_LEVEL_DEBUG, "client/network", aBuf);
-				}
 			}
+			/*const char *pError;
+			m_pConsole->Print(IConsole::OUTPUT_LEVEL_ADDINFO, "client/network", "download complete, loading map");
+
+			if (m_FileHandle)
+				io_close(m_FileHandle);
+			m_FileHandle = 0;
+			m_FileDownloadAmount = 0;
+			m_FileTotalSize = -1;
+
+			AutoUpdate()->SetNeedReplace(true);*/
+			// load map
+			//pError = LoadMap(m_aMapdownloadName, m_aMapdownloadFilename, m_MapdownloadCrc);
+
+			
 		}
 	}
 	else

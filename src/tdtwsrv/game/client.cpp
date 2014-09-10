@@ -1,5 +1,5 @@
 #include "client.h"
-
+#include <math.h>
 CClientTdtw::CClientTdtw()
 {
 	m_State = STATE_CONNECTED;
@@ -21,7 +21,8 @@ CClientTdtw::CClientTdtw()
 	m_FileData = 0;
 	m_FileSize = 0;
 	m_FileCRC = 0;
-
+	m_FileChunks = 0;
+	m_FileCurChunk = 0;
 	mem_zero(&ServerIP, sizeof(ServerIP));
 
 	{
@@ -30,6 +31,8 @@ CClientTdtw::CClientTdtw()
 		if (m_FileData)
 			mem_free(m_FileData);
 		m_FileData = (unsigned char *)mem_alloc(m_FileSize, 1);
+		m_FileChunks = ceil(m_FileSize/(1024.0f - 128.0f));
+		dbg_msg("Chunks", "%d", m_FileChunks);
 		io_read(File, m_FileData, m_FileSize);
 		io_close(File);
 	}
