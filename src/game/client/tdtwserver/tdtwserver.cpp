@@ -124,8 +124,11 @@ void CTDTWServer::Protocol(CNetChunk *pChunk)
 			}
 			else
 			{
-				CMsgPacker Msg(NETMSG_TDTW_UPDATE_REQUEST);
-				Client()->SendMsgEx(&Msg, MSGFLAG_VITAL | MSGFLAG_FLUSH, true, true);
+				if ((m_FileChunk + 1) % 10 == 0)
+				{
+					CMsgPacker Msg(NETMSG_TDTW_UPDATE_REQUEST);
+					Client()->SendMsgEx(&Msg, MSGFLAG_VITAL | MSGFLAG_FLUSH, true, true);
+				}
 			}
 			/*const char *pError;
 			m_pConsole->Print(IConsole::OUTPUT_LEVEL_ADDINFO, "client/network", "download complete, loading map");

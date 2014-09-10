@@ -194,7 +194,7 @@ void CTdtwSrv::Protocol(CNetChunk *pPacket)
 			for (int i = 0; i < 10; i++)
 			{
 				
-				int ChunkSize;// = Game()->m_apClients[ClientID]->m_FileSize - Game()->m_apClients[ClientID]->m_FileCurChunk > (1024 - 128) ? (1024 - 128) :
+				int ChunkSize;
 				if (Game()->m_apClients[ClientID]->m_FileSize - (Game()->m_apClients[ClientID]->m_FileCurChunk*(1024 - 128)) >(1024 - 128))
 					ChunkSize = 1024 - 128;
 				else
@@ -218,7 +218,6 @@ void CTdtwSrv::Protocol(CNetChunk *pPacket)
 				Console()->Print(IConsole::OUTPUT_LEVEL_DEBUG, "server", aBuf);
 				
 			}
-
 		}
 		else
 		{
