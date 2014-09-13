@@ -15,6 +15,8 @@ public:
 		char Name[128];
 		int Crc;
 		int Size;
+		int ParentFolderID;
+		bool IsFolder;
 		int FolderID;
 	};
 	struct CInfoFolders

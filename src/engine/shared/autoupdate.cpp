@@ -41,7 +41,9 @@ void CAutoUpdate::CheckHash()
 
 			CDataFileReader::GetCrcSize(pThis->Storage(), Temp->Name, -1, (unsigned int *)&Temp->Crc, (unsigned int *)&Temp->Size);
 
-			Temp->FolderID = folder_id;
+			Temp->ParentFolderID = folder_id;
+			Temp->IsFolder = false;
+			Temp->FolderID = 0;
 			pThis->m_aDir[folder_id].m_aFiles.add(*Temp);
 
 			pThis->m_aDir[folder_id].Crc += Temp->Crc;
@@ -54,6 +56,14 @@ void CAutoUpdate::CheckHash()
 			Temp->FolderID = pThis->m_aDir.size();
 			Temp->ParentFolderID = folder_id;
 			pThis->m_aDir.add(*Temp);
+
+			CInfoFiles* Temp2 = new CInfoFiles();
+			str_copy(Temp2->Name, aBuf, sizeof(Temp2->Name));
+			Temp2->ParentFolderID = folder_id;
+			Temp2->IsFolder = true;
+			Temp2->FolderID = pThis->m_aDir.size()-1;
+			
+			pThis->m_aDir[folder_id].m_aFiles.add(*Temp2);
 			
 			fs_listdir2(Temp->Name, ParseFilesCallback, pThis, Temp->FolderID);
 		}
@@ -67,7 +77,7 @@ void CAutoUpdate::CheckHash()
 		Console()->PrintArg(IConsole::OUTPUT_LEVEL_STANDARD, "updater", "[%d][%d] [%08x] %s", m_aDir[i].ParentFolderID, m_aDir[i].FolderID, m_aDir[i].Crc, m_aDir[i].Name);
 		for (int j = 0; j < m_aDir[i].m_aFiles.size(); j++)
 		{
-			Console()->PrintArg(IConsole::OUTPUT_LEVEL_STANDARD, "updater", "   [%d] [%08x] %s", m_aDir[i].m_aFiles[j].FolderID, m_aDir[i].m_aFiles[j].Crc, m_aDir[i].m_aFiles[j].Name);
+			Console()->PrintArg(IConsole::OUTPUT_LEVEL_STANDARD, "updater", "   [%d] [%08x] %s", m_aDir[i].m_aFiles[j].ParentFolderID, m_aDir[i].m_aFiles[j].Crc, m_aDir[i].m_aFiles[j].Name);
 		}
 	}*/
 }

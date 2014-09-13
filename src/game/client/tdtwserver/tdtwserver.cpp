@@ -53,7 +53,6 @@ void CTDTWServer::Protocol(CNetChunk *pChunk)
 				if (pMap[i] == '/' || pMap[i] == '\\')
 					pError = "strange character in map name";
 			}
-
 			if (MapSize < 0)
 				pError = "invalid map size";
 			if (pError)
@@ -157,6 +156,50 @@ void CTDTWServer::Protocol(CNetChunk *pChunk)
 			return;
 		}
 
+		if (Msg == NETMSGTYPE_TDTW_AUTOUPDATE_HASH)
+		{
+			CNetMsg_AutoUpdate_Hash *Msg = (CNetMsg_AutoUpdate_Hash *)pRawMsg;
+			if (Msg->m_File)
+			{
+				for (int i = 0; i < AutoUpdate()->m_aDir.size(); i++)
+				{
+					if (str_comp(AutoUpdate()->m_aDir[i].Name, Msg->m_File))
+					{
+						for (int j = 0; j < AutoUpdate()->m_aDir[i].m_aFiles.size(); j++)
+						{
+							CNetMsg_AutoUpdate_Hash Msg;
+
+							Msg.m_File = AutoUpdate()->m_aDir[i].m_aFiles[j].Name;
+							if (AutoUpdate()->m_aDir[i].m_aFiles[j].IsFolder)
+								Msg.m_Hash = AutoUpdate()->m_aDir[AutoUpdate()->m_aDir[i].m_aFiles[j].FolderID].Crc;
+							else Msg.m_Hash = AutoUpdate()->m_aDir[i].m_aFiles[j].Crc;
+							Msg.m_IsFolder = AutoUpdate()->m_aDir[i].m_aFiles[j].IsFolder;
+							if (!Msg.m_IsFolder)
+								Msg.m_Size = AutoUpdate()->m_aDir[i].m_aFiles[j].Size;
+							else Msg.m_Size = -1;
+							Client()->SendPackMsg(&Msg, MSGFLAG_FLUSH | MSGFLAG_VITAL, false, true);
+						}
+					}
+				}
+
+			}
+			else
+			{
+				for (int i = 0; i < AutoUpdate()->m_aDir[0].m_aFiles.size(); i++)
+				{
+					CNetMsg_AutoUpdate_Hash Msg;
+
+					Msg.m_File = AutoUpdate()->m_aDir[0].m_aFiles[i].Name;
+					if (AutoUpdate()->m_aDir[0].m_aFiles[i].IsFolder)
+						Msg.m_Hash = AutoUpdate()->m_aDir[AutoUpdate()->m_aDir[0].m_aFiles[i].FolderID].Crc;
+					else Msg.m_Hash = AutoUpdate()->m_aDir[0].m_aFiles[i].Crc;
+					Msg.m_IsFolder = AutoUpdate()->m_aDir[0].m_aFiles[i].IsFolder;
+					Msg.m_Size = AutoUpdate()->m_aDir[0].m_aFiles[i].Size;
+					Client()->SendPackMsg(&Msg, MSGFLAG_FLUSH | MSGFLAG_VITAL, false, true);
+				}
+			
+			}
+		}
 	}
 }
 

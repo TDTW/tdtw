@@ -8,8 +8,10 @@
 class CClientTdtw
 {
 public:
-	CClientTdtw();
+	CClientTdtw(class CGame *Game, int ID);
 	~CClientTdtw();
+	void GetHash();
+	bool OpenFile(const char *FileName);
 
 	enum
 	{
@@ -35,7 +37,7 @@ public:
 	int m_Score;
 
 	NETADDR ServerIP;
-	
+
 	int m_Authed;
 	int m_AuthTries;
 
@@ -51,6 +53,9 @@ public:
 	array <CClientTdtw*> m_Friends;
 
 	const IConsole::CCommandInfo *m_pRconCmdToSend;
-
+	class CGame *Game() { return m_pGame; }
+private:
+	int m_ID;
+	class CGame *m_pGame;
 };
 #endif

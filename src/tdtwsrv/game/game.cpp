@@ -1,8 +1,9 @@
 #include "game.h"
 
-CGame::CGame()
+CGame::CGame(ITDTWSrv *Server)
 {
 	m_apClients.clear();
+	m_pServer = Server;
 }
 
 int CGame::ClientState(int ClientID)
@@ -10,9 +11,9 @@ int CGame::ClientState(int ClientID)
 	return m_apClients[ClientID]->m_State;
 }
 
-void CGame::AddClient()
+void CGame::AddClient(int ID)
 {
-	CClientTdtw *NewClient = new CClientTdtw;
+	CClientTdtw *NewClient = new CClientTdtw(this, ID);
 	m_apClients.add(NewClient);
 }
 
@@ -27,4 +28,4 @@ int CGame::ClientsNum()
 }
 
 
-IGame *CreateGame() { return new CGame; }
+IGame *CreateGame(ITDTWSrv *Server) { return new CGame(Server); }

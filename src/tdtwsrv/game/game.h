@@ -5,11 +5,13 @@
 class CGame : public IGame
 {
 public:
-	CGame();
+	CGame(class ITDTWSrv *Server);
 	virtual int ClientState(int ClientID);
-	virtual void AddClient();
+	virtual void AddClient(int ID);
 	virtual void DeleteClient(int ClientID);
 	virtual int ClientsNum();
-
+	ITDTWSrv *Server() { return m_pServer; }
+private:
+	class ITDTWSrv *m_pServer;
 };
 #endif

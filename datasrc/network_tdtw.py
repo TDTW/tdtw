@@ -19,7 +19,10 @@ Flags = [
 
 Messages = [
 
-	NetMessage("AutoUpdate",[
-        NetString("m_WantUpdate"),
+	NetMessage("AutoUpdate_Hash",[
+        NetString("m_File"),
+        NetIntAny("m_Hash"),
+        NetIntAny("m_Size"),
+        NetBool("m_IsFolder"),
 	], True),
 ]

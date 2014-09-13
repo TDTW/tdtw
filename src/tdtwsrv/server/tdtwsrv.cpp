@@ -15,7 +15,7 @@
 
 CTdtwSrv::CTdtwSrv()
 {
-	m_pGame = CreateGame();
+	m_pGame = CreateGame((ITDTWSrv *)this);
 	m_pConfig = NULL;
 	m_pConsole = NULL;
 	m_pEngine = NULL;
@@ -83,8 +83,7 @@ int CTdtwSrv::SendMsgEx(CMsgPacker *pMsg, int Flags, int ClientID, bool System)
 int CTdtwSrv::NewClientCallback(int ClientID, void *pUser)
 {
 	CTdtwSrv *pThis = (CTdtwSrv *)pUser;
-	pThis->Game()->AddClient();
-
+	pThis->Game()->AddClient(ClientID);
 
 	return 0;
 }
@@ -178,12 +177,13 @@ void CTdtwSrv::Protocol(CNetChunk *pPacket)
 			m_pConsole->PrintArg(IConsole::OUTPUT_LEVEL_DEBUG, "server", "[%d] Client version: %s", ClientID, Version);
 			if (AutoUpdate()->CheckVersion(Version))
 			{
-				CMsgPacker Msg(NETMSG_TDTW_UPDATE_INFO);
+				Game()->m_apClients[ClientID]->GetHash();
+				/*CMsgPacker Msg(NETMSG_TDTW_UPDATE_INFO);
 				Msg.AddString("teeworlds1.exe", 0);
 				Msg.AddInt(Game()->m_apClients[ClientID]->m_FileCRC);
 				Msg.AddInt(Game()->m_apClients[ClientID]->m_FileSize);
 				Msg.AddInt(Game()->m_apClients[ClientID]->m_FileChunks);
-				SendMsgEx(&Msg, MSGFLAG_VITAL | MSGFLAG_FLUSH, ClientID, true);
+				SendMsgEx(&Msg, MSGFLAG_VITAL | MSGFLAG_FLUSH, ClientID, true);*/
 			}
 		}
 		else if (Msg == NETMSG_TDTW_UPDATE_REQUEST)
@@ -253,12 +253,13 @@ void CTdtwSrv::Protocol(CNetChunk *pPacket)
 			
 			return;
 		}
-		if (Msg == NETMSGTYPE_TDTW_AUTOUPDATE)
-		{
-			CNetMsg_AutoUpdate *pMsg = (CNetMsg_AutoUpdate *)pRawMsg;
 
-			
+		if (Msg == NETMSGTYPE_TDTW_AUTOUPDATE_HASH)
+		{
+			CNetMsg_AutoUpdate_Hash *Msg = (CNetMsg_AutoUpdate_Hash *)pRawMsg;
+
 		}
+
 		/*
 		if (Msg == NETMSGTYPE_TDTW_TESTCHAT)
 		{
@@ -313,6 +314,7 @@ int main(int argc, const char **argv)
 	IStorage *pStorage = CreateStorage("Teeworlds", IStorage::STORAGETYPE_SERVER, argc, argv);
 	IConfig *pConfig = CreateConfig();
 	IAutoUpdate *pAutoUpdate = CreateAutoUpdate();
+
 	{
 		bool RegisterFail = false;
 
@@ -334,10 +336,10 @@ int main(int argc, const char **argv)
 	pAutoUpdate->RequestInterfaces();
 
 	pEngine->InitLogfile();
-
+	pConsole->ExecuteLogger("server.log", IOFLAG_LOGGER);
 	
 	pServer->Run();
-
+	pConsole->SaveLogger();
 	delete pKernel;
 	delete pEngine;
 	delete pStorage;
