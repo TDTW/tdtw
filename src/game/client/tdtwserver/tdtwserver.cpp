@@ -144,6 +144,57 @@ void CTDTWServer::Protocol(CNetChunk *pChunk)
 
 			
 		}
+		else if (Msg == NETMSG_TDTW_HASH_REQUEST)
+		{
+			const char *pFile = Unpacker.GetString(CUnpacker::SANITIZE_CC | CUnpacker::SKIP_START_WHITESPACES);
+
+			if (str_comp(".", pFile))
+			{
+				for (int i = 0; i < AutoUpdate()->m_aDir.size(); i++)
+				{
+					if (str_comp(AutoUpdate()->m_aDir[i].Name, pFile))
+					{
+						for (int j = 0; j < AutoUpdate()->m_aDir[i].m_aFiles.size(); j++)
+						{
+							CNetMsg_AutoUpdate_Hash Msg;
+							Msg.m_Name = AutoUpdate()->m_aDir[i].m_aFiles[j].Name;
+
+							if (AutoUpdate()->m_aDir[i].m_aFiles[j].IsFolder)
+								Msg.m_Hash = AutoUpdate()->m_aDir[AutoUpdate()->m_aDir[i].m_aFiles[j].FolderID].Hash;
+							else
+								Msg.m_Hash = AutoUpdate()->m_aDir[i].m_aFiles[j].Hash;
+
+							Msg.m_IsFolder = AutoUpdate()->m_aDir[i].m_aFiles[j].IsFolder;
+
+							if (!Msg.m_IsFolder)
+								Msg.m_Size = AutoUpdate()->m_aDir[i].m_aFiles[j].Size;
+							else
+								Msg.m_Size = 0;
+
+							Client()->SendPackMsg(&Msg, MSGFLAG_FLUSH | MSGFLAG_VITAL, false, true);
+						}
+					}
+				}
+			}
+			else
+			{
+				for (int i = 0; i < AutoUpdate()->m_aDir[0].m_aFiles.size(); i++)
+				{
+					CNetMsg_AutoUpdate_Hash Msg;
+					Msg.m_Name = AutoUpdate()->m_aDir[0].m_aFiles[i].Name;
+
+					if (AutoUpdate()->m_aDir[0].m_aFiles[i].IsFolder)
+						Msg.m_Hash = AutoUpdate()->m_aDir[AutoUpdate()->m_aDir[0].m_aFiles[i].FolderID].Hash;
+					else
+						Msg.m_Hash = AutoUpdate()->m_aDir[0].m_aFiles[i].Hash;
+
+						Msg.m_IsFolder = AutoUpdate()->m_aDir[0].m_aFiles[i].IsFolder;
+					Msg.m_Size = AutoUpdate()->m_aDir[0].m_aFiles[i].Size;
+
+					Client()->SendPackMsg(&Msg, MSGFLAG_FLUSH | MSGFLAG_VITAL, false, true);
+				}
+			}
+		}
 	}
 	else
 	{
@@ -154,51 +205,6 @@ void CTDTWServer::Protocol(CNetChunk *pChunk)
 				"dropped weird message '%s' (%d), failed on '%s'", m_NetHandler.GetMsgName(Msg), Msg, m_NetHandler.FailedMsgOn());
 
 			return;
-		}
-
-		if (Msg == NETMSGTYPE_TDTW_AUTOUPDATE_HASH)
-		{
-			CNetMsg_AutoUpdate_Hash *Msg = (CNetMsg_AutoUpdate_Hash *)pRawMsg;
-			if (Msg->m_File)
-			{
-				for (int i = 0; i < AutoUpdate()->m_aDir.size(); i++)
-				{
-					if (str_comp(AutoUpdate()->m_aDir[i].Name, Msg->m_File))
-					{
-						for (int j = 0; j < AutoUpdate()->m_aDir[i].m_aFiles.size(); j++)
-						{
-							CNetMsg_AutoUpdate_Hash Msg;
-
-							Msg.m_File = AutoUpdate()->m_aDir[i].m_aFiles[j].Name;
-							if (AutoUpdate()->m_aDir[i].m_aFiles[j].IsFolder)
-								Msg.m_Hash = AutoUpdate()->m_aDir[AutoUpdate()->m_aDir[i].m_aFiles[j].FolderID].Crc;
-							else Msg.m_Hash = AutoUpdate()->m_aDir[i].m_aFiles[j].Crc;
-							Msg.m_IsFolder = AutoUpdate()->m_aDir[i].m_aFiles[j].IsFolder;
-							if (!Msg.m_IsFolder)
-								Msg.m_Size = AutoUpdate()->m_aDir[i].m_aFiles[j].Size;
-							else Msg.m_Size = -1;
-							Client()->SendPackMsg(&Msg, MSGFLAG_FLUSH | MSGFLAG_VITAL, false, true);
-						}
-					}
-				}
-
-			}
-			else
-			{
-				for (int i = 0; i < AutoUpdate()->m_aDir[0].m_aFiles.size(); i++)
-				{
-					CNetMsg_AutoUpdate_Hash Msg;
-
-					Msg.m_File = AutoUpdate()->m_aDir[0].m_aFiles[i].Name;
-					if (AutoUpdate()->m_aDir[0].m_aFiles[i].IsFolder)
-						Msg.m_Hash = AutoUpdate()->m_aDir[AutoUpdate()->m_aDir[0].m_aFiles[i].FolderID].Crc;
-					else Msg.m_Hash = AutoUpdate()->m_aDir[0].m_aFiles[i].Crc;
-					Msg.m_IsFolder = AutoUpdate()->m_aDir[0].m_aFiles[i].IsFolder;
-					Msg.m_Size = AutoUpdate()->m_aDir[0].m_aFiles[i].Size;
-					Client()->SendPackMsg(&Msg, MSGFLAG_FLUSH | MSGFLAG_VITAL, false, true);
-				}
-			
-			}
 		}
 	}
 }

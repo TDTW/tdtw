@@ -94,7 +94,7 @@ bool CMapChecker::ReadAndValidateMap(IStorage *pStorage, const char *pFilename, 
 			StandardMap = true;
 			if(!LoadedMapInfo)
 			{
-				if(!CDataFileReader::GetCrcSize(pStorage, pFilename, StorageType, &MapCrc, &MapSize))
+				if(!CDataFileReader::GetHashSize(pStorage, pFilename, StorageType, &MapCrc, &MapSize))
 					return true;
 				LoadedMapInfo = true;
 			}

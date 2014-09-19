@@ -13,7 +13,7 @@ public:
 	struct CInfoFiles
 	{
 		char Name[128];
-		int Crc;
+		int Hash;
 		int Size;
 		int ParentFolderID;
 		bool IsFolder;
@@ -22,7 +22,7 @@ public:
 	struct CInfoFolders
 	{
 		char Name[128];
-		int Crc;
+		int Hash;
 		int Size;
 		int FolderID;
 		int ParentFolderID;

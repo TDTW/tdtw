@@ -15,7 +15,7 @@
 
 CTdtwSrv::CTdtwSrv()
 {
-	m_pGame = CreateGame((ITDTWSrv *)this);
+	
 	m_pConfig = NULL;
 	m_pConsole = NULL;
 	m_pEngine = NULL;
@@ -257,7 +257,47 @@ void CTdtwSrv::Protocol(CNetChunk *pPacket)
 		if (Msg == NETMSGTYPE_TDTW_AUTOUPDATE_HASH)
 		{
 			CNetMsg_AutoUpdate_Hash *Msg = (CNetMsg_AutoUpdate_Hash *)pRawMsg;
+			if (Msg->m_Size = -1)
+			{
+				Game()->m_apClients[ClientID]->StartUpdate();
+				return;
+			}
 
+
+			/*if (Msg->m_IsFolder)
+			{
+				for (int i = 0; i < AutoUpdate()->m_aDir.size(); i++)
+				{
+					if (str_comp(Msg->m_File, AutoUpdate()->m_aDir[i].Name) == 0)
+					{
+						if (AutoUpdate()->m_aDir[i].Crc != Msg->m_Hash)
+						{
+							CNetMsg_AutoUpdate_Hash nMsg;
+							nMsg.m_File = Msg->m_File;
+							SendPackMsg(&nMsg, MSGFLAG_FLUSH | MSGFLAG_VITAL, ClientID, false);
+							return;
+							//Game()->AddUpdateFile(ClientID, (char *)Msg->m_File);
+						}
+					}
+				}
+			} 
+			else
+			{
+				for (int i = 0; i < AutoUpdate()->m_aDir.size(); i++)
+				{
+					for (int j = 0; j < AutoUpdate()->m_aDir[i].m_aFiles.size(); j++)
+					{
+						if (str_comp(Msg->m_File, AutoUpdate()->m_aDir[i].m_aFiles[j].Name) == 0)
+						{
+							if (AutoUpdate()->m_aDir[i].m_aFiles[j].Crc != Msg->m_Hash)
+							{
+								Game()->AddUpdateFile(ClientID, (char *)Msg->m_File);
+								return;
+							}
+						}
+					}
+				}
+			}*/
 		}
 
 		/*
@@ -279,7 +319,7 @@ void CTdtwSrv::RequestInterfaces()
 	m_pConfig = Kernel()->RequestInterface<IConfig>();
 	m_pConsole = Kernel()->RequestInterface<IConsole>();
 	m_pAutoUpdate = Kernel()->RequestInterface<IAutoUpdate>();
-
+	m_pGame = Kernel()->RequestInterface<IGame>();
 	m_pConsole->StoreCommands(false);
 	// process pending commands
 
@@ -328,11 +368,21 @@ int main(int argc, const char **argv)
 		if (RegisterFail)
 			::exit(0);
 	}
+	IGame *pGame = CreateGame();
+	{
+		bool RegisterFail = false;
+
+		RegisterFail = RegisterFail || !pKernel->RegisterInterface(pGame);
+
+		if (RegisterFail)
+			::exit(0);
+	}
+	
 	pEngine->Init();
 	pConfig->Init();
 
 	pServer->RequestInterfaces();
-
+	pGame->RequestInterfaces();
 	pAutoUpdate->RequestInterfaces();
 
 	pEngine->InitLogfile();

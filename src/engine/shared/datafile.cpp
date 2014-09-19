@@ -222,7 +222,7 @@ bool CDataFileReader::Open(class IStorage *pStorage, const char *pFilename, int 
 	return true;
 }
 
-bool CDataFileReader::GetCrcSize(class IStorage *pStorage, const char *pFilename, int StorageType, unsigned *pCrc, unsigned *pSize)
+bool CDataFileReader::GetHashSize(class IStorage *pStorage, const char *pFilename, int StorageType, unsigned *pCrc, unsigned *pSize)
 {
 	IOHANDLE File = pStorage->OpenFile(pFilename, IOFLAG_READ, StorageType);
 	if(!File)

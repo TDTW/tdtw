@@ -39,14 +39,14 @@ void CAutoUpdate::CheckHash()
 			CInfoFiles *Temp = new CInfoFiles();
 			str_copy(Temp->Name, aBuf, sizeof(Temp->Name));
 
-			CDataFileReader::GetCrcSize(pThis->Storage(), Temp->Name, -1, (unsigned int *)&Temp->Crc, (unsigned int *)&Temp->Size);
+			CDataFileReader::GetHashSize(pThis->Storage(), Temp->Name, -1, (unsigned int *)&Temp->Hash, (unsigned int *)&Temp->Size);
 
 			Temp->ParentFolderID = folder_id;
 			Temp->IsFolder = false;
 			Temp->FolderID = 0;
 			pThis->m_aDir[folder_id].m_aFiles.add(*Temp);
 
-			pThis->m_aDir[folder_id].Crc += Temp->Crc;
+			pThis->m_aDir[folder_id].Hash += Temp->Hash;
 		}
 		else
 		{

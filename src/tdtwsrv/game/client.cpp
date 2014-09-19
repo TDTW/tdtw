@@ -6,27 +6,13 @@
 CClientTdtw::CClientTdtw(CGame *Game, int ID)
 {
 	m_State = STATE_CONNECTED;
-	m_GameState = 0;
-	m_Latency = 0;
 	m_ID = ID;
-	m_UseCustomColor = 0;
-	m_ColorBody = 0;
-	m_ColorFeet = 0;
-	m_SkinID = 0;
-	m_SkinColor = 0;
-	mem_zero(&m_aSkinName, sizeof(m_aSkinName));
-
-	mem_zero(&m_aName, sizeof(m_aName));
-	mem_zero(&m_aClan, sizeof(m_aClan));
-	m_Country = 0;
-	m_Score = 0;
 
 	m_FileData = 0;
 	m_FileSize = 0;
 	m_FileCRC = 0;
 	m_FileChunks = 0;
 	m_FileCurChunk = 0;
-	mem_zero(&ServerIP, sizeof(ServerIP));
 
 	/*
 	{
@@ -40,22 +26,20 @@ CClientTdtw::CClientTdtw(CGame *Game, int ID)
 		io_read(File, m_FileData, m_FileSize);
 		io_close(File);
 	}*/
+	m_pGame = Game;
 
-	m_Authed = 0;
-	m_AuthTries = 0;
-
-	m_Followers.clear();
+/*	m_Followers.clear();
 	mem_zero(&m_Following, sizeof(m_Following));
 
-	m_Friends.clear();
+	m_Friends.clear();*/
 }
 
 CClientTdtw::~CClientTdtw()
 {
-	m_Followers.delete_all();
+/*	m_Followers.delete_all();
 	m_Friends.delete_all();
 	delete m_Following;
-	delete m_pRconCmdToSend;
+	delete m_pRconCmdToSend;*/
 }
 
 bool CClientTdtw::OpenFile(const char *FileName)
@@ -77,6 +61,13 @@ bool CClientTdtw::OpenFile(const char *FileName)
 
 void CClientTdtw::GetHash()
 {
-	CNetMsg_AutoUpdate_Hash Hash;
-	Game()->Server()->SendPackMsg(&Hash, MSGFLAG_FLUSH | MSGFLAG_VITAL, m_ID, false);
+	CMsgPacker Msg(NETMSG_TDTW_HASH_REQUEST);
+	Msg.AddString(".");
+	SendMsgEx(&Msg, MSGFLAG_VITAL | MSGFLAG_FLUSH, m_ID, true);
+}
+
+void CClientTdtw::StartUpdate()
+{
+/*	for (int i = 0; i < UpdateFiles.size(); i++)
+		dbg_msg("UpdtaeFiles", "Name:%s", UpdateFiles[i].Name);*/
 }
