@@ -178,18 +178,12 @@ void CTdtwSrv::Protocol(CNetChunk *pPacket)
 			if (AutoUpdate()->CheckVersion(Version))
 			{
 				Game()->m_apClients[ClientID]->GetHash();
-				/*CMsgPacker Msg(NETMSG_TDTW_UPDATE_INFO);
-				Msg.AddString("teeworlds1.exe", 0);
-				Msg.AddInt(Game()->m_apClients[ClientID]->m_FileCRC);
-				Msg.AddInt(Game()->m_apClients[ClientID]->m_FileSize);
-				Msg.AddInt(Game()->m_apClients[ClientID]->m_FileChunks);
-				SendMsgEx(&Msg, MSGFLAG_VITAL | MSGFLAG_FLUSH, ClientID, true);*/
 			}
 		}
 		else if (Msg == NETMSG_TDTW_UPDATE_REQUEST)
 		{
 			//int ChunkSize = 1024 - 128;
-			
+			dbg_msg("123123","123");
 			int Offset = 0;
 			for (int i = 0; i < 10; i++)
 			{
@@ -201,7 +195,10 @@ void CTdtwSrv::Protocol(CNetChunk *pPacket)
 					ChunkSize = Game()->m_apClients[ClientID]->m_FileSize - (Game()->m_apClients[ClientID]->m_FileCurChunk*(1024 - 128));
 
 				if (Game()->m_apClients[ClientID]->m_FileChunks <= Game()->m_apClients[ClientID]->m_FileCurChunk)
+				{
+					Game()->m_apClients[ClientID]->EndUpdate();
 					return;
+				}
 
 				Offset = Game()->m_apClients[ClientID]->m_FileCurChunk * (1024 - 128);
 
@@ -257,58 +254,41 @@ void CTdtwSrv::Protocol(CNetChunk *pPacket)
 		if (Msg == NETMSGTYPE_TDTW_AUTOUPDATE_HASH)
 		{
 			CNetMsg_AutoUpdate_Hash *Msg = (CNetMsg_AutoUpdate_Hash *)pRawMsg;
-			if (Msg->m_Size = -1)
-			{
-				Game()->m_apClients[ClientID]->StartUpdate();
-				return;
-			}
-
-
-			/*if (Msg->m_IsFolder)
+			if (Msg->m_IsFolder)
 			{
 				for (int i = 0; i < AutoUpdate()->m_aDir.size(); i++)
 				{
-					if (str_comp(Msg->m_File, AutoUpdate()->m_aDir[i].Name) == 0)
+					if (str_comp(Msg->m_Name, AutoUpdate()->m_aDir[i].Name) == 0)
 					{
-						if (AutoUpdate()->m_aDir[i].Crc != Msg->m_Hash)
+						if (AutoUpdate()->m_aDir[i].Hash != Msg->m_Hash)
 						{
-							CNetMsg_AutoUpdate_Hash nMsg;
-							nMsg.m_File = Msg->m_File;
-							SendPackMsg(&nMsg, MSGFLAG_FLUSH | MSGFLAG_VITAL, ClientID, false);
+							CMsgPacker Msg(NETMSG_TDTW_HASH_REQUEST);
+							Msg.AddString(AutoUpdate()->m_aDir[i].Name, 32);
+							SendMsgEx(&Msg, MSGFLAG_VITAL | MSGFLAG_FLUSH, ClientID, true);
 							return;
-							//Game()->AddUpdateFile(ClientID, (char *)Msg->m_File);
 						}
 					}
 				}
-			} 
+			}
 			else
 			{
 				for (int i = 0; i < AutoUpdate()->m_aDir.size(); i++)
 				{
 					for (int j = 0; j < AutoUpdate()->m_aDir[i].m_aFiles.size(); j++)
 					{
-						if (str_comp(Msg->m_File, AutoUpdate()->m_aDir[i].m_aFiles[j].Name) == 0)
+						if (str_comp(Msg->m_Name, AutoUpdate()->m_aDir[i].m_aFiles[j].Name) == 0)
 						{
-							if (AutoUpdate()->m_aDir[i].m_aFiles[j].Crc != Msg->m_Hash)
+							if (AutoUpdate()->m_aDir[i].m_aFiles[j].Hash != Msg->m_Hash)
 							{
-								Game()->AddUpdateFile(ClientID, (char *)Msg->m_File);
+								Game()->AddUpdateFile(ClientID, (char *)Msg->m_Name, Msg->m_Hash);
+								Game()->m_apClients[ClientID]->StartUpdate();
 								return;
 							}
 						}
 					}
 				}
-			}*/
+			}
 		}
-
-		/*
-		if (Msg == NETMSGTYPE_TDTW_TESTCHAT)
-		{
-			CNetMsg_TestChat *pMsg = (CNetMsg_TestChat *)pRawMsg;
-
-			m_pConsole->PrintArg(IConsole::OUTPUT_LEVEL_STANDARD, "chat",
-				"[%s]: %s", pMsg->m_Name, pMsg->m_pMessage);
-		}*/
-
 	}
 }
 

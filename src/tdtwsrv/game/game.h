@@ -11,7 +11,7 @@ public:
 	virtual void AddClient(int ID);
 	virtual void DeleteClient(int ClientID);
 	virtual int ClientsNum();
-	virtual void AddUpdateFile(int ID, char *Name);
+	virtual void AddUpdateFile(int ID, char *Name, int CRC);
 	virtual void RequestInterfaces();
 	ITDTWSrv *Server() { return m_pServer; }
 	

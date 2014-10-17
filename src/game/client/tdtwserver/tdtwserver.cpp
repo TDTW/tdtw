@@ -48,11 +48,6 @@ void CTDTWServer::Protocol(CNetChunk *pChunk)
 			if (Unpacker.Error())
 				return;
 
-			for (int i = 0; pMap[i]; i++) // protect the player from nasty map names
-			{
-				if (pMap[i] == '/' || pMap[i] == '\\')
-					pError = "strange character in map name";
-			}
 			if (MapSize < 0)
 				pError = "invalid map size";
 			if (pError)
@@ -99,10 +94,8 @@ void CTDTWServer::Protocol(CNetChunk *pChunk)
 
 			m_FileChunk++;
 			m_FileDownloadAmount += Size;
+
 			dbg_msg("UPD", "%d/%d", m_FileDownloadAmount, m_FileTotalSize);
-
-
-
 			dbg_msg("Updater", "%d", m_FileChunk);
 
 			io_write(m_FileHandle, pData, Size);
@@ -115,10 +108,12 @@ void CTDTWServer::Protocol(CNetChunk *pChunk)
 
 				if (m_FileHandle)
 					io_close(m_FileHandle);
+
 				m_FileHandle = 0;
 				m_FileDownloadAmount = 0;
 				m_FileTotalSize = -1;
-
+				m_FileChunk = 0;
+				m_FileTotalChunks = 0;
 				AutoUpdate()->SetNeedReplace(true);
 			}
 			else
@@ -128,31 +123,16 @@ void CTDTWServer::Protocol(CNetChunk *pChunk)
 					CMsgPacker Msg(NETMSG_TDTW_UPDATE_REQUEST);
 					Client()->SendMsgEx(&Msg, MSGFLAG_VITAL | MSGFLAG_FLUSH, true, true);
 				}
-			}
-			/*const char *pError;
-			m_pConsole->Print(IConsole::OUTPUT_LEVEL_ADDINFO, "client/network", "download complete, loading map");
-
-			if (m_FileHandle)
-				io_close(m_FileHandle);
-			m_FileHandle = 0;
-			m_FileDownloadAmount = 0;
-			m_FileTotalSize = -1;
-
-			AutoUpdate()->SetNeedReplace(true);*/
-			// load map
-			//pError = LoadMap(m_aMapdownloadName, m_aMapdownloadFilename, m_MapdownloadCrc);
-
-			
+			}			
 		}
 		else if (Msg == NETMSG_TDTW_HASH_REQUEST)
 		{
 			const char *pFile = Unpacker.GetString(CUnpacker::SANITIZE_CC | CUnpacker::SKIP_START_WHITESPACES);
-
 			if (str_comp(".", pFile))
 			{
 				for (int i = 0; i < AutoUpdate()->m_aDir.size(); i++)
 				{
-					if (str_comp(AutoUpdate()->m_aDir[i].Name, pFile))
+					if (str_comp(AutoUpdate()->m_aDir[i].Name, pFile) == 0)
 					{
 						for (int j = 0; j < AutoUpdate()->m_aDir[i].m_aFiles.size(); j++)
 						{
@@ -163,7 +143,7 @@ void CTDTWServer::Protocol(CNetChunk *pChunk)
 								Msg.m_Hash = AutoUpdate()->m_aDir[AutoUpdate()->m_aDir[i].m_aFiles[j].FolderID].Hash;
 							else
 								Msg.m_Hash = AutoUpdate()->m_aDir[i].m_aFiles[j].Hash;
-
+							dbg_msg("Client","%d", Msg.m_Hash);
 							Msg.m_IsFolder = AutoUpdate()->m_aDir[i].m_aFiles[j].IsFolder;
 
 							if (!Msg.m_IsFolder)
@@ -171,7 +151,7 @@ void CTDTWServer::Protocol(CNetChunk *pChunk)
 							else
 								Msg.m_Size = 0;
 
-							Client()->SendPackMsg(&Msg, MSGFLAG_FLUSH | MSGFLAG_VITAL, false, true);
+							Client()->SendPackMsg(&Msg, MSGFLAG_FLUSH , false, true);
 						}
 					}
 				}
@@ -182,16 +162,16 @@ void CTDTWServer::Protocol(CNetChunk *pChunk)
 				{
 					CNetMsg_AutoUpdate_Hash Msg;
 					Msg.m_Name = AutoUpdate()->m_aDir[0].m_aFiles[i].Name;
-
+					
 					if (AutoUpdate()->m_aDir[0].m_aFiles[i].IsFolder)
 						Msg.m_Hash = AutoUpdate()->m_aDir[AutoUpdate()->m_aDir[0].m_aFiles[i].FolderID].Hash;
 					else
 						Msg.m_Hash = AutoUpdate()->m_aDir[0].m_aFiles[i].Hash;
-
-						Msg.m_IsFolder = AutoUpdate()->m_aDir[0].m_aFiles[i].IsFolder;
+					dbg_msg("Client","%d", Msg.m_Hash);
+					Msg.m_IsFolder = AutoUpdate()->m_aDir[0].m_aFiles[i].IsFolder;
 					Msg.m_Size = AutoUpdate()->m_aDir[0].m_aFiles[i].Size;
 
-					Client()->SendPackMsg(&Msg, MSGFLAG_FLUSH | MSGFLAG_VITAL, false, true);
+					Client()->SendPackMsg(&Msg, MSGFLAG_FLUSH , false, true);
 				}
 			}
 		}

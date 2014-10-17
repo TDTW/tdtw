@@ -4,7 +4,7 @@
 #include <engine\shared\protocol.h>
 #include <engine\console.h>
 #include <base\tl\array.h>
-
+#include <engine\autoupdate.h>
 class CClientTdtw
 {
 public:
@@ -12,6 +12,13 @@ public:
 	~CClientTdtw();
 	void GetHash();
 	bool OpenFile(const char *FileName);
+	void StartUpdate();
+	struct CInfoFiles
+	{
+		char Name[128];
+		int CRC;
+	};
+	void EndUpdate();
 
 	enum
 	{
@@ -22,21 +29,19 @@ public:
 	// connection state info
 	int m_State;
 
-	IAutoUpdate::CInfoFolders m_Folders;
+
+	array<CInfoFiles> m_UpdateFiles;
 
 	int m_FileSize;
 	int m_FileCRC;
 	int m_FileChunks;
 	int m_FileCurChunk;
 	unsigned char *m_FileData;
-
-/*	array <CClientTdtw*> m_Followers;
-	CClientTdtw *m_Following;
-	array <CClientTdtw*> m_Friends;*/
-	
-	void StartUpdate();
+	bool m_Updating;
 
 	class CGame *Game() { return m_pGame; }
+	
+
 private:
 	int m_ID;
 	class CGame *m_pGame;
