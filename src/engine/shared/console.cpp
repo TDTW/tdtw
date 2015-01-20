@@ -13,6 +13,7 @@
 #include "linereader.h"
 #include <stdio.h>
 #include <stdarg.h>
+#include <string.h>
 
 // todo: rework this
 
@@ -235,7 +236,7 @@ void CConsole::PrintArg(int Level, const char *pFrom, const char *pStr, ...)
 	char Message[1024];
 	va_list pArguments;
 	va_start(pArguments, pStr);
-	vsprintf_s(Message, pStr, pArguments);
+	vsprintf(Message, pStr, pArguments);
 	CheckProcent(Message); // "%" Bug Fix 
 	va_end(pArguments);
 

@@ -34,7 +34,7 @@ void CChat::OnReset()
 		m_aLines[i].m_aText[0] = 0;
 		m_aLines[i].m_aName[0] = 0;
 		m_aLines[i].m_Blend = 0.0f;
-		m_aLines[i].m_Tee = CTeeRenderInfo::CTeeRenderInfo();
+		m_aLines[i].m_Tee = CTeeRenderInfo();
 	}
 
 	m_Show = false;
@@ -367,7 +367,7 @@ void CChat::AddLine(int ClientID, int Team, const char *pLine)
 		m_aLines[m_CurrentLine].m_Team = Team;
 		m_aLines[m_CurrentLine].m_NameColor = -2;
 		m_aLines[m_CurrentLine].m_Blend = 0.0f;
-		m_aLines[m_CurrentLine].m_Tee = CTeeRenderInfo::CTeeRenderInfo();
+		m_aLines[m_CurrentLine].m_Tee = CTeeRenderInfo();
 		
 
 		// check for highlighted name

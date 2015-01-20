@@ -65,7 +65,8 @@ if gen_server_content_header:
 
 if gen_client_content_header or gen_server_content_header:
 	# emit the type declarations
-	contentlines = open("datasrc/content.py", "rb").readlines()
+	path = os.path.dirname(os.path.abspath(__file__))
+	contentlines = open(path+"/content.py", "rb").readlines()
 	order = []
 	for line in contentlines:
 		line = line.strip()
