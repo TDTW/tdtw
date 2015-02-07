@@ -373,6 +373,12 @@ set(SOURCE_FILES
     src/mastersrv/mastersrv.cpp
     src/mastersrv/mastersrv.h
     src/osxlaunch/client.h
+    src/tdtwsrv/tdtwsrv.h
+    src/tdtwsrv/game.h
+    src/tdtwsrv/server/tdtwsrv.h
+    src/tdtwsrv/server/tdtwsrv.cpp
+    src/tdtwsrv/game/game.h
+    src/tdtwsrv/game/game.cpp
     src/tools/crapnet.cpp
     src/tools/dilate.cpp
     src/tools/fake_server.cpp
@@ -393,7 +399,7 @@ file(GLOB SERVER src/engine/server/*.cpp)
 file(GLOB CLIENT src/engine/client/*.cpp)
 file(GLOB VERSION_SERVER src/versionsrc/*.cpp)
 file(GLOB MASTER_SERVER src/mastersrv/*.cpp)
-file(GLOB TDTW_SERVER src/tdtwsrv/*.cpp)
+file(GLOB_RECURSE TDTW_SERVER src/tdtwsrv/*.cpp)
 file(GLOB GAME_SHARED src/game/*.cpp src/game/generated/nethash.cpp src/game/generated/protocol.cpp src/game/generated/protocol_tdtw.cpp)
 file(GLOB_RECURSE GAME_CLIENT src/game/client/*.cpp src/game/generated/client_data.cpp)
 file(GLOB_RECURSE GAME_SERVER src/game/server/*.cpp src/game/generated/server_data.cpp)
@@ -414,7 +420,7 @@ if(OS_WINDOWS)
 endif(OS_WINDOWS)
 
 #SERVER_DEBUG
-add_executable(server_debug ${ENGINE} ${SERVER} ${TDTW_SERVER} ${ZLIB})
+add_executable(server_debug ${ENGINE} ${GAME_SHARED} ${TDTW_SERVER} ${ZLIB})
 
 if(OS_LINUX)
     target_link_libraries(server_debug ${CMAKE_THREAD_LIBS_INIT})
@@ -423,7 +429,7 @@ elseif(OS_WINDOWS)
 endif()
 
 #SERVER_RELEASE
-add_executable(server_release ${ENGINE} ${SERVER} ${TDTW_SERVER} ${ZLIB})
+add_executable(server_release ${ENGINE} ${GAME_SHARED} ${TDTW_SERVER} ${ZLIB})
 
 if(OS_LINUX)
     target_link_libraries(server_release ${CMAKE_THREAD_LIBS_INIT})
