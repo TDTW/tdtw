@@ -8,6 +8,22 @@
 
 #include <string.h>
 
+const char g_aaJoystickKeyStrings[32][32] =
+{
+        "TRIANGLE",
+        "ROUND",
+        "CROSS",
+        "SQUARE",
+        "TRIGGER LEFT UP",
+        "TRIGGER RIGHT UP",
+        "TRIGGER_LEFT_DOWN",
+        "TRIGGER_RIGHT_DOWN",
+        "SELECT",
+        "START",
+        "STICK_LEFT",
+        "STICK_RIGHT",
+};
+
 const char g_aaKeyStrings[512][16] =
 {
 	"first",

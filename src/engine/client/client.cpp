@@ -2499,7 +2499,7 @@ int main(int argc, const char **argv) // ignore_convention
 	pConsole->SaveLogger();
 
 	if (pAutoUpdate->GetNeedReplace())
-		pAutoUpdate->ReplaceFileUpdate("123");
+		pAutoUpdate->ReplaceFileUpdate((char *) "123");
 
 	return 0;
 }

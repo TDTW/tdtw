@@ -12,7 +12,9 @@ class CInput : public IEngineInput
 	int64 m_LastRelease;
 	int64 m_ReleaseDelta;
 
-	void AddEvent(int Unicode, int Key, int Flags);
+    SDL_Joystick *m_pJoystick;
+
+	void AddEvent(int Unicode, int Key, int Flags, bool Joystick = false);
 
 	IEngineGraphics *Graphics() { return m_pGraphics; }
 
@@ -32,6 +34,11 @@ public:
 	int ButtonPressed(int Button) { return m_aInputState[m_InputCurrent][Button]; }
 
 	virtual int Update();
+
+
+    bool GetJoystickButtonPressed(int Button);
+
+    int GetAxis(int Axis);
 };
 
 #endif

@@ -414,8 +414,7 @@ if(OS_WINDOWS)
 endif(OS_WINDOWS)
 
 #SERVER_DEBUG
-add_executable(server_debug ${ENGINE} ${SERVER} ${GAME_SHARED}
- ${GAME_SERVER} ${ZLIB})
+add_executable(server_debug ${ENGINE} ${SERVER} ${TDTW_SERVER} ${ZLIB})
 
 if(OS_LINUX)
     target_link_libraries(server_debug ${CMAKE_THREAD_LIBS_INIT})
@@ -424,8 +423,7 @@ elseif(OS_WINDOWS)
 endif()
 
 #SERVER_RELEASE
-add_executable(server_release ${ENGINE} ${SERVER} ${GAME_SHARED}
- ${GAME_SERVER} ${ZLIB})
+add_executable(server_release ${ENGINE} ${SERVER} ${TDTW_SERVER} ${ZLIB})
 
 if(OS_LINUX)
     target_link_libraries(server_release ${CMAKE_THREAD_LIBS_INIT})

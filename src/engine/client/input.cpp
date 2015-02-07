@@ -17,17 +17,23 @@
 #include "keynames.h"
 #undef KEYS_INCLUDE
 
-void CInput::AddEvent(int Unicode, int Key, int Flags)
+void CInput::AddEvent(int Unicode, int Key, int Flags, bool Joystick)
 {
-	if(m_NumEvents != INPUT_BUFFER_SIZE)
+	if(m_NumEvents != INPUT_BUFFER_SIZE && !Joystick)
 	{
 		m_aInputEvents[m_NumEvents].m_Unicode = Unicode;
 		m_aInputEvents[m_NumEvents].m_Key = Key;
 		m_aInputEvents[m_NumEvents].m_Flags = Flags;
 		m_NumEvents++;
 	}
+    else if(m_NumEvents != INPUT_BUFFER_SIZE && Joystick)
+    {
+        m_aJoystickEvents[m_JoystickNumEvents].m_Button = Unicode;
+        m_aJoystickEvents[m_JoystickNumEvents].m_State = Key;
+        m_aJoystickEvents[m_JoystickNumEvents].m_Type = Flags;
+        m_JoystickNumEvents++;
+    }
 }
-
 CInput::CInput()
 {
 	mem_zero(m_aInputCount, sizeof(m_aInputCount));
@@ -41,6 +47,7 @@ CInput::CInput()
 	m_ReleaseDelta = -1;
 
 	m_NumEvents = 0;
+    m_JoystickNumEvents = 0;
 }
 
 void CInput::Init()
@@ -48,6 +55,21 @@ void CInput::Init()
 	m_pGraphics = Kernel()->RequestInterface<IEngineGraphics>();
 	SDL_EnableUNICODE(1);
 	SDL_EnableKeyRepeat(SDL_DEFAULT_REPEAT_DELAY, SDL_DEFAULT_REPEAT_INTERVAL);
+    if(SDL_Init(SDL_INIT_JOYSTICK) < 0)
+        dbg_msg("client", "unable to init SDL base: %s", SDL_GetError());
+
+    SDL_JoystickEventState(SDL_ENABLE);
+    m_pJoystick = SDL_JoystickOpen(0);
+}
+
+int CInput::GetAxis(int Axis)
+{
+    return SDL_JoystickGetAxis(m_pJoystick, Axis);
+}
+
+bool CInput::GetJoystickButtonPressed(int Button)
+{
+    return SDL_JoystickGetButton(m_pJoystick, Button);
 }
 
 void CInput::MouseRelative(float *x, float *y)
@@ -152,6 +174,7 @@ int CInput::Update()
 		{
 			int Key = -1;
 			int Action = IInput::FLAG_PRESS;
+            int Joystick = false;
 			switch (Event.type)
 			{
 				// handle keys
@@ -165,18 +188,23 @@ int CInput::Update()
 					Action = IInput::FLAG_RELEASE;
 					Key = Event.key.keysym.sym; // ignore_convention
 					break;
-
+                case SDL_JOYBUTTONDOWN:
+                    Joystick = true;
+                    Key = Event.jbutton.button;
+                    AddEvent(Event.jbutton.button, Event.jbutton.state, Event.jbutton.type, true);
+                case SDL_JOYBUTTONUP:
+                    Joystick = true;
+                    Action = IInput::FLAG_RELEASE;
+                    Key = Event.jbutton.button;
 				// handle mouse buttons
 				case SDL_MOUSEBUTTONUP:
 					Action = IInput::FLAG_RELEASE;
 
 					if(Event.button.button == 1) // ignore_convention
-					{
-						m_ReleaseDelta = time_get() - m_LastRelease;
-						m_LastRelease = time_get();
-					}
-
-					// fall through
+                    {
+                        m_ReleaseDelta = time_get() - m_LastRelease;
+                        m_LastRelease = time_get();
+                    }
 				case SDL_MOUSEBUTTONDOWN:
 					if(Event.button.button == SDL_BUTTON_LEFT) Key = KEY_MOUSE_1; // ignore_convention
 					if(Event.button.button == SDL_BUTTON_RIGHT) Key = KEY_MOUSE_2; // ignore_convention
@@ -196,10 +224,20 @@ int CInput::Update()
 			//
 			if(Key != -1)
 			{
-				m_aInputCount[m_InputCurrent][Key].m_Presses++;
-				if(Action == IInput::FLAG_PRESS)
-					m_aInputState[m_InputCurrent][Key] = 1;
-				AddEvent(0, Key, Action);
+                if(!Joystick)
+                {
+                    m_aInputCount[m_InputCurrent][Key].m_Presses++;
+                    if(Action == IInput::FLAG_PRESS)
+                        m_aInputState[m_InputCurrent][Key] = 1;
+                    AddEvent(0, Key, Action);
+                }
+                else
+                {
+                    m_aJoystickCount[m_JoystickCurrent][Key].m_Presses++;
+                    if(Action == IInput::FLAG_PRESS)
+                        m_aJoystickState[m_JoystickCurrent][Key] = 1;
+                    AddEvent(Key, 0, 0, true);
+                }
 			}
 
 		}

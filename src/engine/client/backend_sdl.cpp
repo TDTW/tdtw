@@ -3,7 +3,6 @@
 #include "SDL_opengl.h"
 
 #include <base/tl/threading.h>
-
 #include "graphics_threaded.h"
 #include "backend_sdl.h"
 

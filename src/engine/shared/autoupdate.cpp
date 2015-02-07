@@ -1,8 +1,11 @@
+#include <base/system.h>
 #include "autoupdate.h"
 #if defined(CONF_FAMILY_WINDOWS)
 #define IStorage _IStorage
 #include <windows.h>
 #include <shellapi.h>
+#include <game/version.h>
+
 #undef IStorage
 #endif
 CAutoUpdate::CAutoUpdate()
