@@ -848,7 +848,7 @@ void CChat::OnRenderNew()
 			m_aLines[r].m_YOld[OffsetType] ++;
 		}
 		
-		if(!m_Show && m_aLines[r].m_Time+3*time_freq() < Now)
+		if(!m_Show && m_aLines[r].m_Time+g_Config.m_ClChatShowtime*time_freq() < Now)
 		{
 			if(m_aLines[r].m_Blend > 0.0f)
 				m_aLines[r].m_Blend -= 1.0f*Client()->RenderFrameTime()*2.0f;
@@ -1005,6 +1005,7 @@ void CChat::OnRender()
 	{
 		// render chat input
 		CTextCursor Cursor;
+
 		TextRender()->SetCursor(&Cursor, x, y, 8.0f, TEXTFLAG_RENDER);
 		Cursor.m_LineWidth = Width-190.0f;
 		Cursor.m_MaxLines = 2;
