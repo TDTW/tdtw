@@ -11,7 +11,6 @@ public:
 	virtual int ClientState(int ClientID) = 0;
 	virtual void AddClient(int ID) = 0;
 	virtual void DeleteClient(int ClientID) = 0;
-	virtual void AddUpdateFile(int ID, char *Name, int CRC) = 0;
 	virtual int ClientsNum() = 0;
 	virtual void RequestInterfaces() = 0;
 	array <CClientTdtw *> m_apClients;

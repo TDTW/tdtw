@@ -9,6 +9,14 @@
       <Configuration>Release</Configuration>
       <Platform>Win32</Platform>
     </ProjectConfiguration>
+    <ProjectConfiguration Include="tdtwserver_debug|Win32">
+      <Configuration>tdtwserver_debug</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="tdtwserver_release|Win32">
+      <Configuration>tdtwserver_release</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
   </ItemGroup>
   <PropertyGroup Label="Globals">
     <ProjectGuid>{6F723D2A-D0B7-4A7A-914D-B689F2BA2C58}</ProjectGuid>
@@ -21,11 +29,22 @@
     <PlatformToolset>v120</PlatformToolset>
     <CharacterSet>MultiByte</CharacterSet>
   </PropertyGroup>
-  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" Label="Configuration">
-    <ConfigurationType>Application</ConfigurationType>
-    <UseDebugLibraries>false</UseDebugLibraries>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='tdtwserver_debug|Win32'" Label="Configuration">
+    <ConfigurationType>Makefile</ConfigurationType>
+    <UseDebugLibraries>true</UseDebugLibraries>
     <PlatformToolset>v120</PlatformToolset>
-    <WholeProgramOptimization>true</WholeProgramOptimization>
+    <CharacterSet>MultiByte</CharacterSet>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" Label="Configuration">
+    <ConfigurationType>Makefile</ConfigurationType>
+    <UseDebugLibraries>true</UseDebugLibraries>
+    <PlatformToolset>v120</PlatformToolset>
+    <CharacterSet>MultiByte</CharacterSet>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='tdtwserver_release|Win32'" Label="Configuration">
+    <ConfigurationType>Makefile</ConfigurationType>
+    <UseDebugLibraries>true</UseDebugLibraries>
+    <PlatformToolset>v120</PlatformToolset>
     <CharacterSet>MultiByte</CharacterSet>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.props" />
@@ -34,18 +53,55 @@
   <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
   </ImportGroup>
-  <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+  <ImportGroup Condition="'$(Configuration)|$(Platform)'=='tdtwserver_debug|Win32'" Label="PropertySheets">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <ImportGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" Label="PropertySheets">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <ImportGroup Condition="'$(Configuration)|$(Platform)'=='tdtwserver_release|Win32'" Label="PropertySheets">
     <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
   </ImportGroup>
   <PropertyGroup Label="UserMacros" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <IncludePath>$(ProjectDir)/src/engine/external/zlib/;$(ProjectDir)/other/sdl/include/;$(ProjectDir)/src/;$(IncludePath)</IncludePath>
-    <NMakeBuildCommandLine>..\bam\bam client_debug</NMakeBuildCommandLine>
-    <NMakeReBuildCommandLine>..\bam\bam -c all
-..\bam\bam client_debug</NMakeReBuildCommandLine>
-    <NMakeCleanCommandLine>..\bam\bam -c all</NMakeCleanCommandLine>
+    <NMakeBuildCommandLine>bam client_debug</NMakeBuildCommandLine>
+    <NMakeReBuildCommandLine>bam -c all
+ bam client_debug</NMakeReBuildCommandLine>
+    <NMakeCleanCommandLine>bam -c all</NMakeCleanCommandLine>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='tdtwserver_debug|Win32'">
+    <IncludePath>$(ProjectDir)/src/engine/external/zlib/;$(ProjectDir)/other/sdl/include/;$(ProjectDir)/src/;$(IncludePath)</IncludePath>
+    <NMakeBuildCommandLine>bam tdtwserver_debug</NMakeBuildCommandLine>
+    <NMakeReBuildCommandLine>bam -c all
+ bam tdtwserver_debug</NMakeReBuildCommandLine>
+    <NMakeCleanCommandLine>bam -c all</NMakeCleanCommandLine>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+    <IncludePath>$(ProjectDir)/src/engine/external/zlib/;$(ProjectDir)/other/sdl/include/;$(ProjectDir)/src/;$(IncludePath)</IncludePath>
+    <NMakeBuildCommandLine>bam client_release</NMakeBuildCommandLine>
+    <NMakeReBuildCommandLine>bam -c all
+ bam client_release</NMakeReBuildCommandLine>
+    <NMakeCleanCommandLine>bam -c all</NMakeCleanCommandLine>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='tdtwserver_release|Win32'">
+    <IncludePath>$(ProjectDir)/src/engine/external/zlib/;$(ProjectDir)/other/sdl/include/;$(ProjectDir)/src/;$(IncludePath)</IncludePath>
+    <NMakeBuildCommandLine>bam tdtwserver_release</NMakeBuildCommandLine>
+    <NMakeReBuildCommandLine>bam -c all
+ bam tdtwserver_release</NMakeReBuildCommandLine>
+    <NMakeCleanCommandLine>bam -c all</NMakeCleanCommandLine>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+    <ClCompile>
+      <WarningLevel>Level3</WarningLevel>
+      <Optimization>Disabled</Optimization>
+      <SDLCheck>true</SDLCheck>
+    </ClCompile>
+    <Link>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+    </Link>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='tdtwserver_debug|Win32'">
     <ClCompile>
       <WarningLevel>Level3</WarningLevel>
       <Optimization>Disabled</Optimization>
@@ -58,15 +114,21 @@
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <ClCompile>
       <WarningLevel>Level3</WarningLevel>
-      <Optimization>MaxSpeed</Optimization>
-      <FunctionLevelLinking>true</FunctionLevelLinking>
-      <IntrinsicFunctions>true</IntrinsicFunctions>
+      <Optimization>Disabled</Optimization>
       <SDLCheck>true</SDLCheck>
     </ClCompile>
     <Link>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <EnableCOMDATFolding>true</EnableCOMDATFolding>
-      <OptimizeReferences>true</OptimizeReferences>
+    </Link>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='tdtwserver_release|Win32'">
+    <ClCompile>
+      <WarningLevel>Level3</WarningLevel>
+      <Optimization>Disabled</Optimization>
+      <SDLCheck>true</SDLCheck>
+    </ClCompile>
+    <Link>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
@@ -234,6 +296,7 @@
     <ClInclude Include="src\base\tl\string.h" />
     <ClInclude Include="src\base\tl\threading.h" />
     <ClInclude Include="src\base\vmath.h" />
+    <ClInclude Include="src\engine\autoupdate.h" />
     <ClInclude Include="src\engine\client.h" />
     <ClInclude Include="src\engine\client\backend_sdl.h" />
     <ClInclude Include="src\engine\client\client.h" />
@@ -273,6 +336,7 @@
     <ClInclude Include="src\engine\serverbrowser.h" />
     <ClInclude Include="src\engine\server\register.h" />
     <ClInclude Include="src\engine\server\server.h" />
+    <ClInclude Include="src\engine\shared\autoupdate.h" />
     <ClInclude Include="src\engine\shared\compression.h" />
     <ClInclude Include="src\engine\shared\config.h" />
     <ClInclude Include="src\engine\shared\config_variables.h" />
@@ -329,6 +393,8 @@
     <ClInclude Include="src\game\client\gameclient.h" />
     <ClInclude Include="src\game\client\lineinput.h" />
     <ClInclude Include="src\game\client\render.h" />
+    <ClInclude Include="src\game\client\tdtwserver\tdtwserver.h" />
+    <ClInclude Include="src\game\client\tdtwserver\updatefiles.h" />
     <ClInclude Include="src\game\client\ui.h" />
     <ClInclude Include="src\game\collision.h" />
     <ClInclude Include="src\game\editor\auto_map.h" />
@@ -360,6 +426,11 @@
     <ClInclude Include="src\game\voting.h" />
     <ClInclude Include="src\mastersrv\mastersrv.h" />
     <ClInclude Include="src\osxlaunch\client.h" />
+    <ClInclude Include="src\tdtwsrv\game.h" />
+    <ClInclude Include="src\tdtwsrv\game\client.h" />
+    <ClInclude Include="src\tdtwsrv\game\game.h" />
+    <ClInclude Include="src\tdtwsrv\server\tdtwsrv.h" />
+    <ClInclude Include="src\tdtwsrv\tdtwsrv.h" />
     <ClInclude Include="src\versionsrv\mapversions.h" />
     <ClInclude Include="src\versionsrv\versionsrv.h" />
   </ItemGroup>
@@ -407,6 +478,7 @@
     <ClCompile Include="src\engine\external\zlib\zutil.c" />
     <ClCompile Include="src\engine\server\register.cpp" />
     <ClCompile Include="src\engine\server\server.cpp" />
+    <ClCompile Include="src\engine\shared\autoupdate.cpp" />
     <ClCompile Include="src\engine\shared\compression.cpp" />
     <ClCompile Include="src\engine\shared\config.cpp" />
     <ClCompile Include="src\engine\shared\console.cpp" />
@@ -471,6 +543,8 @@
     <ClCompile Include="src\game\client\lineinput.cpp" />
     <ClCompile Include="src\game\client\render.cpp" />
     <ClCompile Include="src\game\client\render_map.cpp" />
+    <ClCompile Include="src\game\client\tdtwserver\tdtwserver.cpp" />
+    <ClCompile Include="src\game\client\tdtwserver\updatefiles.cpp" />
     <ClCompile Include="src\game\client\ui.cpp" />
     <ClCompile Include="src\game\collision.cpp" />
     <ClCompile Include="src\game\editor\auto_map.cpp" />
@@ -502,6 +576,9 @@
     <ClCompile Include="src\game\server\gameworld.cpp" />
     <ClCompile Include="src\game\server\player.cpp" />
     <ClCompile Include="src\mastersrv\mastersrv.cpp" />
+    <ClCompile Include="src\tdtwsrv\game\client.cpp" />
+    <ClCompile Include="src\tdtwsrv\game\game.cpp" />
+    <ClCompile Include="src\tdtwsrv\server\tdtwsrv.cpp" />
     <ClCompile Include="src\tools\crapnet.cpp" />
     <ClCompile Include="src\tools\dilate.cpp" />
     <ClCompile Include="src\tools\fake_server.cpp" />

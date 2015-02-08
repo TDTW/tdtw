@@ -11,6 +11,7 @@
 #include <engine/shared/protocol.h>
 #include <game/generated/protocol_tdtw.h>
 #include <game/version.h>
+#include "updatefiles.h"
 
 class CTDTWServer : public ITDTWServer 
 {
@@ -33,10 +34,11 @@ private:
 	int m_FileDownloadAmount;
 	int m_FileTotalChunks;
 	int m_FileTotalSize;
-	int tempInt;
 	unsigned char *m_FileData[10];
 	int m_FileChunkSize[10];
 	IOHANDLE m_FileHandle;
+
+	class CUpdateFiles *UpdateFiles;
 
 	class IClient *m_pClient;
 	class IConsole *m_pConsole;

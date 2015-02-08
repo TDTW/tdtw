@@ -99,8 +99,6 @@ void CAutoUpdate::RequestInterfaces()
 	m_pStorage = Kernel()->RequestInterface<IStorage>();
 }
 
-
-
 void CAutoUpdate::ReplaceFileUpdate(char *FileName)
 {
 	char aBuf[150];

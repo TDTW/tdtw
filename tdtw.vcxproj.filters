@@ -106,6 +106,18 @@
     <Filter Include="src\versionsrv">
       <UniqueIdentifier>{2c2e06ac-2a97-45bb-9156-bb34105c2b8f}</UniqueIdentifier>
     </Filter>
+    <Filter Include="src\tdtwsrv">
+      <UniqueIdentifier>{9181cec9-881d-40ea-8e02-143917dfd134}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src\tdtwsrv\server">
+      <UniqueIdentifier>{b8813526-e1a0-4768-be55-ac1e504bdcb9}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src\tdtwsrv\game">
+      <UniqueIdentifier>{f2ffbc62-2e04-49aa-8e2b-2a1696169aba}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src\game\client\tdtwserver">
+      <UniqueIdentifier>{9fceea37-d3f9-4998-8b2a-2fb080548e9b}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <None Include="datasrc\compile.py">
@@ -976,6 +988,33 @@
     <ClInclude Include="src\versionsrv\versionsrv.h">
       <Filter>src\versionsrv</Filter>
     </ClInclude>
+    <ClInclude Include="src\tdtwsrv\game.h">
+      <Filter>src\tdtwsrv</Filter>
+    </ClInclude>
+    <ClInclude Include="src\tdtwsrv\tdtwsrv.h">
+      <Filter>src\tdtwsrv</Filter>
+    </ClInclude>
+    <ClInclude Include="src\tdtwsrv\game\client.h">
+      <Filter>src\tdtwsrv\game</Filter>
+    </ClInclude>
+    <ClInclude Include="src\tdtwsrv\game\game.h">
+      <Filter>src\tdtwsrv\game</Filter>
+    </ClInclude>
+    <ClInclude Include="src\tdtwsrv\server\tdtwsrv.h">
+      <Filter>src\tdtwsrv\server</Filter>
+    </ClInclude>
+    <ClInclude Include="src\engine\autoupdate.h">
+      <Filter>src\engine</Filter>
+    </ClInclude>
+    <ClInclude Include="src\engine\shared\autoupdate.h">
+      <Filter>src\engine\shared</Filter>
+    </ClInclude>
+    <ClInclude Include="src\game\client\tdtwserver\tdtwserver.h">
+      <Filter>src\game\client\tdtwserver</Filter>
+    </ClInclude>
+    <ClInclude Include="src\game\client\tdtwserver\updatefiles.h">
+      <Filter>src\game\client\tdtwserver</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Image Include="other\icons\Teeworlds_srv.ico">
@@ -1412,6 +1451,24 @@
     </ClCompile>
     <ClCompile Include="src\versionsrv\versionsrv.cpp">
       <Filter>src\versionsrv</Filter>
+    </ClCompile>
+    <ClCompile Include="src\tdtwsrv\game\client.cpp">
+      <Filter>src\tdtwsrv\game</Filter>
+    </ClCompile>
+    <ClCompile Include="src\tdtwsrv\game\game.cpp">
+      <Filter>src\tdtwsrv\game</Filter>
+    </ClCompile>
+    <ClCompile Include="src\tdtwsrv\server\tdtwsrv.cpp">
+      <Filter>src\tdtwsrv\server</Filter>
+    </ClCompile>
+    <ClCompile Include="src\engine\shared\autoupdate.cpp">
+      <Filter>src\engine\shared</Filter>
+    </ClCompile>
+    <ClCompile Include="src\game\client\tdtwserver\tdtwserver.cpp">
+      <Filter>src\game\client\tdtwserver</Filter>
+    </ClCompile>
+    <ClCompile Include="src\game\client\tdtwserver\updatefiles.cpp">
+      <Filter>src\game\client\tdtwserver</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

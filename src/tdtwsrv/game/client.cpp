@@ -48,31 +48,16 @@ bool CClientTdtw::OpenFile(const char *FileName)
 
 void CClientTdtw::EndUpdate()
 {
-	m_Updating = false;
-	m_UpdateFiles.remove_index(0);
 	m_FileData = 0;
 	m_FileSize = 0;
 	m_FileCRC = 0;
 	m_FileChunks = 0;
 	m_FileCurChunk = 0;
-	StartUpdate();
 }
+
 void CClientTdtw::GetHash()
 {
 	CMsgPacker Msg(NETMSG_TDTW_HASH_REQUEST);
-	Msg.AddString(".", -1);
+	Msg.AddString("1", -1);
 	Game()->Server()->SendMsgEx(&Msg, MSGFLAG_VITAL | MSGFLAG_FLUSH, m_ID, true);
-}
-
-void CClientTdtw::StartUpdate()
-{
-	dbg_msg("UpdtaeFiles", "Size:%d", m_UpdateFiles.size());
-	
-	if (m_UpdateFiles.size() != 0 && !m_Updating)
-	{
-		m_Updating = true;
-		OpenFile(m_UpdateFiles[0].Name);
-		dbg_msg("UpdtaeFiles", "Name:%s", m_UpdateFiles[0].Name);		
-	}
-
 }

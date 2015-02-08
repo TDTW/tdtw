@@ -13,11 +13,6 @@ public:
 	void GetHash();
 	bool OpenFile(const char *FileName);
 	void StartUpdate();
-	struct CInfoFiles
-	{
-		char Name[128];
-		int CRC;
-	};
 	void EndUpdate();
 
 	enum
@@ -29,9 +24,6 @@ public:
 	// connection state info
 	int m_State;
 
-
-	array<CInfoFiles> m_UpdateFiles;
-
 	int m_FileSize;
 	int m_FileCRC;
 	int m_FileChunks;
@@ -39,8 +31,7 @@ public:
 	unsigned char *m_FileData;
 	bool m_Updating;
 
-	class CGame *Game() { return m_pGame; }
-	
+	class CGame *Game() { return m_pGame; }	
 
 private:
 	int m_ID;

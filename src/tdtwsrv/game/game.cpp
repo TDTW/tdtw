@@ -1,5 +1,6 @@
 #include "game.h"
 #include "client.h"
+
 CGame::CGame()
 {
 	m_apClients.clear();
@@ -26,18 +27,8 @@ int CGame::ClientsNum()
 	return m_apClients.size();
 }
 
-void CGame::AddUpdateFile(int ID, char *Name, int CRC)
-{
-	CClientTdtw::CInfoFiles File;
-	str_copy(File.Name, Name, sizeof(File.Name));
-	File.CRC = CRC;
-	m_apClients[ID]->m_UpdateFiles.add(File);
-}
 void CGame::RequestInterfaces()
 {
 	m_pServer = Kernel()->RequestInterface<ITDTWSrv>();
 }
-
 IGame *CreateGame() { return new CGame; }
-
-

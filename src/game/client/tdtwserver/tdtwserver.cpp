@@ -1,5 +1,6 @@
 #include "tdtwserver.h"
 #include <engine/shared/config.h>
+#include <direct.h>
 
 CTDTWServer::CTDTWServer()
 {
@@ -12,8 +13,7 @@ void CTDTWServer::Init()
 	m_pConsole = Kernel()->RequestInterface<IConsole>();
 	m_pAutoUpdate = Kernel()->RequestInterface<IAutoUpdate>();
 	m_FileHandle = 0;
-	tempInt = 0;
-
+	UpdateFiles = new CUpdateFiles(this);
 }
 void CTDTWServer::Recv(CNetChunk *pChunk)
 {
@@ -115,6 +115,7 @@ void CTDTWServer::Protocol(CNetChunk *pChunk)
 				m_FileChunk = 0;
 				m_FileTotalChunks = 0;
 				AutoUpdate()->SetNeedReplace(true);
+				UpdateFiles->EndUpdate();
 			}
 			else
 			{
@@ -128,51 +129,11 @@ void CTDTWServer::Protocol(CNetChunk *pChunk)
 		else if (Msg == NETMSG_TDTW_HASH_REQUEST)
 		{
 			const char *pFile = Unpacker.GetString(CUnpacker::SANITIZE_CC | CUnpacker::SKIP_START_WHITESPACES);
-			if (str_comp(".", pFile))
+			if (str_comp("1", pFile) == 0)
 			{
-				for (int i = 0; i < AutoUpdate()->m_aDir.size(); i++)
-				{
-					if (str_comp(AutoUpdate()->m_aDir[i].Name, pFile) == 0)
-					{
-						for (int j = 0; j < AutoUpdate()->m_aDir[i].m_aFiles.size(); j++)
-						{
-							CNetMsg_AutoUpdate_Hash Msg;
-							Msg.m_Name = AutoUpdate()->m_aDir[i].m_aFiles[j].Name;
-
-							if (AutoUpdate()->m_aDir[i].m_aFiles[j].IsFolder)
-								Msg.m_Hash = AutoUpdate()->m_aDir[AutoUpdate()->m_aDir[i].m_aFiles[j].FolderID].Hash;
-							else
-								Msg.m_Hash = AutoUpdate()->m_aDir[i].m_aFiles[j].Hash;
-							dbg_msg("Client","%d", Msg.m_Hash);
-							Msg.m_IsFolder = AutoUpdate()->m_aDir[i].m_aFiles[j].IsFolder;
-
-							if (!Msg.m_IsFolder)
-								Msg.m_Size = AutoUpdate()->m_aDir[i].m_aFiles[j].Size;
-							else
-								Msg.m_Size = 0;
-
-							Client()->SendPackMsg(&Msg, MSGFLAG_FLUSH , false, true);
-						}
-					}
-				}
-			}
-			else
-			{
-				for (int i = 0; i < AutoUpdate()->m_aDir[0].m_aFiles.size(); i++)
-				{
-					CNetMsg_AutoUpdate_Hash Msg;
-					Msg.m_Name = AutoUpdate()->m_aDir[0].m_aFiles[i].Name;
-					
-					if (AutoUpdate()->m_aDir[0].m_aFiles[i].IsFolder)
-						Msg.m_Hash = AutoUpdate()->m_aDir[AutoUpdate()->m_aDir[0].m_aFiles[i].FolderID].Hash;
-					else
-						Msg.m_Hash = AutoUpdate()->m_aDir[0].m_aFiles[i].Hash;
-					dbg_msg("Client","%d", Msg.m_Hash);
-					Msg.m_IsFolder = AutoUpdate()->m_aDir[0].m_aFiles[i].IsFolder;
-					Msg.m_Size = AutoUpdate()->m_aDir[0].m_aFiles[i].Size;
-
-					Client()->SendPackMsg(&Msg, MSGFLAG_FLUSH , false, true);
-				}
+				CMsgPacker Msg(NETMSG_TDTW_HASH_REQUEST);
+				Msg.AddString(".", -1);
+				Client()->SendMsgEx(&Msg, MSGFLAG_VITAL | MSGFLAG_FLUSH, true, true);
 			}
 		}
 	}
@@ -185,6 +146,60 @@ void CTDTWServer::Protocol(CNetChunk *pChunk)
 				"dropped weird message '%s' (%d), failed on '%s'", m_NetHandler.GetMsgName(Msg), Msg, m_NetHandler.FailedMsgOn());
 
 			return;
+		}
+		if (Msg == NETMSGTYPE_TDTW_AUTOUPDATE_HASH)
+		{
+			CNetMsg_AutoUpdate_Hash *Msg = (CNetMsg_AutoUpdate_Hash *)pRawMsg;
+			if (Msg->m_IsFolder)
+			{
+				bool Find = false;
+				for (int i = 0; i < AutoUpdate()->m_aDir.size(); i++)
+				{
+					if (str_comp(AutoUpdate()->m_aDir[i].Name, Msg->m_Name) == 0)
+					{
+						Find = true;
+						if (AutoUpdate()->m_aDir[i].Hash != Msg->m_Hash)
+						{
+							CMsgPacker Ms(NETMSG_TDTW_HASH_REQUEST);
+							Ms.AddString(Msg->m_Name, -1);
+							Client()->SendMsgEx(&Ms, MSGFLAG_VITAL | MSGFLAG_FLUSH, true, true);
+							break;
+						}
+					}
+				}
+				if (!Find)
+				{
+					CMsgPacker Ms(NETMSG_TDTW_HASH_REQUEST);
+					Ms.AddString(Msg->m_Name, -1);
+					Client()->SendMsgEx(&Ms, MSGFLAG_VITAL | MSGFLAG_FLUSH, true, true);
+					mkdir(Msg->m_Name);
+				}
+			}
+			else
+			{
+				bool Find = false;
+				for (int i = 0; i < AutoUpdate()->m_aDir.size(); i++)
+				{
+					for (int j = 0; j < AutoUpdate()->m_aDir[i].m_aFiles.size(); j++)
+					{
+						if (str_comp(Msg->m_Name, AutoUpdate()->m_aDir[i].m_aFiles[j].Name) == 0)
+						{
+							Find = true;
+							if (Msg->m_Hash != AutoUpdate()->m_aDir[i].m_aFiles[j].Hash)
+							{
+								UpdateFiles->AddFile(Msg->m_Name);
+								UpdateFiles->StartUpdate();
+							}
+							return;
+						}
+					}
+				}
+				if (!Find)
+				{
+					UpdateFiles->AddFile(Msg->m_Name);
+					UpdateFiles->StartUpdate();
+				}
+			}
 		}
 	}
 }
