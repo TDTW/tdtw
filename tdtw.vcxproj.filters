@@ -1,0 +1,1443 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <Filter Include="datasrc">
+      <UniqueIdentifier>{7290fba5-0991-4d93-b5df-38e2f73338c6}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="other">
+      <UniqueIdentifier>{f80d4e1d-887f-4af8-88b4-ed2e95864277}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="other\freetype">
+      <UniqueIdentifier>{e6e53546-c0a1-4852-84a6-d2e55d0d2807}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="other\freetype\include">
+      <UniqueIdentifier>{f5c087d7-b49b-4403-90eb-f11e4a8c1743}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="other\freetype\include\freetype">
+      <UniqueIdentifier>{845f17d8-8b15-49fa-bd21-f89a82d5e6ca}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="other\freetype\include\freetype\config">
+      <UniqueIdentifier>{8d5902ae-9d63-45d1-b570-ae17846e3986}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="other\freetype\include\freetype\internal">
+      <UniqueIdentifier>{0c53ab8e-98f9-4a08-8b7a-256d0d681347}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="other\freetype\include\freetype\internal\services">
+      <UniqueIdentifier>{99a02551-8175-46ab-aa98-0e5ba7898455}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="other\freetype\include\icons">
+      <UniqueIdentifier>{7f092f41-9cf7-4be0-80cb-c5fb4ab3ea14}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="other\freetype\include\sdl">
+      <UniqueIdentifier>{af26e23f-8e02-4caa-8267-93cd2539acef}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="other\freetype\include\sdl\include">
+      <UniqueIdentifier>{dd3543ff-135f-4c58-ab4f-f2ffa8c92585}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src">
+      <UniqueIdentifier>{d616c989-0175-445c-bc18-0bde608a0eb1}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src\base">
+      <UniqueIdentifier>{1b2d543f-13d6-4dc2-ad9e-1f3b4d0d2cb0}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src\base\tl">
+      <UniqueIdentifier>{a3e1dc8f-3861-4cc9-bb42-176ea5183d55}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src\engine">
+      <UniqueIdentifier>{45762f7b-48d6-4f4d-8726-1763ac0fbac6}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src\engine\client">
+      <UniqueIdentifier>{80ba943f-a711-44ec-beaa-21c856496f81}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src\engine\docs">
+      <UniqueIdentifier>{42f86aea-af78-46e8-a76d-171a33500899}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src\engine\external">
+      <UniqueIdentifier>{15a0a0d0-aab3-4b29-a079-2d17ddea7700}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src\engine\external\pnglite">
+      <UniqueIdentifier>{2ac3244c-c202-4e78-a192-d899a86fc878}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src\engine\external\wavpack">
+      <UniqueIdentifier>{aec141e1-09db-4b40-a503-26e57caa6717}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src\engine\external\zlib">
+      <UniqueIdentifier>{4c043764-3d37-4676-8fb6-30ee5f648aa4}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src\engine\server">
+      <UniqueIdentifier>{4e46627a-1a2d-487b-b98a-e71f7454cea5}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src\engine\shared">
+      <UniqueIdentifier>{afb01ccb-aeee-4cf2-8bc5-ac8be202ce5a}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src\game">
+      <UniqueIdentifier>{508ba08c-535a-4c3e-8821-27a3a344cb0a}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src\game\client">
+      <UniqueIdentifier>{62de0dae-a7d5-44d4-8450-f0eb08a5adc8}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src\game\client\components">
+      <UniqueIdentifier>{b98e12f5-bcb6-4f4c-9864-68133ead2f92}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src\game\editor">
+      <UniqueIdentifier>{b3196ef6-55d4-499c-a4f1-f1290535aee2}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src\game\server">
+      <UniqueIdentifier>{feb3b6af-63b8-4c9e-968f-6563ae609f0a}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src\game\server\entities">
+      <UniqueIdentifier>{1bb3ec7f-a283-4c27-beca-e3bb32e7bc88}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src\game\server\gamemodes">
+      <UniqueIdentifier>{42050639-1004-45dc-b9c4-ee65bffa6ef9}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src\game\generated">
+      <UniqueIdentifier>{34ad144c-10a7-400a-82da-d1d20de87ed0}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src\mastersrv">
+      <UniqueIdentifier>{c5bae1a6-089e-4198-9ecf-4f5f6ebc62a8}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src\osxlaunch">
+      <UniqueIdentifier>{e2bf310c-d745-4cd5-a4a3-5596f66f3b76}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src\tools">
+      <UniqueIdentifier>{0d62e99a-9bb4-4ab1-bc7c-c5a5846ead07}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src\versionsrv">
+      <UniqueIdentifier>{2c2e06ac-2a97-45bb-9156-bb34105c2b8f}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="datasrc\compile.py">
+      <Filter>datasrc</Filter>
+    </None>
+    <None Include="datasrc\content.py">
+      <Filter>datasrc</Filter>
+    </None>
+    <None Include="datasrc\content.pyc">
+      <Filter>datasrc</Filter>
+    </None>
+    <None Include="datasrc\datatypes.py">
+      <Filter>datasrc</Filter>
+    </None>
+    <None Include="datasrc\datatypes.pyc">
+      <Filter>datasrc</Filter>
+    </None>
+    <None Include="datasrc\network.py">
+      <Filter>datasrc</Filter>
+    </None>
+    <None Include="datasrc\network.pyc">
+      <Filter>datasrc</Filter>
+    </None>
+    <None Include="other\freetype\freetype.lua">
+      <Filter>other\freetype</Filter>
+    </None>
+    <None Include="other\icons\Teeworlds_srv.icns">
+      <Filter>other\freetype\include\icons</Filter>
+    </None>
+    <None Include="other\icons\Teeworlds.icns">
+      <Filter>other\freetype\include\icons</Filter>
+    </None>
+    <None Include="other\sdl\sdl.lua">
+      <Filter>other\freetype\include\sdl</Filter>
+    </None>
+    <None Include="other\sdl\include\SDL_config.h.default">
+      <Filter>other\freetype\include\sdl\include</Filter>
+    </None>
+    <None Include="other\sdl\include\SDL_config.h.in">
+      <Filter>other\freetype\include\sdl\include</Filter>
+    </None>
+    <None Include="bam.lua" />
+    <None Include="configure.lua" />
+    <None Include="src\engine\external\pnglite\VERSION">
+      <Filter>src\engine\external\pnglite</Filter>
+    </None>
+    <None Include="src\engine\external\wavpack\arm.S">
+      <Filter>src\engine\external\wavpack</Filter>
+    </None>
+    <None Include="src\engine\external\wavpack\arml.S">
+      <Filter>src\engine\external\wavpack</Filter>
+    </None>
+    <None Include="src\engine\external\wavpack\coldfire.S">
+      <Filter>src\engine\external\wavpack</Filter>
+    </None>
+    <None Include="src\engine\external\wavpack\VERSION">
+      <Filter>src\engine\external\wavpack</Filter>
+    </None>
+    <None Include="src\engine\external\wavpack\wvfilter.c.no_compile">
+      <Filter>src\engine\external\wavpack</Filter>
+    </None>
+    <None Include="src\engine\external\zlib\VERSION">
+      <Filter>src\engine\external\zlib</Filter>
+    </None>
+    <None Include="src\osxlaunch\server.m">
+      <Filter>src\osxlaunch</Filter>
+    </None>
+    <None Include="src\osxlaunch\client.m">
+      <Filter>src\osxlaunch</Filter>
+    </None>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="other\freetype\include\ft2build.h">
+      <Filter>other\freetype\include</Filter>
+    </ClInclude>
+    <ClInclude Include="other\freetype\include\freetype\ftbbox.h">
+      <Filter>other\freetype\include\freetype</Filter>
+    </ClInclude>
+    <ClInclude Include="other\freetype\include\freetype\ftbdf.h">
+      <Filter>other\freetype\include\freetype</Filter>
+    </ClInclude>
+    <ClInclude Include="other\freetype\include\freetype\ftbitmap.h">
+      <Filter>other\freetype\include\freetype</Filter>
+    </ClInclude>
+    <ClInclude Include="other\freetype\include\freetype\ftbzip2.h">
+      <Filter>other\freetype\include\freetype</Filter>
+    </ClInclude>
+    <ClInclude Include="other\freetype\include\freetype\ftcache.h">
+      <Filter>other\freetype\include\freetype</Filter>
+    </ClInclude>
+    <ClInclude Include="other\freetype\include\freetype\ftchapters.h">
+      <Filter>other\freetype\include\freetype</Filter>
+    </ClInclude>
+    <ClInclude Include="other\freetype\include\freetype\ftcid.h">
+      <Filter>other\freetype\include\freetype</Filter>
+    </ClInclude>
+    <ClInclude Include="other\freetype\include\freetype\fterrdef.h">
+      <Filter>other\freetype\include\freetype</Filter>
+    </ClInclude>
+    <ClInclude Include="other\freetype\include\freetype\fterrors.h">
+      <Filter>other\freetype\include\freetype</Filter>
+    </ClInclude>
+    <ClInclude Include="other\freetype\include\freetype\ftgasp.h">
+      <Filter>other\freetype\include\freetype</Filter>
+    </ClInclude>
+    <ClInclude Include="other\freetype\include\freetype\ftglyph.h">
+      <Filter>other\freetype\include\freetype</Filter>
+    </ClInclude>
+    <ClInclude Include="other\freetype\include\freetype\ftgxval.h">
+      <Filter>other\freetype\include\freetype</Filter>
+    </ClInclude>
+    <ClInclude Include="other\freetype\include\freetype\ftgzip.h">
+      <Filter>other\freetype\include\freetype</Filter>
+    </ClInclude>
+    <ClInclude Include="other\freetype\include\freetype\ftimage.h">
+      <Filter>other\freetype\include\freetype</Filter>
+    </ClInclude>
+    <ClInclude Include="other\freetype\include\freetype\ftincrem.h">
+      <Filter>other\freetype\include\freetype</Filter>
+    </ClInclude>
+    <ClInclude Include="other\freetype\include\freetype\ftlcdfil.h">
+      <Filter>other\freetype\include\freetype</Filter>
+    </ClInclude>
+    <ClInclude Include="other\freetype\include\freetype\ftlist.h">
+      <Filter>other\freetype\include\freetype</Filter>
+    </ClInclude>
+    <ClInclude Include="other\freetype\include\freetype\ftlzw.h">
+      <Filter>other\freetype\include\freetype</Filter>
+    </ClInclude>
+    <ClInclude Include="other\freetype\include\freetype\ftmac.h">
+      <Filter>other\freetype\include\freetype</Filter>
+    </ClInclude>
+    <ClInclude Include="other\freetype\include\freetype\ftmm.h">
+      <Filter>other\freetype\include\freetype</Filter>
+    </ClInclude>
+    <ClInclude Include="other\freetype\include\freetype\ftmodapi.h">
+      <Filter>other\freetype\include\freetype</Filter>
+    </ClInclude>
+    <ClInclude Include="other\freetype\include\freetype\ftmoderr.h">
+      <Filter>other\freetype\include\freetype</Filter>
+    </ClInclude>
+    <ClInclude Include="other\freetype\include\freetype\ftotval.h">
+      <Filter>other\freetype\include\freetype</Filter>
+    </ClInclude>
+    <ClInclude Include="other\freetype\include\freetype\ftoutln.h">
+      <Filter>other\freetype\include\freetype</Filter>
+    </ClInclude>
+    <ClInclude Include="other\freetype\include\freetype\ftpfr.h">
+      <Filter>other\freetype\include\freetype</Filter>
+    </ClInclude>
+    <ClInclude Include="other\freetype\include\freetype\ftrender.h">
+      <Filter>other\freetype\include\freetype</Filter>
+    </ClInclude>
+    <ClInclude Include="other\freetype\include\freetype\ftsizes.h">
+      <Filter>other\freetype\include\freetype</Filter>
+    </ClInclude>
+    <ClInclude Include="other\freetype\include\freetype\ftsnames.h">
+      <Filter>other\freetype\include\freetype</Filter>
+    </ClInclude>
+    <ClInclude Include="other\freetype\include\freetype\ftstroke.h">
+      <Filter>other\freetype\include\freetype</Filter>
+    </ClInclude>
+    <ClInclude Include="other\freetype\include\freetype\ftsynth.h">
+      <Filter>other\freetype\include\freetype</Filter>
+    </ClInclude>
+    <ClInclude Include="other\freetype\include\freetype\ftsystem.h">
+      <Filter>other\freetype\include\freetype</Filter>
+    </ClInclude>
+    <ClInclude Include="other\freetype\include\freetype\fttrigon.h">
+      <Filter>other\freetype\include\freetype</Filter>
+    </ClInclude>
+    <ClInclude Include="other\freetype\include\freetype\fttypes.h">
+      <Filter>other\freetype\include\freetype</Filter>
+    </ClInclude>
+    <ClInclude Include="other\freetype\include\freetype\ftwinfnt.h">
+      <Filter>other\freetype\include\freetype</Filter>
+    </ClInclude>
+    <ClInclude Include="other\freetype\include\freetype\ftxf86.h">
+      <Filter>other\freetype\include\freetype</Filter>
+    </ClInclude>
+    <ClInclude Include="other\freetype\include\freetype\t1tables.h">
+      <Filter>other\freetype\include\freetype</Filter>
+    </ClInclude>
+    <ClInclude Include="other\freetype\include\freetype\ttnameid.h">
+      <Filter>other\freetype\include\freetype</Filter>
+    </ClInclude>
+    <ClInclude Include="other\freetype\include\freetype\tttables.h">
+      <Filter>other\freetype\include\freetype</Filter>
+    </ClInclude>
+    <ClInclude Include="other\freetype\include\freetype\tttags.h">
+      <Filter>other\freetype\include\freetype</Filter>
+    </ClInclude>
+    <ClInclude Include="other\freetype\include\freetype\ttunpat.h">
+      <Filter>other\freetype\include\freetype</Filter>
+    </ClInclude>
+    <ClInclude Include="other\freetype\include\freetype\freetype.h">
+      <Filter>other\freetype\include\freetype</Filter>
+    </ClInclude>
+    <ClInclude Include="other\freetype\include\freetype\ftadvanc.h">
+      <Filter>other\freetype\include\freetype</Filter>
+    </ClInclude>
+    <ClInclude Include="other\freetype\include\freetype\config\ftconfig.h">
+      <Filter>other\freetype\include\freetype\config</Filter>
+    </ClInclude>
+    <ClInclude Include="other\freetype\include\freetype\config\ftheader.h">
+      <Filter>other\freetype\include\freetype\config</Filter>
+    </ClInclude>
+    <ClInclude Include="other\freetype\include\freetype\config\ftmodule.h">
+      <Filter>other\freetype\include\freetype\config</Filter>
+    </ClInclude>
+    <ClInclude Include="other\freetype\include\freetype\config\ftoption.h">
+      <Filter>other\freetype\include\freetype\config</Filter>
+    </ClInclude>
+    <ClInclude Include="other\freetype\include\freetype\config\ftstdlib.h">
+      <Filter>other\freetype\include\freetype\config</Filter>
+    </ClInclude>
+    <ClInclude Include="other\freetype\include\freetype\internal\autohint.h">
+      <Filter>other\freetype\include\freetype\internal</Filter>
+    </ClInclude>
+    <ClInclude Include="other\freetype\include\freetype\internal\ftcalc.h">
+      <Filter>other\freetype\include\freetype\internal</Filter>
+    </ClInclude>
+    <ClInclude Include="other\freetype\include\freetype\internal\ftdebug.h">
+      <Filter>other\freetype\include\freetype\internal</Filter>
+    </ClInclude>
+    <ClInclude Include="other\freetype\include\freetype\internal\ftdriver.h">
+      <Filter>other\freetype\include\freetype\internal</Filter>
+    </ClInclude>
+    <ClInclude Include="other\freetype\include\freetype\internal\ftgloadr.h">
+      <Filter>other\freetype\include\freetype\internal</Filter>
+    </ClInclude>
+    <ClInclude Include="other\freetype\include\freetype\internal\ftmemory.h">
+      <Filter>other\freetype\include\freetype\internal</Filter>
+    </ClInclude>
+    <ClInclude Include="other\freetype\include\freetype\internal\ftobjs.h">
+      <Filter>other\freetype\include\freetype\internal</Filter>
+    </ClInclude>
+    <ClInclude Include="other\freetype\include\freetype\internal\ftpic.h">
+      <Filter>other\freetype\include\freetype\internal</Filter>
+    </ClInclude>
+    <ClInclude Include="other\freetype\include\freetype\internal\ftrfork.h">
+      <Filter>other\freetype\include\freetype\internal</Filter>
+    </ClInclude>
+    <ClInclude Include="other\freetype\include\freetype\internal\ftserv.h">
+      <Filter>other\freetype\include\freetype\internal</Filter>
+    </ClInclude>
+    <ClInclude Include="other\freetype\include\freetype\internal\ftstream.h">
+      <Filter>other\freetype\include\freetype\internal</Filter>
+    </ClInclude>
+    <ClInclude Include="other\freetype\include\freetype\internal\fttrace.h">
+      <Filter>other\freetype\include\freetype\internal</Filter>
+    </ClInclude>
+    <ClInclude Include="other\freetype\include\freetype\internal\ftvalid.h">
+      <Filter>other\freetype\include\freetype\internal</Filter>
+    </ClInclude>
+    <ClInclude Include="other\freetype\include\freetype\internal\internal.h">
+      <Filter>other\freetype\include\freetype\internal</Filter>
+    </ClInclude>
+    <ClInclude Include="other\freetype\include\freetype\internal\psaux.h">
+      <Filter>other\freetype\include\freetype\internal</Filter>
+    </ClInclude>
+    <ClInclude Include="other\freetype\include\freetype\internal\pshints.h">
+      <Filter>other\freetype\include\freetype\internal</Filter>
+    </ClInclude>
+    <ClInclude Include="other\freetype\include\freetype\internal\sfnt.h">
+      <Filter>other\freetype\include\freetype\internal</Filter>
+    </ClInclude>
+    <ClInclude Include="other\freetype\include\freetype\internal\t1types.h">
+      <Filter>other\freetype\include\freetype\internal</Filter>
+    </ClInclude>
+    <ClInclude Include="other\freetype\include\freetype\internal\tttypes.h">
+      <Filter>other\freetype\include\freetype\internal</Filter>
+    </ClInclude>
+    <ClInclude Include="other\freetype\include\freetype\internal\services\svotval.h">
+      <Filter>other\freetype\include\freetype\internal\services</Filter>
+    </ClInclude>
+    <ClInclude Include="other\freetype\include\freetype\internal\services\svpfr.h">
+      <Filter>other\freetype\include\freetype\internal\services</Filter>
+    </ClInclude>
+    <ClInclude Include="other\freetype\include\freetype\internal\services\svpostnm.h">
+      <Filter>other\freetype\include\freetype\internal\services</Filter>
+    </ClInclude>
+    <ClInclude Include="other\freetype\include\freetype\internal\services\svpscmap.h">
+      <Filter>other\freetype\include\freetype\internal\services</Filter>
+    </ClInclude>
+    <ClInclude Include="other\freetype\include\freetype\internal\services\svpsinfo.h">
+      <Filter>other\freetype\include\freetype\internal\services</Filter>
+    </ClInclude>
+    <ClInclude Include="other\freetype\include\freetype\internal\services\svsfnt.h">
+      <Filter>other\freetype\include\freetype\internal\services</Filter>
+    </ClInclude>
+    <ClInclude Include="other\freetype\include\freetype\internal\services\svttcmap.h">
+      <Filter>other\freetype\include\freetype\internal\services</Filter>
+    </ClInclude>
+    <ClInclude Include="other\freetype\include\freetype\internal\services\svtteng.h">
+      <Filter>other\freetype\include\freetype\internal\services</Filter>
+    </ClInclude>
+    <ClInclude Include="other\freetype\include\freetype\internal\services\svttglyf.h">
+      <Filter>other\freetype\include\freetype\internal\services</Filter>
+    </ClInclude>
+    <ClInclude Include="other\freetype\include\freetype\internal\services\svwinfnt.h">
+      <Filter>other\freetype\include\freetype\internal\services</Filter>
+    </ClInclude>
+    <ClInclude Include="other\freetype\include\freetype\internal\services\svxf86nm.h">
+      <Filter>other\freetype\include\freetype\internal\services</Filter>
+    </ClInclude>
+    <ClInclude Include="other\freetype\include\freetype\internal\services\svbdf.h">
+      <Filter>other\freetype\include\freetype\internal\services</Filter>
+    </ClInclude>
+    <ClInclude Include="other\freetype\include\freetype\internal\services\svcid.h">
+      <Filter>other\freetype\include\freetype\internal\services</Filter>
+    </ClInclude>
+    <ClInclude Include="other\freetype\include\freetype\internal\services\svgldict.h">
+      <Filter>other\freetype\include\freetype\internal\services</Filter>
+    </ClInclude>
+    <ClInclude Include="other\freetype\include\freetype\internal\services\svgxval.h">
+      <Filter>other\freetype\include\freetype\internal\services</Filter>
+    </ClInclude>
+    <ClInclude Include="other\freetype\include\freetype\internal\services\svkern.h">
+      <Filter>other\freetype\include\freetype\internal\services</Filter>
+    </ClInclude>
+    <ClInclude Include="other\freetype\include\freetype\internal\services\svmm.h">
+      <Filter>other\freetype\include\freetype\internal\services</Filter>
+    </ClInclude>
+    <ClInclude Include="other\sdl\include\SDL_config_macosx.h">
+      <Filter>other\freetype\include\sdl\include</Filter>
+    </ClInclude>
+    <ClInclude Include="other\sdl\include\SDL_config_minimal.h">
+      <Filter>other\freetype\include\sdl\include</Filter>
+    </ClInclude>
+    <ClInclude Include="other\sdl\include\SDL_config_nds.h">
+      <Filter>other\freetype\include\sdl\include</Filter>
+    </ClInclude>
+    <ClInclude Include="other\sdl\include\SDL_config_os2.h">
+      <Filter>other\freetype\include\sdl\include</Filter>
+    </ClInclude>
+    <ClInclude Include="other\sdl\include\SDL_config_symbian.h">
+      <Filter>other\freetype\include\sdl\include</Filter>
+    </ClInclude>
+    <ClInclude Include="other\sdl\include\SDL_config_win32.h">
+      <Filter>other\freetype\include\sdl\include</Filter>
+    </ClInclude>
+    <ClInclude Include="other\sdl\include\SDL_copying.h">
+      <Filter>other\freetype\include\sdl\include</Filter>
+    </ClInclude>
+    <ClInclude Include="other\sdl\include\SDL_cpuinfo.h">
+      <Filter>other\freetype\include\sdl\include</Filter>
+    </ClInclude>
+    <ClInclude Include="other\sdl\include\SDL_endian.h">
+      <Filter>other\freetype\include\sdl\include</Filter>
+    </ClInclude>
+    <ClInclude Include="other\sdl\include\SDL_error.h">
+      <Filter>other\freetype\include\sdl\include</Filter>
+    </ClInclude>
+    <ClInclude Include="other\sdl\include\SDL_events.h">
+      <Filter>other\freetype\include\sdl\include</Filter>
+    </ClInclude>
+    <ClInclude Include="other\sdl\include\SDL_getenv.h">
+      <Filter>other\freetype\include\sdl\include</Filter>
+    </ClInclude>
+    <ClInclude Include="other\sdl\include\SDL_joystick.h">
+      <Filter>other\freetype\include\sdl\include</Filter>
+    </ClInclude>
+    <ClInclude Include="other\sdl\include\SDL_keyboard.h">
+      <Filter>other\freetype\include\sdl\include</Filter>
+    </ClInclude>
+    <ClInclude Include="other\sdl\include\SDL_keysym.h">
+      <Filter>other\freetype\include\sdl\include</Filter>
+    </ClInclude>
+    <ClInclude Include="other\sdl\include\SDL_loadso.h">
+      <Filter>other\freetype\include\sdl\include</Filter>
+    </ClInclude>
+    <ClInclude Include="other\sdl\include\SDL_main.h">
+      <Filter>other\freetype\include\sdl\include</Filter>
+    </ClInclude>
+    <ClInclude Include="other\sdl\include\SDL_mouse.h">
+      <Filter>other\freetype\include\sdl\include</Filter>
+    </ClInclude>
+    <ClInclude Include="other\sdl\include\SDL_mutex.h">
+      <Filter>other\freetype\include\sdl\include</Filter>
+    </ClInclude>
+    <ClInclude Include="other\sdl\include\SDL_name.h">
+      <Filter>other\freetype\include\sdl\include</Filter>
+    </ClInclude>
+    <ClInclude Include="other\sdl\include\SDL_opengl.h">
+      <Filter>other\freetype\include\sdl\include</Filter>
+    </ClInclude>
+    <ClInclude Include="other\sdl\include\SDL_platform.h">
+      <Filter>other\freetype\include\sdl\include</Filter>
+    </ClInclude>
+    <ClInclude Include="other\sdl\include\SDL_quit.h">
+      <Filter>other\freetype\include\sdl\include</Filter>
+    </ClInclude>
+    <ClInclude Include="other\sdl\include\SDL_rwops.h">
+      <Filter>other\freetype\include\sdl\include</Filter>
+    </ClInclude>
+    <ClInclude Include="other\sdl\include\SDL_stdinc.h">
+      <Filter>other\freetype\include\sdl\include</Filter>
+    </ClInclude>
+    <ClInclude Include="other\sdl\include\SDL_syswm.h">
+      <Filter>other\freetype\include\sdl\include</Filter>
+    </ClInclude>
+    <ClInclude Include="other\sdl\include\SDL_thread.h">
+      <Filter>other\freetype\include\sdl\include</Filter>
+    </ClInclude>
+    <ClInclude Include="other\sdl\include\SDL_timer.h">
+      <Filter>other\freetype\include\sdl\include</Filter>
+    </ClInclude>
+    <ClInclude Include="other\sdl\include\SDL_types.h">
+      <Filter>other\freetype\include\sdl\include</Filter>
+    </ClInclude>
+    <ClInclude Include="other\sdl\include\SDL_version.h">
+      <Filter>other\freetype\include\sdl\include</Filter>
+    </ClInclude>
+    <ClInclude Include="other\sdl\include\SDL_video.h">
+      <Filter>other\freetype\include\sdl\include</Filter>
+    </ClInclude>
+    <ClInclude Include="other\sdl\include\begin_code.h">
+      <Filter>other\freetype\include\sdl\include</Filter>
+    </ClInclude>
+    <ClInclude Include="other\sdl\include\close_code.h">
+      <Filter>other\freetype\include\sdl\include</Filter>
+    </ClInclude>
+    <ClInclude Include="other\sdl\include\SDL.h">
+      <Filter>other\freetype\include\sdl\include</Filter>
+    </ClInclude>
+    <ClInclude Include="other\sdl\include\SDL_active.h">
+      <Filter>other\freetype\include\sdl\include</Filter>
+    </ClInclude>
+    <ClInclude Include="other\sdl\include\SDL_audio.h">
+      <Filter>other\freetype\include\sdl\include</Filter>
+    </ClInclude>
+    <ClInclude Include="other\sdl\include\SDL_byteorder.h">
+      <Filter>other\freetype\include\sdl\include</Filter>
+    </ClInclude>
+    <ClInclude Include="other\sdl\include\SDL_cdrom.h">
+      <Filter>other\freetype\include\sdl\include</Filter>
+    </ClInclude>
+    <ClInclude Include="other\sdl\include\SDL_config.h">
+      <Filter>other\freetype\include\sdl\include</Filter>
+    </ClInclude>
+    <ClInclude Include="other\sdl\include\SDL_config_amiga.h">
+      <Filter>other\freetype\include\sdl\include</Filter>
+    </ClInclude>
+    <ClInclude Include="other\sdl\include\SDL_config_dreamcast.h">
+      <Filter>other\freetype\include\sdl\include</Filter>
+    </ClInclude>
+    <ClInclude Include="other\sdl\include\SDL_config_macos.h">
+      <Filter>other\freetype\include\sdl\include</Filter>
+    </ClInclude>
+    <ClInclude Include="src\base\detect.h">
+      <Filter>src\base</Filter>
+    </ClInclude>
+    <ClInclude Include="src\base\math.h">
+      <Filter>src\base</Filter>
+    </ClInclude>
+    <ClInclude Include="src\base\system.h">
+      <Filter>src\base</Filter>
+    </ClInclude>
+    <ClInclude Include="src\base\vmath.h">
+      <Filter>src\base</Filter>
+    </ClInclude>
+    <ClInclude Include="src\base\tl\algorithm.h">
+      <Filter>src\base\tl</Filter>
+    </ClInclude>
+    <ClInclude Include="src\base\tl\allocator.h">
+      <Filter>src\base\tl</Filter>
+    </ClInclude>
+    <ClInclude Include="src\base\tl\array.h">
+      <Filter>src\base\tl</Filter>
+    </ClInclude>
+    <ClInclude Include="src\base\tl\base.h">
+      <Filter>src\base\tl</Filter>
+    </ClInclude>
+    <ClInclude Include="src\base\tl\range.h">
+      <Filter>src\base\tl</Filter>
+    </ClInclude>
+    <ClInclude Include="src\base\tl\sorted_array.h">
+      <Filter>src\base\tl</Filter>
+    </ClInclude>
+    <ClInclude Include="src\base\tl\string.h">
+      <Filter>src\base\tl</Filter>
+    </ClInclude>
+    <ClInclude Include="src\base\tl\threading.h">
+      <Filter>src\base\tl</Filter>
+    </ClInclude>
+    <ClInclude Include="src\engine\client.h">
+      <Filter>src\engine</Filter>
+    </ClInclude>
+    <ClInclude Include="src\engine\config.h">
+      <Filter>src\engine</Filter>
+    </ClInclude>
+    <ClInclude Include="src\engine\console.h">
+      <Filter>src\engine</Filter>
+    </ClInclude>
+    <ClInclude Include="src\engine\demo.h">
+      <Filter>src\engine</Filter>
+    </ClInclude>
+    <ClInclude Include="src\engine\editor.h">
+      <Filter>src\engine</Filter>
+    </ClInclude>
+    <ClInclude Include="src\engine\engine.h">
+      <Filter>src\engine</Filter>
+    </ClInclude>
+    <ClInclude Include="src\engine\friends.h">
+      <Filter>src\engine</Filter>
+    </ClInclude>
+    <ClInclude Include="src\engine\graphics.h">
+      <Filter>src\engine</Filter>
+    </ClInclude>
+    <ClInclude Include="src\engine\input.h">
+      <Filter>src\engine</Filter>
+    </ClInclude>
+    <ClInclude Include="src\engine\kernel.h">
+      <Filter>src\engine</Filter>
+    </ClInclude>
+    <ClInclude Include="src\engine\keys.h">
+      <Filter>src\engine</Filter>
+    </ClInclude>
+    <ClInclude Include="src\engine\map.h">
+      <Filter>src\engine</Filter>
+    </ClInclude>
+    <ClInclude Include="src\engine\masterserver.h">
+      <Filter>src\engine</Filter>
+    </ClInclude>
+    <ClInclude Include="src\engine\message.h">
+      <Filter>src\engine</Filter>
+    </ClInclude>
+    <ClInclude Include="src\engine\server.h">
+      <Filter>src\engine</Filter>
+    </ClInclude>
+    <ClInclude Include="src\engine\serverbrowser.h">
+      <Filter>src\engine</Filter>
+    </ClInclude>
+    <ClInclude Include="src\engine\sound.h">
+      <Filter>src\engine</Filter>
+    </ClInclude>
+    <ClInclude Include="src\engine\storage.h">
+      <Filter>src\engine</Filter>
+    </ClInclude>
+    <ClInclude Include="src\engine\textrender.h">
+      <Filter>src\engine</Filter>
+    </ClInclude>
+    <ClInclude Include="src\engine\client\friends.h">
+      <Filter>src\engine\client</Filter>
+    </ClInclude>
+    <ClInclude Include="src\engine\client\graphics.h">
+      <Filter>src\engine\client</Filter>
+    </ClInclude>
+    <ClInclude Include="src\engine\client\graphics_threaded.h">
+      <Filter>src\engine\client</Filter>
+    </ClInclude>
+    <ClInclude Include="src\engine\client\input.h">
+      <Filter>src\engine\client</Filter>
+    </ClInclude>
+    <ClInclude Include="src\engine\client\keynames.h">
+      <Filter>src\engine\client</Filter>
+    </ClInclude>
+    <ClInclude Include="src\engine\client\serverbrowser.h">
+      <Filter>src\engine\client</Filter>
+    </ClInclude>
+    <ClInclude Include="src\engine\client\sound.h">
+      <Filter>src\engine\client</Filter>
+    </ClInclude>
+    <ClInclude Include="src\engine\client\backend_sdl.h">
+      <Filter>src\engine\client</Filter>
+    </ClInclude>
+    <ClInclude Include="src\engine\client\client.h">
+      <Filter>src\engine\client</Filter>
+    </ClInclude>
+    <ClInclude Include="src\engine\external\pnglite\pnglite.h">
+      <Filter>src\engine\external\pnglite</Filter>
+    </ClInclude>
+    <ClInclude Include="src\engine\external\wavpack\wavpack.h">
+      <Filter>src\engine\external\wavpack</Filter>
+    </ClInclude>
+    <ClInclude Include="src\engine\external\zlib\inffixed.h">
+      <Filter>src\engine\external\zlib</Filter>
+    </ClInclude>
+    <ClInclude Include="src\engine\external\zlib\inflate.h">
+      <Filter>src\engine\external\zlib</Filter>
+    </ClInclude>
+    <ClInclude Include="src\engine\external\zlib\inftrees.h">
+      <Filter>src\engine\external\zlib</Filter>
+    </ClInclude>
+    <ClInclude Include="src\engine\external\zlib\trees.h">
+      <Filter>src\engine\external\zlib</Filter>
+    </ClInclude>
+    <ClInclude Include="src\engine\external\zlib\zconf.h">
+      <Filter>src\engine\external\zlib</Filter>
+    </ClInclude>
+    <ClInclude Include="src\engine\external\zlib\zlib.h">
+      <Filter>src\engine\external\zlib</Filter>
+    </ClInclude>
+    <ClInclude Include="src\engine\external\zlib\zutil.h">
+      <Filter>src\engine\external\zlib</Filter>
+    </ClInclude>
+    <ClInclude Include="src\engine\external\zlib\crc32.h">
+      <Filter>src\engine\external\zlib</Filter>
+    </ClInclude>
+    <ClInclude Include="src\engine\external\zlib\deflate.h">
+      <Filter>src\engine\external\zlib</Filter>
+    </ClInclude>
+    <ClInclude Include="src\engine\external\zlib\inffast.h">
+      <Filter>src\engine\external\zlib</Filter>
+    </ClInclude>
+    <ClInclude Include="src\engine\server\server.h">
+      <Filter>src\engine\server</Filter>
+    </ClInclude>
+    <ClInclude Include="src\engine\server\register.h">
+      <Filter>src\engine\server</Filter>
+    </ClInclude>
+    <ClInclude Include="src\engine\shared\demo.h">
+      <Filter>src\engine\shared</Filter>
+    </ClInclude>
+    <ClInclude Include="src\engine\shared\econ.h">
+      <Filter>src\engine\shared</Filter>
+    </ClInclude>
+    <ClInclude Include="src\engine\shared\filecollection.h">
+      <Filter>src\engine\shared</Filter>
+    </ClInclude>
+    <ClInclude Include="src\engine\shared\huffman.h">
+      <Filter>src\engine\shared</Filter>
+    </ClInclude>
+    <ClInclude Include="src\engine\shared\jobs.h">
+      <Filter>src\engine\shared</Filter>
+    </ClInclude>
+    <ClInclude Include="src\engine\shared\linereader.h">
+      <Filter>src\engine\shared</Filter>
+    </ClInclude>
+    <ClInclude Include="src\engine\shared\mapchecker.h">
+      <Filter>src\engine\shared</Filter>
+    </ClInclude>
+    <ClInclude Include="src\engine\shared\memheap.h">
+      <Filter>src\engine\shared</Filter>
+    </ClInclude>
+    <ClInclude Include="src\engine\shared\message.h">
+      <Filter>src\engine\shared</Filter>
+    </ClInclude>
+    <ClInclude Include="src\engine\shared\netban.h">
+      <Filter>src\engine\shared</Filter>
+    </ClInclude>
+    <ClInclude Include="src\engine\shared\network.h">
+      <Filter>src\engine\shared</Filter>
+    </ClInclude>
+    <ClInclude Include="src\engine\shared\packer.h">
+      <Filter>src\engine\shared</Filter>
+    </ClInclude>
+    <ClInclude Include="src\engine\shared\protocol.h">
+      <Filter>src\engine\shared</Filter>
+    </ClInclude>
+    <ClInclude Include="src\engine\shared\ringbuffer.h">
+      <Filter>src\engine\shared</Filter>
+    </ClInclude>
+    <ClInclude Include="src\engine\shared\snapshot.h">
+      <Filter>src\engine\shared</Filter>
+    </ClInclude>
+    <ClInclude Include="src\engine\shared\compression.h">
+      <Filter>src\engine\shared</Filter>
+    </ClInclude>
+    <ClInclude Include="src\engine\shared\config.h">
+      <Filter>src\engine\shared</Filter>
+    </ClInclude>
+    <ClInclude Include="src\engine\shared\config_variables.h">
+      <Filter>src\engine\shared</Filter>
+    </ClInclude>
+    <ClInclude Include="src\engine\shared\console.h">
+      <Filter>src\engine\shared</Filter>
+    </ClInclude>
+    <ClInclude Include="src\engine\shared\datafile.h">
+      <Filter>src\engine\shared</Filter>
+    </ClInclude>
+    <ClInclude Include="src\game\collision.h">
+      <Filter>src\game</Filter>
+    </ClInclude>
+    <ClInclude Include="src\game\gamecore.h">
+      <Filter>src\game</Filter>
+    </ClInclude>
+    <ClInclude Include="src\game\layers.h">
+      <Filter>src\game</Filter>
+    </ClInclude>
+    <ClInclude Include="src\game\localization.h">
+      <Filter>src\game</Filter>
+    </ClInclude>
+    <ClInclude Include="src\game\mapitems.h">
+      <Filter>src\game</Filter>
+    </ClInclude>
+    <ClInclude Include="src\game\tuning.h">
+      <Filter>src\game</Filter>
+    </ClInclude>
+    <ClInclude Include="src\game\variables.h">
+      <Filter>src\game</Filter>
+    </ClInclude>
+    <ClInclude Include="src\game\version.h">
+      <Filter>src\game</Filter>
+    </ClInclude>
+    <ClInclude Include="src\game\voting.h">
+      <Filter>src\game</Filter>
+    </ClInclude>
+    <ClInclude Include="src\game\client\animstate.h">
+      <Filter>src\game\client</Filter>
+    </ClInclude>
+    <ClInclude Include="src\game\client\component.h">
+      <Filter>src\game\client</Filter>
+    </ClInclude>
+    <ClInclude Include="src\game\client\gameclient.h">
+      <Filter>src\game\client</Filter>
+    </ClInclude>
+    <ClInclude Include="src\game\client\lineinput.h">
+      <Filter>src\game\client</Filter>
+    </ClInclude>
+    <ClInclude Include="src\game\client\render.h">
+      <Filter>src\game\client</Filter>
+    </ClInclude>
+    <ClInclude Include="src\game\client\ui.h">
+      <Filter>src\game\client</Filter>
+    </ClInclude>
+    <ClInclude Include="src\game\client\components\chat.h">
+      <Filter>src\game\client\components</Filter>
+    </ClInclude>
+    <ClInclude Include="src\game\client\components\console.h">
+      <Filter>src\game\client\components</Filter>
+    </ClInclude>
+    <ClInclude Include="src\game\client\components\controls.h">
+      <Filter>src\game\client\components</Filter>
+    </ClInclude>
+    <ClInclude Include="src\game\client\components\countryflags.h">
+      <Filter>src\game\client\components</Filter>
+    </ClInclude>
+    <ClInclude Include="src\game\client\components\damageind.h">
+      <Filter>src\game\client\components</Filter>
+    </ClInclude>
+    <ClInclude Include="src\game\client\components\debughud.h">
+      <Filter>src\game\client\components</Filter>
+    </ClInclude>
+    <ClInclude Include="src\game\client\components\effects.h">
+      <Filter>src\game\client\components</Filter>
+    </ClInclude>
+    <ClInclude Include="src\game\client\components\emoticon.h">
+      <Filter>src\game\client\components</Filter>
+    </ClInclude>
+    <ClInclude Include="src\game\client\components\flow.h">
+      <Filter>src\game\client\components</Filter>
+    </ClInclude>
+    <ClInclude Include="src\game\client\components\hud.h">
+      <Filter>src\game\client\components</Filter>
+    </ClInclude>
+    <ClInclude Include="src\game\client\components\items.h">
+      <Filter>src\game\client\components</Filter>
+    </ClInclude>
+    <ClInclude Include="src\game\client\components\killmessages.h">
+      <Filter>src\game\client\components</Filter>
+    </ClInclude>
+    <ClInclude Include="src\game\client\components\mapimages.h">
+      <Filter>src\game\client\components</Filter>
+    </ClInclude>
+    <ClInclude Include="src\game\client\components\maplayers.h">
+      <Filter>src\game\client\components</Filter>
+    </ClInclude>
+    <ClInclude Include="src\game\client\components\menus.h">
+      <Filter>src\game\client\components</Filter>
+    </ClInclude>
+    <ClInclude Include="src\game\client\components\motd.h">
+      <Filter>src\game\client\components</Filter>
+    </ClInclude>
+    <ClInclude Include="src\game\client\components\nameplates.h">
+      <Filter>src\game\client\components</Filter>
+    </ClInclude>
+    <ClInclude Include="src\game\client\components\particles.h">
+      <Filter>src\game\client\components</Filter>
+    </ClInclude>
+    <ClInclude Include="src\game\client\components\players.h">
+      <Filter>src\game\client\components</Filter>
+    </ClInclude>
+    <ClInclude Include="src\game\client\components\scoreboard.h">
+      <Filter>src\game\client\components</Filter>
+    </ClInclude>
+    <ClInclude Include="src\game\client\components\skins.h">
+      <Filter>src\game\client\components</Filter>
+    </ClInclude>
+    <ClInclude Include="src\game\client\components\sounds.h">
+      <Filter>src\game\client\components</Filter>
+    </ClInclude>
+    <ClInclude Include="src\game\client\components\spectator.h">
+      <Filter>src\game\client\components</Filter>
+    </ClInclude>
+    <ClInclude Include="src\game\client\components\test.h">
+      <Filter>src\game\client\components</Filter>
+    </ClInclude>
+    <ClInclude Include="src\game\client\components\voting.h">
+      <Filter>src\game\client\components</Filter>
+    </ClInclude>
+    <ClInclude Include="src\game\client\components\binds.h">
+      <Filter>src\game\client\components</Filter>
+    </ClInclude>
+    <ClInclude Include="src\game\client\components\broadcast.h">
+      <Filter>src\game\client\components</Filter>
+    </ClInclude>
+    <ClInclude Include="src\game\client\components\camera.h">
+      <Filter>src\game\client\components</Filter>
+    </ClInclude>
+    <ClInclude Include="src\game\editor\auto_map.h">
+      <Filter>src\game\editor</Filter>
+    </ClInclude>
+    <ClInclude Include="src\game\editor\editor.h">
+      <Filter>src\game\editor</Filter>
+    </ClInclude>
+    <ClInclude Include="src\game\server\entity.h">
+      <Filter>src\game\server</Filter>
+    </ClInclude>
+    <ClInclude Include="src\game\server\eventhandler.h">
+      <Filter>src\game\server</Filter>
+    </ClInclude>
+    <ClInclude Include="src\game\server\gamecontext.h">
+      <Filter>src\game\server</Filter>
+    </ClInclude>
+    <ClInclude Include="src\game\server\gamecontroller.h">
+      <Filter>src\game\server</Filter>
+    </ClInclude>
+    <ClInclude Include="src\game\server\gameworld.h">
+      <Filter>src\game\server</Filter>
+    </ClInclude>
+    <ClInclude Include="src\game\server\player.h">
+      <Filter>src\game\server</Filter>
+    </ClInclude>
+    <ClInclude Include="src\game\server\entities\character.h">
+      <Filter>src\game\server\entities</Filter>
+    </ClInclude>
+    <ClInclude Include="src\game\server\entities\flag.h">
+      <Filter>src\game\server\entities</Filter>
+    </ClInclude>
+    <ClInclude Include="src\game\server\entities\laser.h">
+      <Filter>src\game\server\entities</Filter>
+    </ClInclude>
+    <ClInclude Include="src\game\server\entities\pickup.h">
+      <Filter>src\game\server\entities</Filter>
+    </ClInclude>
+    <ClInclude Include="src\game\server\entities\projectile.h">
+      <Filter>src\game\server\entities</Filter>
+    </ClInclude>
+    <ClInclude Include="src\game\server\gamemodes\ctf.h">
+      <Filter>src\game\server\gamemodes</Filter>
+    </ClInclude>
+    <ClInclude Include="src\game\server\gamemodes\dm.h">
+      <Filter>src\game\server\gamemodes</Filter>
+    </ClInclude>
+    <ClInclude Include="src\game\server\gamemodes\mod.h">
+      <Filter>src\game\server\gamemodes</Filter>
+    </ClInclude>
+    <ClInclude Include="src\game\server\gamemodes\tdm.h">
+      <Filter>src\game\server\gamemodes</Filter>
+    </ClInclude>
+    <ClInclude Include="src\game\generated\client_data.h">
+      <Filter>src\game\generated</Filter>
+    </ClInclude>
+    <ClInclude Include="src\game\generated\protocol.h">
+      <Filter>src\game\generated</Filter>
+    </ClInclude>
+    <ClInclude Include="src\mastersrv\mastersrv.h">
+      <Filter>src\mastersrv</Filter>
+    </ClInclude>
+    <ClInclude Include="src\osxlaunch\client.h">
+      <Filter>src\osxlaunch</Filter>
+    </ClInclude>
+    <ClInclude Include="src\versionsrv\mapversions.h">
+      <Filter>src\versionsrv</Filter>
+    </ClInclude>
+    <ClInclude Include="src\versionsrv\versionsrv.h">
+      <Filter>src\versionsrv</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <Image Include="other\icons\Teeworlds_srv.ico">
+      <Filter>other\freetype\include\icons</Filter>
+    </Image>
+    <Image Include="other\icons\Teeworlds.ico">
+      <Filter>other\freetype\include\icons</Filter>
+    </Image>
+  </ItemGroup>
+  <ItemGroup>
+    <ResourceCompile Include="other\icons\teeworlds_srv_cl.rc">
+      <Filter>other\freetype\include\icons</Filter>
+    </ResourceCompile>
+    <ResourceCompile Include="other\icons\teeworlds_srv_gcc.rc">
+      <Filter>other\freetype\include\icons</Filter>
+    </ResourceCompile>
+    <ResourceCompile Include="other\icons\teeworlds_cl.rc">
+      <Filter>other\freetype\include\icons</Filter>
+    </ResourceCompile>
+    <ResourceCompile Include="other\icons\teeworlds_gcc.rc">
+      <Filter>other\freetype\include\icons</Filter>
+    </ResourceCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="other\icons\teeworlds_cl.res">
+      <Filter>other\freetype\include\icons</Filter>
+    </Resource>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="src\base\system.c">
+      <Filter>src\base</Filter>
+    </ClCompile>
+    <ClCompile Include="src\engine\client\graphics.cpp">
+      <Filter>src\engine\client</Filter>
+    </ClCompile>
+    <ClCompile Include="src\engine\client\graphics_threaded.cpp">
+      <Filter>src\engine\client</Filter>
+    </ClCompile>
+    <ClCompile Include="src\engine\client\input.cpp">
+      <Filter>src\engine\client</Filter>
+    </ClCompile>
+    <ClCompile Include="src\engine\client\serverbrowser.cpp">
+      <Filter>src\engine\client</Filter>
+    </ClCompile>
+    <ClCompile Include="src\engine\client\sound.cpp">
+      <Filter>src\engine\client</Filter>
+    </ClCompile>
+    <ClCompile Include="src\engine\client\text.cpp">
+      <Filter>src\engine\client</Filter>
+    </ClCompile>
+    <ClCompile Include="src\engine\client\backend_sdl.cpp">
+      <Filter>src\engine\client</Filter>
+    </ClCompile>
+    <ClCompile Include="src\engine\client\client.cpp">
+      <Filter>src\engine\client</Filter>
+    </ClCompile>
+    <ClCompile Include="src\engine\client\friends.cpp">
+      <Filter>src\engine\client</Filter>
+    </ClCompile>
+    <ClCompile Include="src\engine\external\pnglite\pnglite.c">
+      <Filter>src\engine\external\pnglite</Filter>
+    </ClCompile>
+    <ClCompile Include="src\engine\external\wavpack\bits.c">
+      <Filter>src\engine\external\wavpack</Filter>
+    </ClCompile>
+    <ClCompile Include="src\engine\external\wavpack\float.c">
+      <Filter>src\engine\external\wavpack</Filter>
+    </ClCompile>
+    <ClCompile Include="src\engine\external\wavpack\metadata.c">
+      <Filter>src\engine\external\wavpack</Filter>
+    </ClCompile>
+    <ClCompile Include="src\engine\external\wavpack\unpack.c">
+      <Filter>src\engine\external\wavpack</Filter>
+    </ClCompile>
+    <ClCompile Include="src\engine\external\wavpack\words.c">
+      <Filter>src\engine\external\wavpack</Filter>
+    </ClCompile>
+    <ClCompile Include="src\engine\external\wavpack\wputils.c">
+      <Filter>src\engine\external\wavpack</Filter>
+    </ClCompile>
+    <ClCompile Include="src\engine\external\zlib\inflate.c">
+      <Filter>src\engine\external\zlib</Filter>
+    </ClCompile>
+    <ClCompile Include="src\engine\external\zlib\inftrees.c">
+      <Filter>src\engine\external\zlib</Filter>
+    </ClCompile>
+    <ClCompile Include="src\engine\external\zlib\trees.c">
+      <Filter>src\engine\external\zlib</Filter>
+    </ClCompile>
+    <ClCompile Include="src\engine\external\zlib\uncompr.c">
+      <Filter>src\engine\external\zlib</Filter>
+    </ClCompile>
+    <ClCompile Include="src\engine\external\zlib\zutil.c">
+      <Filter>src\engine\external\zlib</Filter>
+    </ClCompile>
+    <ClCompile Include="src\engine\external\zlib\adler32.c">
+      <Filter>src\engine\external\zlib</Filter>
+    </ClCompile>
+    <ClCompile Include="src\engine\external\zlib\compress.c">
+      <Filter>src\engine\external\zlib</Filter>
+    </ClCompile>
+    <ClCompile Include="src\engine\external\zlib\crc32.c">
+      <Filter>src\engine\external\zlib</Filter>
+    </ClCompile>
+    <ClCompile Include="src\engine\external\zlib\deflate.c">
+      <Filter>src\engine\external\zlib</Filter>
+    </ClCompile>
+    <ClCompile Include="src\engine\external\zlib\infback.c">
+      <Filter>src\engine\external\zlib</Filter>
+    </ClCompile>
+    <ClCompile Include="src\engine\external\zlib\inffast.c">
+      <Filter>src\engine\external\zlib</Filter>
+    </ClCompile>
+    <ClCompile Include="src\engine\server\server.cpp">
+      <Filter>src\engine\server</Filter>
+    </ClCompile>
+    <ClCompile Include="src\engine\server\register.cpp">
+      <Filter>src\engine\server</Filter>
+    </ClCompile>
+    <ClCompile Include="src\engine\shared\econ.cpp">
+      <Filter>src\engine\shared</Filter>
+    </ClCompile>
+    <ClCompile Include="src\engine\shared\engine.cpp">
+      <Filter>src\engine\shared</Filter>
+    </ClCompile>
+    <ClCompile Include="src\engine\shared\filecollection.cpp">
+      <Filter>src\engine\shared</Filter>
+    </ClCompile>
+    <ClCompile Include="src\engine\shared\huffman.cpp">
+      <Filter>src\engine\shared</Filter>
+    </ClCompile>
+    <ClCompile Include="src\engine\shared\jobs.cpp">
+      <Filter>src\engine\shared</Filter>
+    </ClCompile>
+    <ClCompile Include="src\engine\shared\kernel.cpp">
+      <Filter>src\engine\shared</Filter>
+    </ClCompile>
+    <ClCompile Include="src\engine\shared\linereader.cpp">
+      <Filter>src\engine\shared</Filter>
+    </ClCompile>
+    <ClCompile Include="src\engine\shared\map.cpp">
+      <Filter>src\engine\shared</Filter>
+    </ClCompile>
+    <ClCompile Include="src\engine\shared\mapchecker.cpp">
+      <Filter>src\engine\shared</Filter>
+    </ClCompile>
+    <ClCompile Include="src\engine\shared\masterserver.cpp">
+      <Filter>src\engine\shared</Filter>
+    </ClCompile>
+    <ClCompile Include="src\engine\shared\memheap.cpp">
+      <Filter>src\engine\shared</Filter>
+    </ClCompile>
+    <ClCompile Include="src\engine\shared\netban.cpp">
+      <Filter>src\engine\shared</Filter>
+    </ClCompile>
+    <ClCompile Include="src\engine\shared\network.cpp">
+      <Filter>src\engine\shared</Filter>
+    </ClCompile>
+    <ClCompile Include="src\engine\shared\network_client.cpp">
+      <Filter>src\engine\shared</Filter>
+    </ClCompile>
+    <ClCompile Include="src\engine\shared\network_conn.cpp">
+      <Filter>src\engine\shared</Filter>
+    </ClCompile>
+    <ClCompile Include="src\engine\shared\network_console.cpp">
+      <Filter>src\engine\shared</Filter>
+    </ClCompile>
+    <ClCompile Include="src\engine\shared\network_console_conn.cpp">
+      <Filter>src\engine\shared</Filter>
+    </ClCompile>
+    <ClCompile Include="src\engine\shared\network_server.cpp">
+      <Filter>src\engine\shared</Filter>
+    </ClCompile>
+    <ClCompile Include="src\engine\shared\packer.cpp">
+      <Filter>src\engine\shared</Filter>
+    </ClCompile>
+    <ClCompile Include="src\engine\shared\ringbuffer.cpp">
+      <Filter>src\engine\shared</Filter>
+    </ClCompile>
+    <ClCompile Include="src\engine\shared\snapshot.cpp">
+      <Filter>src\engine\shared</Filter>
+    </ClCompile>
+    <ClCompile Include="src\engine\shared\storage.cpp">
+      <Filter>src\engine\shared</Filter>
+    </ClCompile>
+    <ClCompile Include="src\engine\shared\compression.cpp">
+      <Filter>src\engine\shared</Filter>
+    </ClCompile>
+    <ClCompile Include="src\engine\shared\config.cpp">
+      <Filter>src\engine\shared</Filter>
+    </ClCompile>
+    <ClCompile Include="src\engine\shared\console.cpp">
+      <Filter>src\engine\shared</Filter>
+    </ClCompile>
+    <ClCompile Include="src\engine\shared\datafile.cpp">
+      <Filter>src\engine\shared</Filter>
+    </ClCompile>
+    <ClCompile Include="src\engine\shared\demo.cpp">
+      <Filter>src\engine\shared</Filter>
+    </ClCompile>
+    <ClCompile Include="src\game\collision.cpp">
+      <Filter>src\game</Filter>
+    </ClCompile>
+    <ClCompile Include="src\game\gamecore.cpp">
+      <Filter>src\game</Filter>
+    </ClCompile>
+    <ClCompile Include="src\game\layers.cpp">
+      <Filter>src\game</Filter>
+    </ClCompile>
+    <ClCompile Include="src\game\localization.cpp">
+      <Filter>src\game</Filter>
+    </ClCompile>
+    <ClCompile Include="src\game\client\animstate.cpp">
+      <Filter>src\game\client</Filter>
+    </ClCompile>
+    <ClCompile Include="src\game\client\gameclient.cpp">
+      <Filter>src\game\client</Filter>
+    </ClCompile>
+    <ClCompile Include="src\game\client\lineinput.cpp">
+      <Filter>src\game\client</Filter>
+    </ClCompile>
+    <ClCompile Include="src\game\client\render.cpp">
+      <Filter>src\game\client</Filter>
+    </ClCompile>
+    <ClCompile Include="src\game\client\render_map.cpp">
+      <Filter>src\game\client</Filter>
+    </ClCompile>
+    <ClCompile Include="src\game\client\ui.cpp">
+      <Filter>src\game\client</Filter>
+    </ClCompile>
+    <ClCompile Include="src\game\client\components\chat.cpp">
+      <Filter>src\game\client\components</Filter>
+    </ClCompile>
+    <ClCompile Include="src\game\client\components\console.cpp">
+      <Filter>src\game\client\components</Filter>
+    </ClCompile>
+    <ClCompile Include="src\game\client\components\controls.cpp">
+      <Filter>src\game\client\components</Filter>
+    </ClCompile>
+    <ClCompile Include="src\game\client\components\countryflags.cpp">
+      <Filter>src\game\client\components</Filter>
+    </ClCompile>
+    <ClCompile Include="src\game\client\components\damageind.cpp">
+      <Filter>src\game\client\components</Filter>
+    </ClCompile>
+    <ClCompile Include="src\game\client\components\debughud.cpp">
+      <Filter>src\game\client\components</Filter>
+    </ClCompile>
+    <ClCompile Include="src\game\client\components\effects.cpp">
+      <Filter>src\game\client\components</Filter>
+    </ClCompile>
+    <ClCompile Include="src\game\client\components\emoticon.cpp">
+      <Filter>src\game\client\components</Filter>
+    </ClCompile>
+    <ClCompile Include="src\game\client\components\flow.cpp">
+      <Filter>src\game\client\components</Filter>
+    </ClCompile>
+    <ClCompile Include="src\game\client\components\hud.cpp">
+      <Filter>src\game\client\components</Filter>
+    </ClCompile>
+    <ClCompile Include="src\game\client\components\items.cpp">
+      <Filter>src\game\client\components</Filter>
+    </ClCompile>
+    <ClCompile Include="src\game\client\components\killmessages.cpp">
+      <Filter>src\game\client\components</Filter>
+    </ClCompile>
+    <ClCompile Include="src\game\client\components\mapimages.cpp">
+      <Filter>src\game\client\components</Filter>
+    </ClCompile>
+    <ClCompile Include="src\game\client\components\maplayers.cpp">
+      <Filter>src\game\client\components</Filter>
+    </ClCompile>
+    <ClCompile Include="src\game\client\components\menus.cpp">
+      <Filter>src\game\client\components</Filter>
+    </ClCompile>
+    <ClCompile Include="src\game\client\components\menus_browser.cpp">
+      <Filter>src\game\client\components</Filter>
+    </ClCompile>
+    <ClCompile Include="src\game\client\components\menus_demo.cpp">
+      <Filter>src\game\client\components</Filter>
+    </ClCompile>
+    <ClCompile Include="src\game\client\components\menus_ingame.cpp">
+      <Filter>src\game\client\components</Filter>
+    </ClCompile>
+    <ClCompile Include="src\game\client\components\menus_settings.cpp">
+      <Filter>src\game\client\components</Filter>
+    </ClCompile>
+    <ClCompile Include="src\game\client\components\motd.cpp">
+      <Filter>src\game\client\components</Filter>
+    </ClCompile>
+    <ClCompile Include="src\game\client\components\nameplates.cpp">
+      <Filter>src\game\client\components</Filter>
+    </ClCompile>
+    <ClCompile Include="src\game\client\components\particles.cpp">
+      <Filter>src\game\client\components</Filter>
+    </ClCompile>
+    <ClCompile Include="src\game\client\components\players.cpp">
+      <Filter>src\game\client\components</Filter>
+    </ClCompile>
+    <ClCompile Include="src\game\client\components\scoreboard.cpp">
+      <Filter>src\game\client\components</Filter>
+    </ClCompile>
+    <ClCompile Include="src\game\client\components\skins.cpp">
+      <Filter>src\game\client\components</Filter>
+    </ClCompile>
+    <ClCompile Include="src\game\client\components\sounds.cpp">
+      <Filter>src\game\client\components</Filter>
+    </ClCompile>
+    <ClCompile Include="src\game\client\components\spectator.cpp">
+      <Filter>src\game\client\components</Filter>
+    </ClCompile>
+    <ClCompile Include="src\game\client\components\test.cpp">
+      <Filter>src\game\client\components</Filter>
+    </ClCompile>
+    <ClCompile Include="src\game\client\components\voting.cpp">
+      <Filter>src\game\client\components</Filter>
+    </ClCompile>
+    <ClCompile Include="src\game\client\components\binds.cpp">
+      <Filter>src\game\client\components</Filter>
+    </ClCompile>
+    <ClCompile Include="src\game\client\components\broadcast.cpp">
+      <Filter>src\game\client\components</Filter>
+    </ClCompile>
+    <ClCompile Include="src\game\client\components\camera.cpp">
+      <Filter>src\game\client\components</Filter>
+    </ClCompile>
+    <ClCompile Include="src\game\editor\auto_map.cpp">
+      <Filter>src\game\editor</Filter>
+    </ClCompile>
+    <ClCompile Include="src\game\editor\editor.cpp">
+      <Filter>src\game\editor</Filter>
+    </ClCompile>
+    <ClCompile Include="src\game\editor\io.cpp">
+      <Filter>src\game\editor</Filter>
+    </ClCompile>
+    <ClCompile Include="src\game\editor\layer_game.cpp">
+      <Filter>src\game\editor</Filter>
+    </ClCompile>
+    <ClCompile Include="src\game\editor\layer_quads.cpp">
+      <Filter>src\game\editor</Filter>
+    </ClCompile>
+    <ClCompile Include="src\game\editor\layer_tiles.cpp">
+      <Filter>src\game\editor</Filter>
+    </ClCompile>
+    <ClCompile Include="src\game\editor\popups.cpp">
+      <Filter>src\game\editor</Filter>
+    </ClCompile>
+    <ClCompile Include="src\game\server\entity.cpp">
+      <Filter>src\game\server</Filter>
+    </ClCompile>
+    <ClCompile Include="src\game\server\eventhandler.cpp">
+      <Filter>src\game\server</Filter>
+    </ClCompile>
+    <ClCompile Include="src\game\server\gamecontext.cpp">
+      <Filter>src\game\server</Filter>
+    </ClCompile>
+    <ClCompile Include="src\game\server\gamecontroller.cpp">
+      <Filter>src\game\server</Filter>
+    </ClCompile>
+    <ClCompile Include="src\game\server\gameworld.cpp">
+      <Filter>src\game\server</Filter>
+    </ClCompile>
+    <ClCompile Include="src\game\server\player.cpp">
+      <Filter>src\game\server</Filter>
+    </ClCompile>
+    <ClCompile Include="src\game\server\entities\character.cpp">
+      <Filter>src\game\server\entities</Filter>
+    </ClCompile>
+    <ClCompile Include="src\game\server\entities\flag.cpp">
+      <Filter>src\game\server\entities</Filter>
+    </ClCompile>
+    <ClCompile Include="src\game\server\entities\laser.cpp">
+      <Filter>src\game\server\entities</Filter>
+    </ClCompile>
+    <ClCompile Include="src\game\server\entities\pickup.cpp">
+      <Filter>src\game\server\entities</Filter>
+    </ClCompile>
+    <ClCompile Include="src\game\server\entities\projectile.cpp">
+      <Filter>src\game\server\entities</Filter>
+    </ClCompile>
+    <ClCompile Include="src\game\server\gamemodes\ctf.cpp">
+      <Filter>src\game\server\gamemodes</Filter>
+    </ClCompile>
+    <ClCompile Include="src\game\server\gamemodes\dm.cpp">
+      <Filter>src\game\server\gamemodes</Filter>
+    </ClCompile>
+    <ClCompile Include="src\game\server\gamemodes\mod.cpp">
+      <Filter>src\game\server\gamemodes</Filter>
+    </ClCompile>
+    <ClCompile Include="src\game\server\gamemodes\tdm.cpp">
+      <Filter>src\game\server\gamemodes</Filter>
+    </ClCompile>
+    <ClCompile Include="src\game\generated\client_data.cpp">
+      <Filter>src\game\generated</Filter>
+    </ClCompile>
+    <ClCompile Include="src\game\generated\nethash.cpp">
+      <Filter>src\game\generated</Filter>
+    </ClCompile>
+    <ClCompile Include="src\game\generated\protocol.cpp">
+      <Filter>src\game\generated</Filter>
+    </ClCompile>
+    <ClCompile Include="src\mastersrv\mastersrv.cpp">
+      <Filter>src\mastersrv</Filter>
+    </ClCompile>
+    <ClCompile Include="src\tools\tileset_borderadd.cpp">
+      <Filter>src\tools</Filter>
+    </ClCompile>
+    <ClCompile Include="src\tools\tileset_borderfix.cpp">
+      <Filter>src\tools</Filter>
+    </ClCompile>
+    <ClCompile Include="src\tools\tileset_borderrem.cpp">
+      <Filter>src\tools</Filter>
+    </ClCompile>
+    <ClCompile Include="src\tools\tileset_borderset.cpp">
+      <Filter>src\tools</Filter>
+    </ClCompile>
+    <ClCompile Include="src\tools\crapnet.cpp">
+      <Filter>src\tools</Filter>
+    </ClCompile>
+    <ClCompile Include="src\tools\dilate.cpp">
+      <Filter>src\tools</Filter>
+    </ClCompile>
+    <ClCompile Include="src\tools\fake_server.cpp">
+      <Filter>src\tools</Filter>
+    </ClCompile>
+    <ClCompile Include="src\tools\map_resave.cpp">
+      <Filter>src\tools</Filter>
+    </ClCompile>
+    <ClCompile Include="src\tools\map_version.cpp">
+      <Filter>src\tools</Filter>
+    </ClCompile>
+    <ClCompile Include="src\tools\packetgen.cpp">
+      <Filter>src\tools</Filter>
+    </ClCompile>
+    <ClCompile Include="src\versionsrv\versionsrv.cpp">
+      <Filter>src\versionsrv</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <Text Include="src\engine\docs\client_time.txt">
+      <Filter>src\engine\docs</Filter>
+    </Text>
+    <Text Include="src\engine\docs\prediction.txt">
+      <Filter>src\engine\docs</Filter>
+    </Text>
+    <Text Include="src\engine\docs\server_op.txt">
+      <Filter>src\engine\docs</Filter>
+    </Text>
+    <Text Include="src\engine\docs\snapshots.txt">
+      <Filter>src\engine\docs</Filter>
+    </Text>
+    <Text Include="src\engine\external\important.txt">
+      <Filter>src\engine\external</Filter>
+    </Text>
+    <Text Include="src\engine\external\wavpack\license.txt">
+      <Filter>src\engine\external\wavpack</Filter>
+    </Text>
+    <Text Include="src\engine\external\wavpack\readme.txt">
+      <Filter>src\engine\external\wavpack</Filter>
+    </Text>
+    <Text Include="src\game\generated\createdir.txt">
+      <Filter>src\game\generated</Filter>
+    </Text>
+  </ItemGroup>
+</Project>
