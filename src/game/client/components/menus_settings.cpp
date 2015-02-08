@@ -1751,12 +1751,12 @@ void CMenus::RenderColHud(CUIRect MainView)
 	static float s_FadeScroll[4][3];
 		Center.HSplitTop(5.0f, &Button, &Center);
 		Center.HSplitTop(20.0f, &Button, &Center);
-	/* 	Button.VSplitLeft(150.0f, &Label, &Button);
+	 	Button.VSplitLeft(150.0f, &Label, &Button);
 		Button.HMargin(2.0f, &Button);
 		UI()->DoLabel(&Label, Localize("Show time msg"), 14.0f, -1);
 		//g_Config.m_ClChatShowtime = (int)(DoScrollbarH(&g_Config.m_ClChatShowtime, &Button, (g_Config.m_ClChatShowtime-5)/55.0f)*55.0f)+5;
 		g_Config.m_ClChatShowtime = DoCoolScrollbarH(&g_Config.m_ClChatShowtime, &s_FadeScroll[0][0], &Button, g_Config.m_ClChatShowtime, 5.0f, 60.0f);
-		
+		/*
 		Center.HSplitTop(5.0f, &Button, &Center);
 		Center.HSplitTop(20.0f, &Button, &Center);
 		Button.VSplitLeft(150.0f, &Label, &Button);
