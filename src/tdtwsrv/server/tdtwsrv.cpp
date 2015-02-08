@@ -1,15 +1,16 @@
 #include "tdtwsrv.h"
-#include <base\system.h>
+#include <base/system.h>
 
-#include <engine\engine.h>
-#include <engine\shared\packer.h>
-#include <engine\shared\config.h>
+#include <engine/engine.h>
+#include <engine/shared/packer.h>
+#include <engine/shared/config.h>
 
-#include <engine\kernel.h>
+#include <engine/kernel.h>
 
-#include <game\generated\protocol_tdtw.h>
+#include <game/generated/protocol_tdtw.h>
 
 #include <iostream>
+#include <tdtwsrv/game/SQL/SQL.h>
 
 
 CTdtwSrv::CTdtwSrv()
@@ -119,7 +120,9 @@ void CTdtwSrv::Run()
 		m_pConsole->PrintArg(IConsole::OUTPUT_LEVEL_STANDARD, "server", "couldn't open socket. port %d might already be in use", g_Config.m_SvPort);
 		return;
 	}
-
+	CSQL *sql = new CSQL("database.db");
+	if (!sql->Open())
+		dbg_msg("Error:", "Database open");
 	m_NetServer.SetCallbacks(NewClientCallback, DelClientCallback, this);
 
 	AutoUpdate()->CheckHash();

@@ -64,28 +64,28 @@
   </ImportGroup>
   <PropertyGroup Label="UserMacros" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
-    <IncludePath>$(ProjectDir)/src/engine/external/zlib/;$(ProjectDir)/other/sdl/include/;$(ProjectDir)/src/;$(IncludePath)</IncludePath>
+    <IncludePath>$(ProjectDir)/src/engine/external/zlib/;$(ProjectDir)/other/sdl/include/;$(ProjectDir)/src/;$(ProjectDir)/other/sqlite/include;$(IncludePath)</IncludePath>
     <NMakeBuildCommandLine>bam client_debug</NMakeBuildCommandLine>
     <NMakeReBuildCommandLine>bam -c all
  bam client_debug</NMakeReBuildCommandLine>
     <NMakeCleanCommandLine>bam -c all</NMakeCleanCommandLine>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='tdtwserver_debug|Win32'">
-    <IncludePath>$(ProjectDir)/src/engine/external/zlib/;$(ProjectDir)/other/sdl/include/;$(ProjectDir)/src/;$(IncludePath)</IncludePath>
+    <IncludePath>$(ProjectDir)/src/engine/external/zlib/;$(ProjectDir)/other/sdl/include/;$(ProjectDir)/src/;$(ProjectDir)/other/sqlite/include;$(IncludePath)</IncludePath>
     <NMakeBuildCommandLine>bam tdtwserver_debug</NMakeBuildCommandLine>
     <NMakeReBuildCommandLine>bam -c all
  bam tdtwserver_debug</NMakeReBuildCommandLine>
     <NMakeCleanCommandLine>bam -c all</NMakeCleanCommandLine>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
-    <IncludePath>$(ProjectDir)/src/engine/external/zlib/;$(ProjectDir)/other/sdl/include/;$(ProjectDir)/src/;$(IncludePath)</IncludePath>
+    <IncludePath>$(ProjectDir)/src/engine/external/zlib/;$(ProjectDir)/other/sdl/include/;$(ProjectDir)/src/;$(ProjectDir)/other/sqlite/include;$(IncludePath)</IncludePath>
     <NMakeBuildCommandLine>bam client_release</NMakeBuildCommandLine>
     <NMakeReBuildCommandLine>bam -c all
  bam client_release</NMakeReBuildCommandLine>
     <NMakeCleanCommandLine>bam -c all</NMakeCleanCommandLine>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='tdtwserver_release|Win32'">
-    <IncludePath>$(ProjectDir)/src/engine/external/zlib/;$(ProjectDir)/other/sdl/include/;$(ProjectDir)/src/;$(IncludePath)</IncludePath>
+    <IncludePath>$(ProjectDir)/src/engine/external/zlib/;$(ProjectDir)/other/sdl/include/;$(ProjectDir)/src/;$(ProjectDir)/other/sqlite/include;$(IncludePath)</IncludePath>
     <NMakeBuildCommandLine>bam tdtwserver_release</NMakeBuildCommandLine>
     <NMakeReBuildCommandLine>bam -c all
  bam tdtwserver_release</NMakeReBuildCommandLine>
@@ -429,6 +429,7 @@
     <ClInclude Include="src\tdtwsrv\game.h" />
     <ClInclude Include="src\tdtwsrv\game\client.h" />
     <ClInclude Include="src\tdtwsrv\game\game.h" />
+    <ClInclude Include="src\tdtwsrv\game\SQL\SQL.h" />
     <ClInclude Include="src\tdtwsrv\server\tdtwsrv.h" />
     <ClInclude Include="src\tdtwsrv\tdtwsrv.h" />
     <ClInclude Include="src\versionsrv\mapversions.h" />
@@ -578,6 +579,7 @@
     <ClCompile Include="src\mastersrv\mastersrv.cpp" />
     <ClCompile Include="src\tdtwsrv\game\client.cpp" />
     <ClCompile Include="src\tdtwsrv\game\game.cpp" />
+    <ClCompile Include="src\tdtwsrv\game\SQL\SQL.cpp" />
     <ClCompile Include="src\tdtwsrv\server\tdtwsrv.cpp" />
     <ClCompile Include="src\tools\crapnet.cpp" />
     <ClCompile Include="src\tools\dilate.cpp" />

@@ -169,6 +169,7 @@ function build(settings)
 	
 	--settings.objdir = Path("objs")
 	settings.cc.Output = Intermediate_Output
+	settings.link.libpath:Add("other/sqlite3")
 
 	if config.compiler.driver == "cl" then
 		settings.cc.flags:Add("/wd4244")
@@ -193,6 +194,7 @@ function build(settings)
 	-- set some platform specific settings
 	settings.cc.includes:Add("src")
 	settings.cc.includes:Add("other/sdl/include/")
+	settings.cc.includes:Add("other/sqlite3/include")
 
 	if family == "unix" then
 		if platform == "macosx" then
@@ -212,6 +214,7 @@ function build(settings)
 		settings.link.libs:Add("ws2_32")
 		settings.link.libs:Add("ole32")
 		settings.link.libs:Add("shell32")
+		
 	end
 
 	-- compile zlib if needed
@@ -233,6 +236,7 @@ function build(settings)
 	-- build game components
 	engine_settings = settings:Copy()
 	server_settings = engine_settings:Copy()
+	tdtwserver_settings = engine_settings:Copy()
 	client_settings = engine_settings:Copy()
 	launcher_settings = engine_settings:Copy()
 
@@ -255,6 +259,8 @@ function build(settings)
 		client_settings.link.libs:Add("winmm")
 	end
 
+	tdtwserver_settings.link.libpath:Add("other/sqlite3/lib")
+	tdtwserver_settings.link.libs:Add("sqlite3")
 	-- apply sdl settings
 	config.sdl:Apply(client_settings)
 	-- apply freetype settings
@@ -306,7 +312,8 @@ function build(settings)
 
 	masterserver_exe = Link(server_settings, "mastersrv", masterserver,
 		engine, zlib)
-	tdtwserver_exe = Link(server_settings, "tdtwserver", tdtwserver, game_shared, engine, zlib)
+
+	tdtwserver_exe = Link(tdtwserver_settings, "tdtwserver", tdtwserver, game_shared, engine, zlib)
 
 	-- make targets
 	c = PseudoTarget("client".."_"..settings.config_name, client_exe, client_depends)

@@ -118,6 +118,9 @@
     <Filter Include="src\game\client\tdtwserver">
       <UniqueIdentifier>{9fceea37-d3f9-4998-8b2a-2fb080548e9b}</UniqueIdentifier>
     </Filter>
+    <Filter Include="src\tdtwsrv\game\SQL">
+      <UniqueIdentifier>{39e41a4c-065d-4069-9c22-32d6cc3ac2c7}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <None Include="datasrc\compile.py">
@@ -1015,6 +1018,9 @@
     <ClInclude Include="src\game\client\tdtwserver\updatefiles.h">
       <Filter>src\game\client\tdtwserver</Filter>
     </ClInclude>
+    <ClInclude Include="src\tdtwsrv\game\SQL\SQL.h">
+      <Filter>src\tdtwsrv\game\SQL</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Image Include="other\icons\Teeworlds_srv.ico">
@@ -1469,6 +1475,9 @@
     </ClCompile>
     <ClCompile Include="src\game\client\tdtwserver\updatefiles.cpp">
       <Filter>src\game\client\tdtwserver</Filter>
+    </ClCompile>
+    <ClCompile Include="src\tdtwsrv\game\SQL\SQL.cpp">
+      <Filter>src\tdtwsrv\game\SQL</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
