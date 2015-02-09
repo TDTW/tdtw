@@ -69,6 +69,8 @@
     <NMakeReBuildCommandLine>bam -c all
  bam client_debug</NMakeReBuildCommandLine>
     <NMakeCleanCommandLine>bam -c all</NMakeCleanCommandLine>
+    <OutDir>$(SolutionDir)\objs\log</OutDir>
+    <IntDir>$(SolutionDir)\objs\objs</IntDir>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='tdtwserver_debug|Win32'">
     <IncludePath>$(ProjectDir)/src/engine/external/zlib/;$(ProjectDir)/other/sdl/include/;$(ProjectDir)/src/;$(ProjectDir)/other/sqlite/include;$(IncludePath)</IncludePath>
@@ -76,6 +78,8 @@
     <NMakeReBuildCommandLine>bam -c all
  bam tdtwserver_debug</NMakeReBuildCommandLine>
     <NMakeCleanCommandLine>bam -c all</NMakeCleanCommandLine>
+    <OutDir>$(SolutionDir)\objs\log</OutDir>
+    <IntDir>$(SolutionDir)\objs\objs</IntDir>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <IncludePath>$(ProjectDir)/src/engine/external/zlib/;$(ProjectDir)/other/sdl/include/;$(ProjectDir)/src/;$(ProjectDir)/other/sqlite/include;$(IncludePath)</IncludePath>
@@ -83,6 +87,8 @@
     <NMakeReBuildCommandLine>bam -c all
  bam client_release</NMakeReBuildCommandLine>
     <NMakeCleanCommandLine>bam -c all</NMakeCleanCommandLine>
+    <OutDir>$(SolutionDir)\objs\log</OutDir>
+    <IntDir>$(SolutionDir)\objs\objs</IntDir>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='tdtwserver_release|Win32'">
     <IncludePath>$(ProjectDir)/src/engine/external/zlib/;$(ProjectDir)/other/sdl/include/;$(ProjectDir)/src/;$(ProjectDir)/other/sqlite/include;$(IncludePath)</IncludePath>
@@ -90,6 +96,8 @@
     <NMakeReBuildCommandLine>bam -c all
  bam tdtwserver_release</NMakeReBuildCommandLine>
     <NMakeCleanCommandLine>bam -c all</NMakeCleanCommandLine>
+    <OutDir>$(SolutionDir)\objs\log</OutDir>
+    <IntDir>$(SolutionDir)\objs\objs</IntDir>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <ClCompile>
@@ -100,6 +108,9 @@
     <Link>
       <GenerateDebugInformation>true</GenerateDebugInformation>
     </Link>
+    <BuildLog>
+      <Path>$(SolutionDir)\objs\log\asd.log</Path>
+    </BuildLog>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='tdtwserver_debug|Win32'">
     <ClCompile>
@@ -110,6 +121,9 @@
     <Link>
       <GenerateDebugInformation>true</GenerateDebugInformation>
     </Link>
+    <BuildLog>
+      <Path>$(SolutionDir)\objs\log\asd.log</Path>
+    </BuildLog>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <ClCompile>
@@ -120,6 +134,9 @@
     <Link>
       <GenerateDebugInformation>true</GenerateDebugInformation>
     </Link>
+    <BuildLog>
+      <Path>$(SolutionDir)\objs\log\asd.log</Path>
+    </BuildLog>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='tdtwserver_release|Win32'">
     <ClCompile>
@@ -130,6 +147,9 @@
     <Link>
       <GenerateDebugInformation>true</GenerateDebugInformation>
     </Link>
+    <BuildLog>
+      <Path>$(SolutionDir)\objs\log\asd.log</Path>
+    </BuildLog>
   </ItemDefinitionGroup>
   <ItemGroup>
     <None Include="bam.lua" />

@@ -1,8 +1,8 @@
 #ifndef TDTWSRV_GAME_GAME_H
 #define TDTWSRV_GAME_GAME_H
 #include "client.h"
-#include <tdtwsrv\game.h>
-#include <tdtwsrv\tdtwsrv.h>
+#include <tdtwsrv/game.h>
+#include <tdtwsrv/tdtwsrv.h>
 class CGame : public IGame
 {
 public:

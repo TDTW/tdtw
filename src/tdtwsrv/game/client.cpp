@@ -1,6 +1,5 @@
 #include "client.h"
 #include <math.h>
-#include <game\generated\protocol_tdtw.h>
 #include "game.h"
 
 CClientTdtw::CClientTdtw(CGame *Game, int ID)

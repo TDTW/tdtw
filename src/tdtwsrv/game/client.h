@@ -1,10 +1,10 @@
 #ifndef TDTWSRV_TDTWSRV_CLIENT_H
 #define TDTWSRV_TDTWSRV_CLIENT_H
 
-#include <engine\shared\protocol.h>
-#include <engine\console.h>
-#include <base\tl\array.h>
-#include <engine\autoupdate.h>
+#include <engine/shared/protocol.h>
+#include <engine/console.h>
+#include <base/tl/array.h>
+#include <engine/autoupdate.h>
 class CClientTdtw
 {
 public:

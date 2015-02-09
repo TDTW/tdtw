@@ -20,7 +20,7 @@ bool CSQL::Open()
 bool CSQL::Query(const char *query)
 {
 	char *err = 0;
-	if (sqlite3_exec(m_DB, "", 0, 0, &err))
+	if (sqlite3_exec(m_DB, query, 0, 0, &err))
 	{
 		dbg_msg("SQL", "Query error: %s", err);
 		sqlite3_free(err);

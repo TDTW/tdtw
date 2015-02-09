@@ -1,24 +1,24 @@
 #ifndef TDTWSRV_TDTWSRV_TDTWSRV_H
 #define TDTWSRV_TDTWSRV_TDTWSRV_H
 
-#include <base\system.h>
+#include <base/system.h>
 
-#include <engine\shared\network.h>
-#include <engine\shared\netban.h>
-#include <engine\shared\protocol.h> 
+#include <engine/shared/network.h>
+#include <engine/shared/netban.h>
+#include <engine/shared/protocol.h>
 
-#include <engine\console.h>
-#include <engine\storage.h>
-#include <engine\config.h>
-#include <engine\autoupdate.h>
+#include <engine/console.h>
+#include <engine/storage.h>
+#include <engine/config.h>
+#include <engine/autoupdate.h>
 
-#include <engine\kernel.h>
+#include <engine/kernel.h>
 
-#include <game\version.h>
-#include <game\generated\protocol_tdtw.h>
+#include <game/version.h>
+#include <game/generated/protocol_tdtw.h>
 
-#include <tdtwsrv\game.h>
-#include <tdtwsrv\tdtwsrv.h>
+#include <tdtwsrv/game.h>
+#include <tdtwsrv/tdtwsrv.h>
 
 class CTdtwSrv : public ITDTWSrv
 {

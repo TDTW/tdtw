@@ -110,10 +110,11 @@ IF(OS_LINUX)
 elseif(OS_WINDOWS)
     include_directories(other/sdl/include)
     include_directories(other/freetype/include)
+    include_directories(other/sqlite/include)
     link_directories(other/freetype/lib32)
     link_directories(other/sdl/lib32)
     link_directories(other/sdl/lib32)
-
+    link_directories(other/sqlite/lib)
 ENDIF(OS_LINUX)
 
 set(SOURCE_FILES
@@ -425,7 +426,7 @@ add_executable(server_debug ${ENGINE} ${GAME_SHARED} ${TDTW_SERVER} ${ZLIB})
 if(OS_LINUX)
     target_link_libraries(server_debug ${CMAKE_THREAD_LIBS_INIT})
 elseif(OS_WINDOWS)
-    target_link_libraries(server_debug ws2_32 )
+    target_link_libraries(server_debug ws2_32 sqlite3)
 endif()
 
 #SERVER_RELEASE
@@ -434,7 +435,7 @@ add_executable(server_release ${ENGINE} ${GAME_SHARED} ${TDTW_SERVER} ${ZLIB})
 if(OS_LINUX)
     target_link_libraries(server_release ${CMAKE_THREAD_LIBS_INIT})
 elseif(OS_WINDOWS)
-    target_link_libraries(server_release ws2_32 )
+    target_link_libraries(server_release ws2_32 sqlite3)
 endif()
 
 
