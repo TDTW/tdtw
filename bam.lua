@@ -169,7 +169,6 @@ function build(settings)
 	
 	--settings.objdir = Path("objs")
 	settings.cc.Output = Intermediate_Output
-	settings.link.libpath:Add("other/sqlite3")
 
 	if config.compiler.driver == "cl" then
 		settings.cc.flags:Add("/wd4244")
@@ -194,7 +193,7 @@ function build(settings)
 	-- set some platform specific settings
 	settings.cc.includes:Add("src")
 	settings.cc.includes:Add("other/sdl/include/")
-	settings.cc.includes:Add("other/sqlite3/include")
+	settings.cc.includes:Add("other/sqlite3/include/")
 
 	if family == "unix" then
 		if platform == "macosx" then
@@ -258,8 +257,7 @@ function build(settings)
 		client_settings.link.libs:Add("glu32")
 		client_settings.link.libs:Add("winmm")
 	end
-
-	tdtwserver_settings.link.libpath:Add("other/sqlite3/lib")
+	tdtwserver_settings.link.libpath:Add("other/sqlite/lib")
 	tdtwserver_settings.link.libs:Add("sqlite3")
 	-- apply sdl settings
 	config.sdl:Apply(client_settings)

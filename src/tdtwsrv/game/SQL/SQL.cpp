@@ -14,6 +14,7 @@ bool CSQL::Open()
 		dbg_msg("SQL", "Database don't open: %s", sqlite3_errmsg(m_DB));
 		return false;
 	}
+	return true;
 }
 
 bool CSQL::Query(const char *query)
@@ -25,7 +26,7 @@ bool CSQL::Query(const char *query)
 		sqlite3_free(err);
 		return false;
 	}
-
+	return true;
 }
 
 void CSQL::Close()
