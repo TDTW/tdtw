@@ -1,13 +1,16 @@
 #include <base/system.h>
 #include "autoupdate.h"
+#include "datafile.h"
+
 #if defined(CONF_FAMILY_WINDOWS)
 #define IStorage _IStorage
 #include <windows.h>
-#include <shellapi.h>
-#include <game/version.h>
-
 #undef IStorage
 #endif
+#include <game/version.h>
+#include <engine/autoupdate.h>
+#include <time.h>
+
 CAutoUpdate::CAutoUpdate()
 {
 	m_aDir.clear();
@@ -19,6 +22,7 @@ CAutoUpdate::CAutoUpdate()
 	Temp->ParentFolderID = -1;
 	m_aDir.add(*Temp);	
 	NeedReplace = false;
+    SecretNum = 0;
 }
 
 void CAutoUpdate::CheckHash()
@@ -87,10 +91,8 @@ void CAutoUpdate::CheckHash()
 
 bool CAutoUpdate::CheckVersion(char *Version)
 {
-	if (str_comp(GAME_VERSION, Version) == 0)
-		return true;
+    return str_comp(GAME_VERSION, Version) == 0;
 
-	return false;
 }
 
 void CAutoUpdate::RequestInterfaces()
@@ -101,17 +103,23 @@ void CAutoUpdate::RequestInterfaces()
 
 void CAutoUpdate::ReplaceFileUpdate(char *FileName)
 {
-	char aBuf[150];
-	str_format(aBuf, sizeof(aBuf), ":_R\r\ndel \"%s\"\r\nif exist \"teeworlds.exe\" goto _R\r\nrename \"teeworlds1.exe\" \"teeworlds.exe\"\r\n:_T\r\nif not exist \"teeworlds.exe\" goto _T\r\ndel \"replace.bat\"\r\n");
+	char aBuf[512];
+	str_format(aBuf, sizeof(aBuf), ":_R\r\ndel \"%s\"\r\n"
+            "if exist \"%s\" goto _R\r\nrename \"teeworlds_%d.exe\" \"%s\"\r\n"
+            ":_T\r\nif not exist \"%s\" goto _T\r\n"
+            /*"del \"replace.bat\"\r\n"*/, FileName, FileName, SecretNum, FileName, FileName);
 	IOHANDLE File = io_open("replace.bat", IOFLAG_WRITE);
 	io_write(File, aBuf, str_length(aBuf));
 	io_close(File);
 #if defined(CONF_FAMILY_WINDOWS)
 	ShellExecuteA(0, 0, "replace.bat", 0, 0, SW_HIDE);
 #elif defined(CONF_PLATFORM_LINUX)
-	if (rename("tw_tmp", "teeworlds"))
+    char aBuf[128];
+    str_format(aBuf, sizeof(aBuf), "teeworlds_%d", SecretNum);
+	if (rename(aBuf, FileName))
 		dbg_msg("autoupdate", "Error renaming binary file");
-	if (system("chmod +x teeworlds"))
+    str_format(aBuf, sizeof(aBuf), "chmod +x %s", FileName);
+	if (system(aBuf))
 		dbg_msg("autoupdate", "Error setting executable bit");
 #endif
 }

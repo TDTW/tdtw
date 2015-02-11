@@ -35,6 +35,7 @@ public:
 	virtual void RequestInterfaces() = 0;
 	virtual bool CheckVersion(char *Version) = 0;
 	virtual void ReplaceFileUpdate(char *FileName) = 0;
+    virtual void SetBinaryTempNumber(int Num) = 0;
 };
 
 extern IAutoUpdate *CreateAutoUpdate();

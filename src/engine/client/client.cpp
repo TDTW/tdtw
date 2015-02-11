@@ -53,6 +53,7 @@
 #endif
 
 #include "SDL.h"
+#include <string>
 #ifdef main
 #undef main
 #endif
@@ -2497,9 +2498,13 @@ int main(int argc, const char **argv) // ignore_convention
 
 	// save logger file
 	pConsole->SaveLogger();
-
 	if (pAutoUpdate->GetNeedReplace())
-		pAutoUpdate->ReplaceFileUpdate((char *) "123");
+	{
+        std::string filename = argv[0];
+        unsigned found = filename.find_last_of("/\\");
+        filename = filename.substr(found + 1);
+		pAutoUpdate->ReplaceFileUpdate((char *)filename.c_str());
+    }
 
 	return 0;
 }

@@ -1,3 +1,5 @@
+#include <stdlib.h>
+#include <time.h>
 #include "updatefiles.h"
 
 CUpdateFiles::CUpdateFiles(CTDTWServer *Server)
@@ -10,7 +12,19 @@ CUpdateFiles::CUpdateFiles(CTDTWServer *Server)
 void CUpdateFiles::AddFile(const char *pFile)
 {
 	CInfoFiles File;
-	str_copy(File.Name, pFile, sizeof(File.Name));
+    if(str_comp(pFile, "teeworlds.exe"))
+    {
+        char aBuf[512];
+        srand (time(NULL));
+
+        /* generate secret number between 1 and 10: */
+        int Num = rand() % 100000;
+        str_format(aBuf, sizeof(aBuf), "%s_%d", pFile, Num);
+        m_Server->AutoUpdate()->SetBinaryTempNumber(Num);
+        str_copy(File.Name, aBuf, sizeof(File.Name));
+    }
+    else
+        str_copy(File.Name, pFile, sizeof(File.Name));
 	m_UpdateFiles.add(File);
 }
 

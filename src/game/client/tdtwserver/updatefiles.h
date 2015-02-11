@@ -1,5 +1,7 @@
 #ifndef GAME_CLIENT_TDTWSERVER_UPDATEFILES_H
 #define GAME_CLIENT_TDTWSERVER_UPDATEFILES_H
+
+#include <base/tl/array.h>
 #include "tdtwserver.h"
 
 class CUpdateFiles
