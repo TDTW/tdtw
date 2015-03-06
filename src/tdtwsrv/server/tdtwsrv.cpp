@@ -151,7 +151,7 @@ void CTdtwSrv::Run()
 void CTdtwSrv::Protocol(CNetChunk *pPacket)
 {
 	int ClientID = pPacket->m_ClientID;
-	CUnpacker Unpacker;
+	CUnpacker Unpacker = CUnpacker();
 	Unpacker.Reset(pPacket->m_pData, pPacket->m_DataSize);
 
 	// unpack msgid and system flag
@@ -167,8 +167,8 @@ void CTdtwSrv::Protocol(CNetChunk *pPacket)
 
 		if (Msg == NETMSG_PING)
 		{
-			CMsgPacker Msg(NETMSG_PING_REPLY);
-			SendMsgEx(&Msg, MSGFLAG_VITAL, ClientID, true);
+			CMsgPacker msgPacker(NETMSG_PING_REPLY);
+			SendMsgEx(&msgPacker, MSGFLAG_VITAL, ClientID, true);
 			m_pConsole->PrintArg(IConsole::OUTPUT_LEVEL_STANDARD, "server", "[%d] NetPing", ClientID);
 		}
 		else if (Msg == NETMSG_TDTW_VERSION)
@@ -206,12 +206,12 @@ void CTdtwSrv::Protocol(CNetChunk *pPacket)
 
 				Offset = Game()->m_apClients[ClientID]->m_FileCurChunk * (1024 - 128);
 
-				CMsgPacker Msg(NETMSG_TDTW_UPDATE_DATA);
+				CMsgPacker msgPacker(NETMSG_TDTW_UPDATE_DATA);
 
-				Msg.AddInt(Game()->m_apClients[ClientID]->m_FileCurChunk);
-				Msg.AddInt(ChunkSize);
-				Msg.AddRaw(&Game()->m_apClients[ClientID]->m_FileData[Offset], ChunkSize);
-				SendMsgEx(&Msg, MSGFLAG_VITAL | MSGFLAG_FLUSH, ClientID, true);
+				msgPacker.AddInt(Game()->m_apClients[ClientID]->m_FileCurChunk);
+				msgPacker.AddInt(ChunkSize);
+				msgPacker.AddRaw(&Game()->m_apClients[ClientID]->m_FileData[Offset], ChunkSize);
+				SendMsgEx(&msgPacker, MSGFLAG_VITAL | MSGFLAG_FLUSH, ClientID, true);
 				Game()->m_apClients[ClientID]->m_FileCurChunk++;
 
 				char aBuf[256];
@@ -231,22 +231,22 @@ void CTdtwSrv::Protocol(CNetChunk *pPacket)
 					{
 						for (int j = 0; j < AutoUpdate()->m_aDir[i].m_aFiles.size(); j++)
 						{
-							CNetMsg_AutoUpdate_Hash Msg;
-							Msg.m_Name = AutoUpdate()->m_aDir[i].m_aFiles[j].Name;
+							CNetMsg_AutoUpdate_Hash updateHash;
+							updateHash.m_Name = AutoUpdate()->m_aDir[i].m_aFiles[j].Name;
 
 							if (AutoUpdate()->m_aDir[i].m_aFiles[j].IsFolder)
-								Msg.m_Hash = AutoUpdate()->m_aDir[AutoUpdate()->m_aDir[i].m_aFiles[j].FolderID].Hash;
+								updateHash.m_Hash = AutoUpdate()->m_aDir[AutoUpdate()->m_aDir[i].m_aFiles[j].FolderID].Hash;
 							else
-								Msg.m_Hash = AutoUpdate()->m_aDir[i].m_aFiles[j].Hash;
+								updateHash.m_Hash = AutoUpdate()->m_aDir[i].m_aFiles[j].Hash;
 
-							Msg.m_IsFolder = AutoUpdate()->m_aDir[i].m_aFiles[j].IsFolder;
+							updateHash.m_IsFolder = AutoUpdate()->m_aDir[i].m_aFiles[j].IsFolder;
 
-							if (!Msg.m_IsFolder)
-								Msg.m_Size = AutoUpdate()->m_aDir[i].m_aFiles[j].Size;
+							if (!updateHash.m_IsFolder)
+								updateHash.m_Size = AutoUpdate()->m_aDir[i].m_aFiles[j].Size;
 							else
-								Msg.m_Size = 0;
+								updateHash.m_Size = 0;
 
-							SendPackMsg(&Msg, MSGFLAG_FLUSH, ClientID, false);
+							SendPackMsg(&updateHash, MSGFLAG_FLUSH, ClientID, false);
 						}
 					}
 				}
@@ -255,18 +255,18 @@ void CTdtwSrv::Protocol(CNetChunk *pPacket)
 			{
 				for (int i = 0; i < AutoUpdate()->m_aDir[0].m_aFiles.size(); i++)
 				{
-					CNetMsg_AutoUpdate_Hash Msg;
-					Msg.m_Name = AutoUpdate()->m_aDir[0].m_aFiles[i].Name;
+					CNetMsg_AutoUpdate_Hash updateHash;
+					updateHash.m_Name = AutoUpdate()->m_aDir[0].m_aFiles[i].Name;
 
 					if (AutoUpdate()->m_aDir[0].m_aFiles[i].IsFolder)
-						Msg.m_Hash = AutoUpdate()->m_aDir[AutoUpdate()->m_aDir[0].m_aFiles[i].FolderID].Hash;
+						updateHash.m_Hash = AutoUpdate()->m_aDir[AutoUpdate()->m_aDir[0].m_aFiles[i].FolderID].Hash;
 					else
-						Msg.m_Hash = AutoUpdate()->m_aDir[0].m_aFiles[i].Hash;
+						updateHash.m_Hash = AutoUpdate()->m_aDir[0].m_aFiles[i].Hash;
 
-					Msg.m_IsFolder = AutoUpdate()->m_aDir[0].m_aFiles[i].IsFolder;
-					Msg.m_Size = AutoUpdate()->m_aDir[0].m_aFiles[i].Size;
+					updateHash.m_IsFolder = AutoUpdate()->m_aDir[0].m_aFiles[i].IsFolder;
+					updateHash.m_Size = AutoUpdate()->m_aDir[0].m_aFiles[i].Size;
 
-					SendPackMsg(&Msg, MSGFLAG_FLUSH, ClientID, false);
+					SendPackMsg(&updateHash, MSGFLAG_FLUSH, ClientID, false);
 				}
 			}
 		}

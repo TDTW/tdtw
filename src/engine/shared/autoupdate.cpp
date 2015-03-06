@@ -1,15 +1,11 @@
 #include <base/system.h>
 #include "autoupdate.h"
-#include "datafile.h"
 
 #if defined(CONF_FAMILY_WINDOWS)
 #define IStorage _IStorage
 #include <windows.h>
 #undef IStorage
 #endif
-#include <game/version.h>
-#include <engine/autoupdate.h>
-#include <time.h>
 
 CAutoUpdate::CAutoUpdate()
 {
@@ -29,7 +25,6 @@ void CAutoUpdate::CheckHash()
 {
 	static FS_LISTDIR_CALLBACK2 ParseFilesCallback = [](const char *pFileName, int IsDir, void *pUser, int folder_id)
 	{
-		const int PathLength = str_length(pFileName);
 		if (pFileName[0] == '.')
 			return 0;
 
@@ -109,7 +104,7 @@ void CAutoUpdate::ReplaceFileUpdate(char *FileName)
             ":_T\r\nif not exist \"%s\" goto _T\r\n"
             /*"del \"replace.bat\"\r\n"*/, FileName, FileName, SecretNum, FileName, FileName);
 	IOHANDLE File = io_open("replace.bat", IOFLAG_WRITE);
-	io_write(File, aBuf, str_length(aBuf));
+	io_write(File, aBuf, (unsigned int) str_length(aBuf));
 	io_close(File);
 #if defined(CONF_FAMILY_WINDOWS)
 	ShellExecuteA(0, 0, "replace.bat", 0, 0, SW_HIDE);

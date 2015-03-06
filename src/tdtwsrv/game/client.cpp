@@ -24,14 +24,20 @@ CClientTdtw::~CClientTdtw()
 bool CClientTdtw::OpenFile(const char *FileName)
 {
 	IOHANDLE File = io_open(FileName, IOFLAG_READ);
+
 	if (!File)
 		return false;
+	
 	m_FileSize = (int)io_length(File);
+
 	if (m_FileData)
 		mem_free(m_FileData);
+
 	m_FileData = (unsigned char *)mem_alloc(m_FileSize, 1);
 	m_FileChunks = ceil(m_FileSize / (1024.0f - 128.0f));
+
 	dbg_msg("Chunks", "%d", m_FileChunks);
+
 	io_read(File, m_FileData, m_FileSize);
 	io_close(File);
 
