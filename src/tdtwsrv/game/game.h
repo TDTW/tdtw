@@ -3,6 +3,7 @@
 #include "client.h"
 #include <tdtwsrv/game.h>
 #include <tdtwsrv/tdtwsrv.h>
+
 class CGame : public IGame
 {
 public:

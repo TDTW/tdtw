@@ -10,6 +10,7 @@
 #include <engine/console.h>
 #include <engine/autoupdate.h>
 #include <game/version.h>
+
 class CAutoUpdate : public IAutoUpdate
 {	
 public:

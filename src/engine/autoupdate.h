@@ -15,8 +15,8 @@ public:
 		char Name[128];
 		int Hash;
 		int Size;
-		int ParentFolderID;
 		bool IsFolder;
+        int ParentFolderID;
 		int FolderID;
 	};
 	struct CInfoFolders
@@ -25,7 +25,7 @@ public:
 		int Hash;
 		int Size;
 		int FolderID;
-		int ParentFolderID;
+        int ParentFolderID;
 		array <CInfoFiles> m_aFiles;
 	};
 	virtual void SetNeedReplace(bool Replace) = 0;

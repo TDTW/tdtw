@@ -10,21 +10,18 @@
 #include <stdio.h>
 #include <stdlib.h>
 
-
 CTdtwSrv::CTdtwSrv()
-{	
-	m_pConfig = NULL;
+{
 	m_pConsole = NULL;
-	m_pEngine = NULL;
 	m_pStorage = NULL;
 }
 
 CTdtwSrv::~CTdtwSrv()
 {
-	// save logger file
-	m_pConsole->SaveLogger();
-
 	delete m_pAutoUpdate;
+    delete m_pStorage;
+    delete m_pGame;
+    delete m_pConsole;
 }
 
 int CTdtwSrv::SendMsg(CMsgPacker *pMsg, int Flags, int ClientID)
@@ -115,7 +112,7 @@ void CTdtwSrv::Run()
 
 	if (!m_NetServer.Open(BindAddr, 0/*&m_ServerBan*/, g_Config.m_SvMaxClients, g_Config.m_SvMaxClientsPerIP, 0))
 	{
-		m_pConsole->PrintArg(IConsole::OUTPUT_LEVEL_STANDARD, "server", "couldn't open socket. port %d might already be in use", g_Config.m_SvPort);
+		Console()->PrintArg(IConsole::OUTPUT_LEVEL_STANDARD, "server", "couldn't open socket. port %d might already be in use", g_Config.m_SvPort);
 		return;
 	}
 
@@ -151,15 +148,15 @@ void CTdtwSrv::Run()
 void CTdtwSrv::Protocol(CNetChunk *pPacket)
 {
 	int ClientID = pPacket->m_ClientID;
-	CUnpacker Unpacker = CUnpacker();
-	Unpacker.Reset(pPacket->m_pData, pPacket->m_DataSize);
+	CUnpacker *Unpacker = new CUnpacker();
+	Unpacker->Reset(pPacket->m_pData, pPacket->m_DataSize);
 
 	// unpack msgid and system flag
-	int Msg = Unpacker.GetInt();
+	int Msg = Unpacker->GetInt();
 	int Sys = Msg & 1;
 	Msg >>= 1;
 
-	if (Unpacker.Error())
+	if (Unpacker->Error())
 		return;
 	if (Sys)
 	{
@@ -169,12 +166,12 @@ void CTdtwSrv::Protocol(CNetChunk *pPacket)
 		{
 			CMsgPacker msgPacker(NETMSG_PING_REPLY);
 			SendMsgEx(&msgPacker, MSGFLAG_VITAL, ClientID, true);
-			m_pConsole->PrintArg(IConsole::OUTPUT_LEVEL_STANDARD, "server", "[%d] NetPing", ClientID);
+			Console()->PrintArg(IConsole::OUTPUT_LEVEL_STANDARD, "server", "[%d] NetPing", ClientID);
 		}
 		else if (Msg == NETMSG_TDTW_VERSION)
 		{
-			char *Version = (char *)Unpacker.GetString(CUnpacker::SANITIZE_CC);
-			m_pConsole->PrintArg(IConsole::OUTPUT_LEVEL_DEBUG, "server", "[%d] Client version: %s", ClientID, Version);
+			char *Version = (char *)Unpacker->GetString(CUnpacker::SANITIZE_CC);
+			Console()->PrintArg(IConsole::OUTPUT_LEVEL_DEBUG, "server", "[%d] Client version: %s", ClientID, Version);
 			if (AutoUpdate()->CheckVersion(Version))
 			{
 				Game()->m_apClients[ClientID]->GetHash();
@@ -182,7 +179,7 @@ void CTdtwSrv::Protocol(CNetChunk *pPacket)
 		}
 		else if (Msg == NETMSG_TDTW_UPDATE_INFO)
 		{
-			char *File = (char *)Unpacker.GetString(CUnpacker::SANITIZE_CC);
+			char *File = (char *)Unpacker->GetString(CUnpacker::SANITIZE_CC);
 			Game()->m_apClients[ClientID]->OpenFile(File);
 		}
 		else if (Msg == NETMSG_TDTW_UPDATE_REQUEST)
@@ -222,7 +219,7 @@ void CTdtwSrv::Protocol(CNetChunk *pPacket)
 		}
 		else if (Msg == NETMSG_TDTW_HASH_REQUEST)
 		{
-			const char *pFile = Unpacker.GetString(CUnpacker::SANITIZE_CC | CUnpacker::SKIP_START_WHITESPACES);
+			const char *pFile = Unpacker->GetString(CUnpacker::SANITIZE_CC | CUnpacker::SKIP_START_WHITESPACES);
 			if (str_comp(".", pFile))
 			{
 				for (int i = 0; i < AutoUpdate()->m_aDir.size(); i++)
@@ -286,8 +283,8 @@ void CTdtwSrv::Protocol(CNetChunk *pPacket)
 
 			char aBufMsg[256];
 			str_format(aBufMsg, sizeof(aBufMsg), "strange message ClientID=%d msg=%d data_size=%d", ClientID, Msg, pPacket->m_DataSize);
-			m_pConsole->Print(IConsole::OUTPUT_LEVEL_DEBUG, "server", aBufMsg);
-			m_pConsole->Print(IConsole::OUTPUT_LEVEL_DEBUG, "server", aBuf);
+			Console()->Print(IConsole::OUTPUT_LEVEL_DEBUG, "server", aBufMsg);
+			Console()->Print(IConsole::OUTPUT_LEVEL_DEBUG, "server", aBuf);
 			
 		}
 	}
@@ -296,10 +293,10 @@ void CTdtwSrv::Protocol(CNetChunk *pPacket)
 		if (Game()->ClientState(ClientID) == CClientTdtw::STATE_EMPTY)
 			return;
 
-		void *pRawMsg = m_NetHandler.SecureUnpackMsg(Msg, &Unpacker);
+		void *pRawMsg = m_NetHandler.SecureUnpackMsg(Msg, Unpacker);
 		if (!pRawMsg)
 		{
-			m_pConsole->PrintArg(IConsole::OUTPUT_LEVEL_DEBUG, "server", 
+			Console()->PrintArg(IConsole::OUTPUT_LEVEL_DEBUG, "server", 
 				"dropped weird message '%s' (%d), failed on '%s'", m_NetHandler.GetMsgName(Msg), Msg, m_NetHandler.FailedMsgOn());
 			
 			return;
@@ -309,13 +306,11 @@ void CTdtwSrv::Protocol(CNetChunk *pPacket)
 
 void CTdtwSrv::RequestInterfaces()
 {
-	m_pEngine = Kernel()->RequestInterface<IEngine>();
 	m_pStorage = Kernel()->RequestInterface<IStorage>();
-	m_pConfig = Kernel()->RequestInterface<IConfig>();
 	m_pConsole = Kernel()->RequestInterface<IConsole>();
 	m_pAutoUpdate = Kernel()->RequestInterface<IAutoUpdate>();
 	m_pGame = Kernel()->RequestInterface<IGame>();
-	m_pConsole->StoreCommands(false);
+	Console()->StoreCommands(false);
 	// process pending commands
 
 
@@ -324,9 +319,9 @@ void CTdtwSrv::RequestInterfaces()
 	char time[64];
 	str_timestamp_day(time, sizeof(time));
 	sprintf(ConsoleLog, "\\Logs\\TDTW-Server %s.log", time);
-	m_pConsole->ExecuteLogger(ConsoleLog, IOFLAG_LOGGER);
+	Console()->ExecuteLogger(ConsoleLog, IOFLAG_LOGGER);
 
-	m_pConsole->PrintArg(IConsole::OUTPUT_LEVEL_STANDARD, "TDTW srv", "started");
+	Console()->PrintArg(IConsole::OUTPUT_LEVEL_STANDARD, "TDTW srv", "started");
 }
 
 ITDTWSrv *CreateTDTWServer()
