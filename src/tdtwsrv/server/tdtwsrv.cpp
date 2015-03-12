@@ -14,6 +14,7 @@ CTdtwSrv::CTdtwSrv()
 {
 	m_pConsole = NULL;
 	m_pStorage = NULL;
+    m_pProtocol = new CProtocol(this);
 }
 
 CTdtwSrv::~CTdtwSrv()
@@ -157,151 +158,34 @@ void CTdtwSrv::Protocol(CNetChunk *pPacket)
 	Msg >>= 1;
 
 	if (Unpacker->Error())
+    {
+        delete Unpacker;
 		return;
-	if (Sys)
-	{
-		// system message
+    }
+    int Error = Protocol()->Protocol(Unpacker, Msg, Sys, ClientID);
 
-		if (Msg == NETMSG_PING)
-		{
-			CMsgPacker msgPacker(NETMSG_PING_REPLY);
-			SendMsgEx(&msgPacker, MSGFLAG_VITAL, ClientID, true);
-			Console()->PrintArg(IConsole::OUTPUT_LEVEL_STANDARD, "server", "[%d] NetPing", ClientID);
-		}
-		else if (Msg == NETMSG_TDTW_VERSION)
-		{
-			char *Version = (char *)Unpacker->GetString(CUnpacker::SANITIZE_CC);
-			Console()->PrintArg(IConsole::OUTPUT_LEVEL_DEBUG, "server", "[%d] Client version: %s", ClientID, Version);
-			if (AutoUpdate()->CheckVersion(Version))
-			{
-				Game()->m_apClients[ClientID]->GetHash();
-			}
-		}
-		else if (Msg == NETMSG_TDTW_UPDATE_INFO)
-		{
-			char *File = (char *)Unpacker->GetString(CUnpacker::SANITIZE_CC);
-			Game()->m_apClients[ClientID]->OpenFile(File);
-		}
-		else if (Msg == NETMSG_TDTW_UPDATE_REQUEST)
-		{
-			//int ChunkSize = 1024 - 128;
-			int Offset = 0;
-			for (int i = 0; i < 10; i++)
-			{
-				
-				int ChunkSize;
-				if (Game()->m_apClients[ClientID]->m_FileSize - (Game()->m_apClients[ClientID]->m_FileCurChunk*(1024 - 128)) >(1024 - 128))
-					ChunkSize = 1024 - 128;
-				else
-					ChunkSize = Game()->m_apClients[ClientID]->m_FileSize - (Game()->m_apClients[ClientID]->m_FileCurChunk*(1024 - 128));
+    if(Error == 0) // ERROR SYSTEM
+    {
+        char aHex[] = "0123456789ABCDEF";
+        char aBuf[512];
 
-				if (Game()->m_apClients[ClientID]->m_FileChunks <= Game()->m_apClients[ClientID]->m_FileCurChunk)
-				{
-					Game()->m_apClients[ClientID]->EndUpdate();
-					return;
-				}
+        for (int b = 0; b < pPacket->m_DataSize && b < 32; b++)
+        {
+            aBuf[b * 3] = aHex[((const unsigned char *)pPacket->m_pData)[b] >> 4];
+            aBuf[b * 3 + 1] = aHex[((const unsigned char *)pPacket->m_pData)[b] & 0xf];
+            aBuf[b * 3 + 2] = ' ';
+            aBuf[b * 3 + 3] = 0;
+        }
 
-				Offset = Game()->m_apClients[ClientID]->m_FileCurChunk * (1024 - 128);
+        char aBufMsg[256];
+        str_format(aBufMsg, sizeof(aBufMsg), "strange message ClientID=%d msg=%d data_size=%d", ClientID, Msg, pPacket->m_DataSize);
+        Console()->Print(IConsole::OUTPUT_LEVEL_DEBUG, "server", aBufMsg);
+        Console()->Print(IConsole::OUTPUT_LEVEL_DEBUG, "server", aBuf);
+    }
+    else if(Error == -1) // ERROR NE SYSTEM
+    {}
 
-				CMsgPacker msgPacker(NETMSG_TDTW_UPDATE_DATA);
-
-				msgPacker.AddInt(Game()->m_apClients[ClientID]->m_FileCurChunk);
-				msgPacker.AddInt(ChunkSize);
-				msgPacker.AddRaw(&Game()->m_apClients[ClientID]->m_FileData[Offset], ChunkSize);
-				SendMsgEx(&msgPacker, MSGFLAG_VITAL | MSGFLAG_FLUSH, ClientID, true);
-				Game()->m_apClients[ClientID]->m_FileCurChunk++;
-
-				char aBuf[256];
-				str_format(aBuf, sizeof(aBuf), "sending chunk %d with size %d", Game()->m_apClients[ClientID]->m_FileCurChunk, ChunkSize);
-				Console()->Print(IConsole::OUTPUT_LEVEL_DEBUG, "server", aBuf);
-				
-			}
-		}
-		else if (Msg == NETMSG_TDTW_HASH_REQUEST)
-		{
-			const char *pFile = Unpacker->GetString(CUnpacker::SANITIZE_CC | CUnpacker::SKIP_START_WHITESPACES);
-			if (str_comp(".", pFile))
-			{
-				for (int i = 0; i < AutoUpdate()->m_aDir.size(); i++)
-				{
-					if (str_comp(AutoUpdate()->m_aDir[i].Name, pFile) == 0)
-					{
-						for (int j = 0; j < AutoUpdate()->m_aDir[i].m_aFiles.size(); j++)
-						{
-							CNetMsg_AutoUpdate_Hash updateHash;
-							updateHash.m_Name = AutoUpdate()->m_aDir[i].m_aFiles[j].Name;
-
-							if (AutoUpdate()->m_aDir[i].m_aFiles[j].IsFolder)
-								updateHash.m_Hash = AutoUpdate()->m_aDir[AutoUpdate()->m_aDir[i].m_aFiles[j].FolderID].Hash;
-							else
-								updateHash.m_Hash = AutoUpdate()->m_aDir[i].m_aFiles[j].Hash;
-
-							updateHash.m_IsFolder = AutoUpdate()->m_aDir[i].m_aFiles[j].IsFolder;
-
-							if (!updateHash.m_IsFolder)
-								updateHash.m_Size = AutoUpdate()->m_aDir[i].m_aFiles[j].Size;
-							else
-								updateHash.m_Size = 0;
-
-							SendPackMsg(&updateHash, MSGFLAG_FLUSH, ClientID, false);
-						}
-					}
-				}
-			}
-			else
-			{
-				for (int i = 0; i < AutoUpdate()->m_aDir[0].m_aFiles.size(); i++)
-				{
-					CNetMsg_AutoUpdate_Hash updateHash;
-					updateHash.m_Name = AutoUpdate()->m_aDir[0].m_aFiles[i].Name;
-
-					if (AutoUpdate()->m_aDir[0].m_aFiles[i].IsFolder)
-						updateHash.m_Hash = AutoUpdate()->m_aDir[AutoUpdate()->m_aDir[0].m_aFiles[i].FolderID].Hash;
-					else
-						updateHash.m_Hash = AutoUpdate()->m_aDir[0].m_aFiles[i].Hash;
-
-					updateHash.m_IsFolder = AutoUpdate()->m_aDir[0].m_aFiles[i].IsFolder;
-					updateHash.m_Size = AutoUpdate()->m_aDir[0].m_aFiles[i].Size;
-
-					SendPackMsg(&updateHash, MSGFLAG_FLUSH, ClientID, false);
-				}
-			}
-		}
-		else
-		{
-			
-			char aHex[] = "0123456789ABCDEF";
-			char aBuf[512];
-
-			for (int b = 0; b < pPacket->m_DataSize && b < 32; b++)
-			{
-				aBuf[b * 3] = aHex[((const unsigned char *)pPacket->m_pData)[b] >> 4];
-				aBuf[b * 3 + 1] = aHex[((const unsigned char *)pPacket->m_pData)[b] & 0xf];
-				aBuf[b * 3 + 2] = ' ';
-				aBuf[b * 3 + 3] = 0;
-			}
-
-			char aBufMsg[256];
-			str_format(aBufMsg, sizeof(aBufMsg), "strange message ClientID=%d msg=%d data_size=%d", ClientID, Msg, pPacket->m_DataSize);
-			Console()->Print(IConsole::OUTPUT_LEVEL_DEBUG, "server", aBufMsg);
-			Console()->Print(IConsole::OUTPUT_LEVEL_DEBUG, "server", aBuf);
-			
-		}
-	}
-	else
-	{
-		if (Game()->ClientState(ClientID) == CClientTdtw::STATE_EMPTY)
-			return;
-
-		void *pRawMsg = m_NetHandler.SecureUnpackMsg(Msg, Unpacker);
-		if (!pRawMsg)
-		{
-			Console()->PrintArg(IConsole::OUTPUT_LEVEL_DEBUG, "server", 
-				"dropped weird message '%s' (%d), failed on '%s'", m_NetHandler.GetMsgName(Msg), Msg, m_NetHandler.FailedMsgOn());
-			
-			return;
-		}
-	}
+    delete Unpacker;
 }
 
 void CTdtwSrv::RequestInterfaces()
@@ -379,6 +263,7 @@ int main(int argc, const char **argv)
 	pConsole->ExecuteLogger("server.log", IOFLAG_LOGGER);
 	
 	pServer->Run();
+
 	pConsole->SaveLogger();
 	delete pKernel;
 	delete pEngine;

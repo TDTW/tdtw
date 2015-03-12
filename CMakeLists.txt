@@ -378,6 +378,8 @@ set(SOURCE_FILES
     src/tdtwsrv/game.h
     src/tdtwsrv/server/tdtwsrv.h
     src/tdtwsrv/server/tdtwsrv.cpp
+    src/tdtwsrv/server/protocol.h
+    src/tdtwsrv/server/protocol.cpp
     src/tdtwsrv/game/game.h
     src/tdtwsrv/game/game.cpp
     src/tools/crapnet.cpp

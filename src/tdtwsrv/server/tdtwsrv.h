@@ -19,18 +19,13 @@
 
 #include <tdtwsrv/game.h>
 #include <tdtwsrv/tdtwsrv.h>
+#include "protocol.h"
 
 class CTdtwSrv : public ITDTWSrv
 {
 public:
 	CTdtwSrv();
 	~CTdtwSrv();
-
-public:
-	class IStorage *Storage() { return m_pStorage; }
-	class IConsole *Console() { return m_pConsole; }
-	class IGame *Game() { return m_pGame; }
-	class IAutoUpdate *AutoUpdate() { return m_pAutoUpdate; }
 
 	virtual void RequestInterfaces();
 
@@ -45,15 +40,9 @@ public:
 	static int NewClientCallback(int ClientID, void *pUser);
 	static int DelClientCallback(int ClientID, const char *pReason, void *pUser);
 
-
-	virtual const char *LatestVersion() { return GAME_VERSION; }
+    CProtocol *Protocol() { return m_pProtocol; }
 private:
-    class IStorage *m_pStorage;
-    class IConsole *m_pConsole;
-    class IAutoUpdate *m_pAutoUpdate;
-    class IGame *m_pGame;
-
+    CProtocol *m_pProtocol;
 	CNetTdtwServer m_NetServer;
-	CNetObjHandlerTdtw m_NetHandler;	
 };
 #endif

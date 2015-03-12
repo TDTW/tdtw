@@ -11,7 +11,6 @@ public:
 	virtual int SendMsg(CMsgPacker *pMsg, int Flags, int ClientID) = 0;
 	virtual int SendMsgEx(CMsgPacker *pMsg, int Flags, int ClientID, bool System) = 0;
 	virtual void Run() = 0;
-
 	virtual void RequestInterfaces() = 0;
 
 	template<class T>
@@ -22,7 +21,17 @@ public:
 			return -1;
 		return SendMsgEx(&Packer, Flags, ClientID, System);
 	}
-	virtual const char *LatestVersion() = 0;
+
+    class IStorage *Storage() { return m_pStorage; }
+    class IConsole *Console() { return m_pConsole; }
+    class IAutoUpdate *AutoUpdate() { return m_pAutoUpdate; }
+    class IGame *Game() { return m_pGame; }
+
+protected:
+    class IStorage *m_pStorage;
+    class IConsole *m_pConsole;
+    class IAutoUpdate *m_pAutoUpdate;
+    class IGame *m_pGame;
 };
 
 extern ITDTWSrv *CreateTDTWServer();

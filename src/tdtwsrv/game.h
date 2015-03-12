@@ -4,6 +4,7 @@
 #include <engine\message.h>
 #include "game\client.h"
 #include "tdtwsrv.h"
+
 class IGame : public IInterface
 {
 	MACRO_INTERFACE("game", 0)
