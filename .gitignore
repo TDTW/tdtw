@@ -21,7 +21,6 @@ teeworlds_srv*
 tileset_border*
 versionsrv*
 /tee
-*.db
 *.bat
 *.rar
 /Debug/*.log
