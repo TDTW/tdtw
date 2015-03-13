@@ -162,9 +162,10 @@ void CTdtwSrv::Protocol(CNetChunk *pPacket)
         delete Unpacker;
 		return;
     }
-    int Error = Protocol()->Protocol(Unpacker, Msg, Sys, ClientID);
 
-    if(Error == 0) // ERROR SYSTEM
+	bool Error = Protocol()->Protocol(Unpacker, Msg, Sys, ClientID);
+
+	if (Error) // ERROR SYSTEM
     {
         char aHex[] = "0123456789ABCDEF";
         char aBuf[512];
@@ -182,8 +183,6 @@ void CTdtwSrv::Protocol(CNetChunk *pPacket)
         Console()->Print(IConsole::OUTPUT_LEVEL_DEBUG, "server", aBufMsg);
         Console()->Print(IConsole::OUTPUT_LEVEL_DEBUG, "server", aBuf);
     }
-    else if(Error == -1) // ERROR NE SYSTEM
-    {}
 
     delete Unpacker;
 }

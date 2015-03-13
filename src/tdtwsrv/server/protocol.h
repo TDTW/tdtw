@@ -18,7 +18,7 @@ public:
     CProtocol(ITDTWSrv *pServer);
     ~CProtocol();
 
-    int Protocol(CUnpacker *Unpacker, int Msg, int Sys, int ClientID);
+    bool Protocol(CUnpacker *Unpacker, int Msg, int Sys, int ClientID);
     bool ParseSystemMsg(CUnpacker *Unpacker, int Msg, int ClientID);
     bool ParseMsg(CUnpacker *Unpacker, int Msg, int ClientID);
 

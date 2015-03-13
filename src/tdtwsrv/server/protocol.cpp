@@ -15,24 +15,23 @@ CProtocol::~CProtocol()
     delete m_pServer;
 }
 
-int CProtocol::Protocol(CUnpacker *Unpacker, int Msg, int Sys, int ClientID)
+bool CProtocol::Protocol(CUnpacker *Unpacker, int Msg, int Sys, int ClientID)
 {
     if (Sys)
     {
         if(!ParseSystemMsg(Unpacker, Msg, ClientID))
-            return 0;
+            return false;
     }
     else
     {
         if(!ParseMsg(Unpacker, Msg, ClientID))
-            return -1;
+            return false;
     }
-    return 1;
+    return true;
 }
 
 bool CProtocol::ParseSystemMsg(CUnpacker *Unpacker, int Msg, int ClientID)
 {
-
     if (Msg == NETMSG_PING)
     {
         CMsgPacker msgPacker(NETMSG_PING_REPLY);
@@ -86,7 +85,6 @@ bool CProtocol::ParseSystemMsg(CUnpacker *Unpacker, int Msg, int ClientID)
 
             str_format(aBuf, sizeof(aBuf), "sending chunk %d with size %d", Server()->Game()->m_apClients[ClientID]->m_FileCurChunk, ChunkSize);
             Server()-> Console()->Print(IConsole::OUTPUT_LEVEL_DEBUG, "server", aBuf);
-
         }
     }
     else if (Msg == NETMSG_TDTW_HASH_REQUEST)
@@ -139,6 +137,11 @@ bool CProtocol::ParseSystemMsg(CUnpacker *Unpacker, int Msg, int ClientID)
             }
         }
     }
+    else
+    {
+        return false;
+    }
+
     return true;
 }
 
@@ -156,8 +159,6 @@ bool CProtocol::ParseMsg(CUnpacker *Unpacker, int Msg, int ClientID)
 
         return false;
     }
-
-
 
     return true;
 }
