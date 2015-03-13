@@ -1,5 +1,7 @@
 #include "SQL.h"
 #include <base/system.h>
+#include <stdlib.h>
+#include <stdio.h>
 
 CSQL::CSQL(const char *filename)
 {
@@ -17,16 +19,88 @@ bool CSQL::Open()
 	return true;
 }
 
+static int callback(void *pData, int argc, char **ppArgv, char **ppColName)
+{
+	CSQL *pThis = (CSQL *)pData;
+	for(int i = 0; i < argc; i++)
+	{
+		CSQL::SData Data = CSQL::SData();
+		str_copy(Data.ColName, ppColName[i], sizeof(Data.ColName));
+		str_copy(Data.Value, ppArgv[i], sizeof(Data.Value));
+		pThis->m_Data.add(Data);
+	}
+}
+
 bool CSQL::Query(const char *query)
 {
 	char *err = 0;
-	if (sqlite3_exec(m_DB, query, 0, 0, &err))
+	if (sqlite3_exec(m_DB, query, callback, this, &err))
 	{
 		dbg_msg("SQL", "Query error: %s", err);
 		sqlite3_free(err);
 		return false;
 	}
 	return true;
+}
+
+int CSQL::GetInt(const char *ColName)
+{
+	int value = -1;
+	bool find=false;
+	for(int i = 0; i < m_Data.size(); i++)
+	{
+		if(str_comp(m_Data[i].ColName, ColName) == 0)
+		{
+			find = true;
+			value = atoi(m_Data[i].Value);
+			m_Data.remove_index(i);
+			break;
+		}
+	}
+	if(find)
+		return value;
+	else
+		return NULL;
+}
+
+bool CSQL::GetBool(const char *ColName)
+{
+	bool value = false;
+	bool find=false;
+	for(int i = 0; i < m_Data.size(); i++)
+	{
+		if(str_comp(m_Data[i].ColName, ColName) == 0)
+		{
+			find = true;
+			value = (atoi(m_Data[i].Value) == 1);
+			m_Data.remove_index(i);
+			break;
+		}
+	}
+	if(find)
+		return value;
+	else
+		return NULL;
+}
+
+const char *CSQL::GetString(const char *ColName)
+{
+	const char *value;
+	bool find=false;
+	for(int i = 0; i < m_Data.size(); i++)
+	{
+		if(str_comp(m_Data[i].ColName, ColName) == 0)
+		{
+			find = true;
+			value = m_Data[i].Value;
+			m_Data.remove_index(i);
+			break;
+		}
+	}
+	if(find)
+		return value;
+	else
+		return NULL;
 }
 
 void CSQL::Close()
