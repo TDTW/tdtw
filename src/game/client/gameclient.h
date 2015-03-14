@@ -10,6 +10,8 @@
 #include <game/gamecore.h>
 #include "render.h"
 #include "tdtwserver/tdtwserver.h"
+#include "nui.h"
+
 class CGameClient : public IGameClient
 {
 	class CStack
@@ -60,6 +62,8 @@ class CGameClient : public IGameClient
 
 	int64 m_LastSendInfo;
 
+
+
 	static void ConTeam(IConsole::IResult *pResult, void *pUserData);
 	static void ConKill(IConsole::IResult *pResult, void *pUserData);
 	static void ConDynCameraToggle(IConsole::IResult *pResult, void *pUserData);
@@ -67,6 +71,14 @@ class CGameClient : public IGameClient
 	static void ConchainSpecialInfoupdate(IConsole::IResult *pResult, void *pUserData, IConsole::FCommandCallback pfnCallback, void *pCallbackUserData);
 
 public:
+	struct NAHUI
+	{
+		char *Name;
+		CNUI Nui;
+	};
+
+	array <NAHUI> NAHUI2;
+
 	IKernel *Kernel() { return IInterface::Kernel(); }
 	IEngine *Engine() const { return m_pEngine; }
 	class IGraphics *Graphics() const { return m_pGraphics; }

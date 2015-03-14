@@ -225,6 +225,12 @@ void CControls::OnRender()
 		m_TargetPos = m_pClient->m_Snap.m_SpecInfo.m_Position + m_MousePos;
 	else
 		m_TargetPos = m_MousePos;
+
+	if(m_InputData.m_Fire)
+	{
+		new m_pClient->NAHUI
+		m_pClient->NAHUI2.add()
+	}
 }
 
 bool CControls::OnMouseMove(float x, float y)

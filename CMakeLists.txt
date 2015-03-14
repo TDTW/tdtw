@@ -319,6 +319,8 @@ set(SOURCE_FILES
     src/game/client/render_map.cpp
     src/game/client/ui.cpp
     src/game/client/ui.h
+    src/game/client/nui.cpp
+    src/game/client/nui.h
     src/game/editor/auto_map.cpp
     src/game/editor/auto_map.h
     src/game/editor/editor.cpp

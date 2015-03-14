@@ -508,6 +508,8 @@ void CGameClient::OnRender()
 	for(int i = 0; i < m_All.m_Num; i++)
 		m_All.m_paComponents[i]->OnRender();
 
+
+
 	// clear new tick flags
 	m_NewTick = false;
 	m_NewPredictedTick = false;
