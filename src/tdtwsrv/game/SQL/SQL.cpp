@@ -7,6 +7,7 @@ CSQL::CSQL(const char *filename)
 {
 	m_DatabaseName = filename;
 	m_DB = 0;
+	m_Data.clear();
 }
 
 bool CSQL::Open()
@@ -105,5 +106,5 @@ const char *CSQL::GetString(const char *ColName)
 
 void CSQL::Close()
 {
-	sqlite3_close(m_DB);
+	m_Data.clear();
 }
