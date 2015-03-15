@@ -8,6 +8,7 @@
 #include <engine/console.h>
 #include <game/layers.h>
 #include <game/gamecore.h>
+#include <string.h>
 #include "render.h"
 #include "tdtwserver/tdtwserver.h"
 #include "nui.h"
@@ -71,13 +72,30 @@ class CGameClient : public IGameClient
 	static void ConchainSpecialInfoupdate(IConsole::IResult *pResult, void *pUserData, IConsole::FCommandCallback pfnCallback, void *pCallbackUserData);
 
 public:
-	struct NAHUI
+	class CControllerNui
 	{
-		char *Name;
-		CNUI Nui;
-	};
+	public:
+		struct SNUIElements
+		{
+			const char *Name;
+			CNUI *Element;
+		};
+		array <SNUIElements> aNui;
 
-	array <NAHUI> NAHUI2;
+		CNUI *GetElement(const char *Name)
+		{
+			for (int i = 0; i < aNui.size(); ++i)
+			{
+				if(!strcmp(aNui[i].Name, Name))
+					return aNui[i].Element;
+			}
+
+			SNUIElements NewElement = SNUIElements{Name, new CNUI};
+			aNui.add(NewElement);
+			return NewElement.Element;
+		}
+	} m_ControllerNui;
+
 
 	IKernel *Kernel() { return IInterface::Kernel(); }
 	IEngine *Engine() const { return m_pEngine; }

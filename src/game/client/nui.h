@@ -31,7 +31,7 @@ public:
 		JUMPIN,
 		JUMPOUT
 	};
-private:
+
 	class cPos
 	{
 		friend class CNUI;

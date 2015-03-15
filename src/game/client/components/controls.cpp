@@ -15,6 +15,7 @@
 #include <game/client/components/scoreboard.h>
 
 #include "controls.h"
+#include <game/client/nui.h>
 
 
 CControls::CControls()
@@ -228,8 +229,7 @@ void CControls::OnRender()
 
 	if(m_InputData.m_Fire)
 	{
-		new m_pClient->NAHUI
-		m_pClient->NAHUI2.add()
+		m_pClient->m_ControllerNui.GetElement("Fire")->Pos.cPos(150, 150, 200, 400);
 	}
 }
 
