@@ -33,10 +33,7 @@ void CTDTWServer::Protocol(CNetChunk *pChunk)
 	Msg >>= 1;
 
 	if (Unpacker.Error())
-	{
-		dbg_msg("123", "321");
 		return;
-	}
 
 	if (Sys)
 	{
