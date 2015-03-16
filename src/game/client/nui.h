@@ -44,6 +44,7 @@ public:
 
 	class CPos *GetPos() { return m_Pos; }
 	void SetRenderLevel(RENDER_LEVEL Level) {m_Renderlevel = Level;}
+	RENDER_LEVEL GetRenderLevel() {return m_Renderlevel;}
 private:
 	class CPos *m_Pos;
 	class CGameClient *m_pClient;
@@ -62,7 +63,7 @@ class CPos
 
 public:
 	CPos(CNUI *pNUI);
-	void Init(float x, float y, float w, float h, RENDER_LEVEL level = NORMAL);
+	void Init(float x, float y, float w, float h);
 	void Init(float x, float y, float w, float h, float time, ANIMATION_TYPE animation_type);
 
 	void Recalculate();

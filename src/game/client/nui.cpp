@@ -5,6 +5,7 @@ CNUI::CNUI(class CGameClient *pClient)
 {
 	m_pClient = pClient;
 	m_Pos = new CPos(this);
+	m_Renderlevel = NORMAL;
 }
 
 
@@ -28,12 +29,13 @@ CPos::CPos(CNUI *pNUI)
 	m_pNui = pNUI;
 }
 
-void CPos::Init(float x, float y, float w, float h, RENDER_LEVEL level)
+void CPos::Init(float x, float y, float w, float h)
 {
 	this->m_Coord.x = x;
 	this->m_Coord.y = y;
 	this->m_Coord.w = w;
 	this->m_Coord.h = h;
+
 };
 
 void CPos::Init(float x, float y, float w, float h, float time, ANIMATION_TYPE animation_type)
