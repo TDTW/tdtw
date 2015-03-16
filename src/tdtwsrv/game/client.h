@@ -13,7 +13,6 @@ public:
 	~CClientTdtw();
 	void GetHash();
 	bool OpenFile(const char *FileName);
-	void StartUpdate();
 	void EndUpdate();
 
 	enum
@@ -30,7 +29,7 @@ public:
 	int m_FileChunks;
 	int m_FileCurChunk;
 	unsigned char *m_FileData;
-	bool m_Updating;
+	char *m_FileName;
 
 	class CGame *Game() { return m_pGame; }	
 

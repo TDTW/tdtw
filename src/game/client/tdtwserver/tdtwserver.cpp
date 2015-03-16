@@ -24,7 +24,7 @@ void CTDTWServer::Recv(CNetChunk *pChunk)
 void CTDTWServer::Protocol(CNetChunk *pChunk)
 {
 	int ClientID = pChunk->m_ClientID;
-	CUnpacker Unpacker;
+	CUnpacker Unpacker = CUnpacker();
 	Unpacker.Reset(pChunk->m_pData, pChunk->m_DataSize);
 
 	// unpack msgid and system flag
@@ -33,13 +33,16 @@ void CTDTWServer::Protocol(CNetChunk *pChunk)
 	Msg >>= 1;
 
 	if (Unpacker.Error())
+	{
+		dbg_msg("123", "321");
 		return;
+	}
 
 	if (Sys)
 	{
 		if (Msg == NETMSG_TDTW_UPDATE_INFO)
 		{
-			const char *pMap = Unpacker.GetString(CUnpacker::SANITIZE_CC | CUnpacker::SKIP_START_WHITESPACES);
+			const char *FileName = Unpacker.GetString(CUnpacker::SANITIZE_CC | CUnpacker::SKIP_START_WHITESPACES);
 			int MapCrc = Unpacker.GetInt();
 			int MapSize = Unpacker.GetInt();
 			int FileChunks = Unpacker.GetInt();
@@ -51,21 +54,18 @@ void CTDTWServer::Protocol(CNetChunk *pChunk)
 			if (MapSize < 0)
 				pError = "invalid map size";
 			if (pError)
-				m_pConsole->PrintArg(IConsole::OUTPUT_LEVEL_DEBUG, "client/network/tdtw/autoupdater", "Error:%s", pError);
+				m_pConsole->PrintArg(IConsole::OUTPUT_LEVEL_DEBUG, "updater", "Error:%s", pError);
 			else
 			{
-				//str_format(m_aMapdownloadFilename, sizeof(m_aMapdownloadFilename), "downloadedmaps/%s_%08x.map", pMap, MapCrc);
-
 				char aBuf[256];
-				str_format(aBuf, sizeof(aBuf), "starting to download map to '%s'", pMap);
-				m_pConsole->Print(IConsole::OUTPUT_LEVEL_ADDINFO, "client/network", aBuf);
+				str_format(aBuf, sizeof(aBuf), "starting to download file to '%s'", FileName);
+				m_pConsole->Print(IConsole::OUTPUT_LEVEL_ADDINFO, "updater", aBuf);
 
 				m_FileChunk = 0;
 				m_FileTotalChunks = FileChunks;
-				//str_copy(m_aMapdownloadName, pMap, sizeof(m_aMapdownloadName));
 				if (m_FileHandle)
 					io_close(m_FileHandle);
-				m_FileHandle = io_open(pMap, IOFLAG_WRITE);
+				m_FileHandle = io_open(FileName, IOFLAG_WRITE);
 				m_FileCrc = MapCrc;
 				m_FileTotalSize = MapSize;
 				m_FileDownloadAmount = 0;
@@ -95,16 +95,13 @@ void CTDTWServer::Protocol(CNetChunk *pChunk)
 			m_FileChunk++;
 			m_FileDownloadAmount += Size;
 
-			dbg_msg("UPD", "%d/%d", m_FileDownloadAmount, m_FileTotalSize);
-			dbg_msg("Updater", "%d", m_FileChunk);
-
 			io_write(m_FileHandle, pData, Size);
 			
 
 			if (m_FileDownloadAmount == m_FileTotalSize)
 			{
 				const char *pError;
-				m_pConsole->Print(IConsole::OUTPUT_LEVEL_ADDINFO, "client/network", "download complete, loading map");
+				m_pConsole->Print(IConsole::OUTPUT_LEVEL_ADDINFO, "updater", "File successfully donwloaded");
 
 				if (m_FileHandle)
 					io_close(m_FileHandle);
@@ -150,6 +147,7 @@ void CTDTWServer::Protocol(CNetChunk *pChunk)
 		if (Msg == NETMSGTYPE_TDTW_AUTOUPDATE_HASH)
 		{
 			CNetMsg_AutoUpdate_Hash *Msg = (CNetMsg_AutoUpdate_Hash *)pRawMsg;
+
 			if (Msg->m_IsFolder)
 			{
 				bool Find = false;
@@ -160,7 +158,6 @@ void CTDTWServer::Protocol(CNetChunk *pChunk)
 						Find = true;
 						if (AutoUpdate()->m_aDir[i].Hash != Msg->m_Hash)
 						{
-							Console()->PrintArg(IConsole::OUTPUT_LEVEL_DEBUG, "client", "Folder: %s", Msg->m_Name);
 							CMsgPacker Ms(NETMSG_TDTW_HASH_REQUEST);
 							Ms.AddString(Msg->m_Name, -1);
 							Client()->SendMsgEx(&Ms, MSGFLAG_VITAL | MSGFLAG_FLUSH, true, true);
@@ -170,7 +167,6 @@ void CTDTWServer::Protocol(CNetChunk *pChunk)
 				}
 				if (!Find)
 				{
-					Console()->PrintArg(IConsole::OUTPUT_LEVEL_DEBUG, "client", "Folder: %s", Msg->m_Name);
 					CMsgPacker Ms(NETMSG_TDTW_HASH_REQUEST);
 					Ms.AddString(Msg->m_Name, -1);
 					Client()->SendMsgEx(&Ms, MSGFLAG_VITAL | MSGFLAG_FLUSH, true, true);
@@ -189,7 +185,6 @@ void CTDTWServer::Protocol(CNetChunk *pChunk)
 							Find = true;
 							if (Msg->m_Hash != AutoUpdate()->m_aDir[i].m_aFiles[j].Hash)
 							{
-								Console()->PrintArg(IConsole::OUTPUT_LEVEL_DEBUG, "client", "File: %s", Msg->m_Name);
 								UpdateFiles->AddFile(Msg->m_Name);
 								UpdateFiles->StartUpdate();
 							}
@@ -199,7 +194,6 @@ void CTDTWServer::Protocol(CNetChunk *pChunk)
 				}
 				if (!Find)
 				{
-					Console()->PrintArg(IConsole::OUTPUT_LEVEL_DEBUG, "client", "File: %s", Msg->m_Name);
 					UpdateFiles->AddFile(Msg->m_Name);
 					UpdateFiles->StartUpdate();
 				}

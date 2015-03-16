@@ -1,7 +1,5 @@
-#include "SQL.h"
-#include <base/system.h>
 #include <stdlib.h>
-#include <stdio.h>
+#include "SQL.h"
 
 CSQL::CSQL(const char *filename)
 {
@@ -30,6 +28,7 @@ static int callback(void *pData, int argc, char **ppArgv, char **ppColName)
 		str_copy(Data.Value, ppArgv[i], sizeof(Data.Value));
 		pThis->m_Data.add(Data);
 	}
+	return 0;
 }
 
 bool CSQL::Query(const char *query)
@@ -61,7 +60,7 @@ int CSQL::GetInt(const char *ColName)
 	if(find)
 		return value;
 	else
-		return NULL;
+		return -1;
 }
 
 bool CSQL::GetBool(const char *ColName)

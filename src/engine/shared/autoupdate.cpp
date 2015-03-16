@@ -64,10 +64,9 @@ void CAutoUpdate::CheckHash()
 			Temp2->ParentFolderID = folder_id;
 			Temp2->IsFolder = true;
 			Temp2->FolderID = pThis->m_aDir.size()-1;
-			
 			pThis->m_aDir[folder_id].m_aFiles.add(*Temp2);
-			
 			fs_listdir2(Temp->Name, ParseFilesCallback, pThis, Temp->FolderID);
+			pThis->m_aDir[Temp->ParentFolderID].Hash += pThis->m_aDir[folder_id].Hash;
 		}
 		return 0;
 	};
@@ -87,7 +86,6 @@ void CAutoUpdate::CheckHash()
 bool CAutoUpdate::CheckVersion(char *Version)
 {
     return str_comp(GAME_VERSION, Version) == 0;
-
 }
 
 void CAutoUpdate::RequestInterfaces()

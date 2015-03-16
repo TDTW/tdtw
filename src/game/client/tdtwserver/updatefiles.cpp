@@ -12,7 +12,7 @@ CUpdateFiles::CUpdateFiles(CTDTWServer *Server)
 void CUpdateFiles::AddFile(const char *pFile)
 {
 	CInfoFiles File;
-    if(str_comp(pFile, "teeworlds.exe"))
+    if(str_comp(pFile, "teeworlds.exe") == 0)
     {
         char aBuf[512];
         srand (time(NULL));
@@ -25,6 +25,7 @@ void CUpdateFiles::AddFile(const char *pFile)
     }
     else
         str_copy(File.Name, pFile, sizeof(File.Name));
+	dbg_msg("updatefiles", "%s", pFile);
 	m_UpdateFiles.add(File);
 }
 

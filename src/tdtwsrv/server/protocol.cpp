@@ -5,7 +5,6 @@
 #include <tdtwsrv/game/client.h>
 #include "protocol.h"
 
-
 CProtocol::CProtocol(ITDTWSrv *pServer)
 {
     m_pServer = pServer;
@@ -20,14 +19,14 @@ bool CProtocol::Protocol(CUnpacker *Unpacker, int Msg, int Sys, int ClientID)
     if (Sys)
     {
         if(!ParseSystemMsg(Unpacker, Msg, ClientID))
-            return false;
+            return true;
     }
     else
     {
         if(!ParseMsg(Unpacker, Msg, ClientID))
-            return false;
+            return true;
     }
-    return true;
+    return false;
 }
 
 bool CProtocol::ParseSystemMsg(CUnpacker *Unpacker, int Msg, int ClientID)
@@ -42,10 +41,8 @@ bool CProtocol::ParseSystemMsg(CUnpacker *Unpacker, int Msg, int ClientID)
     {
         char *Version = (char *)Unpacker->GetString(CUnpacker::SANITIZE_CC);
         Server()->Console()->PrintArg(IConsole::OUTPUT_LEVEL_DEBUG, "server", "[%d] Client version: %s", ClientID, Version);
-        if (Server()->AutoUpdate()->CheckVersion(Version))
-        {
+        //if (Server()->AutoUpdate()->CheckVersion(Version))
             Server()->Game()->m_apClients[ClientID]->GetHash();
-        }
     }
     else if (Msg == NETMSG_TDTW_UPDATE_INFO)
     {
@@ -54,12 +51,10 @@ bool CProtocol::ParseSystemMsg(CUnpacker *Unpacker, int Msg, int ClientID)
     }
     else if (Msg == NETMSG_TDTW_UPDATE_REQUEST)
     {
-		Server()->Console()->Print(IConsole::OUTPUT_LEVEL_DEBUG, "server", "update request");
         //int ChunkSize = 1024 - 128;
         int Offset = 0;
         for (int i = 0; i < 10; i++)
         {
-
             int ChunkSize;
             if (Server()->Game()->m_apClients[ClientID]->m_FileSize - (Server()->Game()->m_apClients[ClientID]->m_FileCurChunk*(1024 - 128)) >(1024 - 128))
                 ChunkSize = 1024 - 128;
@@ -68,6 +63,9 @@ bool CProtocol::ParseSystemMsg(CUnpacker *Unpacker, int Msg, int ClientID)
 
             if (Server()->Game()->m_apClients[ClientID]->m_FileChunks <= Server()->Game()->m_apClients[ClientID]->m_FileCurChunk)
             {
+				char aBuf[256];
+				str_format(aBuf, sizeof(aBuf), "sending file %s to client %d completed ", Server()->Game()->m_apClients[ClientID]->m_FileName ,ClientID);
+				Server()-> Console()->Print(IConsole::OUTPUT_LEVEL_DEBUG, "server", aBuf);
                 Server()->Game()->m_apClients[ClientID]->EndUpdate();
                 return true;
             }
@@ -81,11 +79,6 @@ bool CProtocol::ParseSystemMsg(CUnpacker *Unpacker, int Msg, int ClientID)
             msgPacker.AddRaw(&Server()->Game()->m_apClients[ClientID]->m_FileData[Offset], ChunkSize);
             Server()->SendMsgEx(&msgPacker, MSGFLAG_VITAL | MSGFLAG_FLUSH, ClientID, true);
             Server()->Game()->m_apClients[ClientID]->m_FileCurChunk++;
-
-            char aBuf[256];
-
-            str_format(aBuf, sizeof(aBuf), "sending chunk %d with size %d", Server()->Game()->m_apClients[ClientID]->m_FileCurChunk, ChunkSize);
-            Server()-> Console()->Print(IConsole::OUTPUT_LEVEL_DEBUG, "server", aBuf);
         }
     }
     else if (Msg == NETMSG_TDTW_HASH_REQUEST)
