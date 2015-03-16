@@ -70,8 +70,8 @@ void CTDTWServer::Protocol(CNetChunk *pChunk)
 				m_FileTotalSize = MapSize;
 				m_FileDownloadAmount = 0;
 
-				CMsgPacker Msg(NETMSG_TDTW_UPDATE_REQUEST);
-				Client()->SendMsgEx(&Msg, MSGFLAG_VITAL | MSGFLAG_FLUSH, true, true);
+				CMsgPacker msgPacker(NETMSG_TDTW_UPDATE_REQUEST);
+				Client()->SendMsgEx(&msgPacker, MSGFLAG_VITAL | MSGFLAG_FLUSH, true, true);
 
 				if (g_Config.m_Debug)
 				{
@@ -160,6 +160,7 @@ void CTDTWServer::Protocol(CNetChunk *pChunk)
 						Find = true;
 						if (AutoUpdate()->m_aDir[i].Hash != Msg->m_Hash)
 						{
+							Console()->PrintArg(IConsole::OUTPUT_LEVEL_DEBUG, "client", "Folder: %s", Msg->m_Name);
 							CMsgPacker Ms(NETMSG_TDTW_HASH_REQUEST);
 							Ms.AddString(Msg->m_Name, -1);
 							Client()->SendMsgEx(&Ms, MSGFLAG_VITAL | MSGFLAG_FLUSH, true, true);
@@ -169,6 +170,7 @@ void CTDTWServer::Protocol(CNetChunk *pChunk)
 				}
 				if (!Find)
 				{
+					Console()->PrintArg(IConsole::OUTPUT_LEVEL_DEBUG, "client", "Folder: %s", Msg->m_Name);
 					CMsgPacker Ms(NETMSG_TDTW_HASH_REQUEST);
 					Ms.AddString(Msg->m_Name, -1);
 					Client()->SendMsgEx(&Ms, MSGFLAG_VITAL | MSGFLAG_FLUSH, true, true);
@@ -187,6 +189,7 @@ void CTDTWServer::Protocol(CNetChunk *pChunk)
 							Find = true;
 							if (Msg->m_Hash != AutoUpdate()->m_aDir[i].m_aFiles[j].Hash)
 							{
+								Console()->PrintArg(IConsole::OUTPUT_LEVEL_DEBUG, "client", "File: %s", Msg->m_Name);
 								UpdateFiles->AddFile(Msg->m_Name);
 								UpdateFiles->StartUpdate();
 							}
@@ -196,6 +199,7 @@ void CTDTWServer::Protocol(CNetChunk *pChunk)
 				}
 				if (!Find)
 				{
+					Console()->PrintArg(IConsole::OUTPUT_LEVEL_DEBUG, "client", "File: %s", Msg->m_Name);
 					UpdateFiles->AddFile(Msg->m_Name);
 					UpdateFiles->StartUpdate();
 				}

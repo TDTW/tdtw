@@ -54,6 +54,7 @@ bool CProtocol::ParseSystemMsg(CUnpacker *Unpacker, int Msg, int ClientID)
     }
     else if (Msg == NETMSG_TDTW_UPDATE_REQUEST)
     {
+		Server()->Console()->Print(IConsole::OUTPUT_LEVEL_DEBUG, "server", "update request");
         //int ChunkSize = 1024 - 128;
         int Offset = 0;
         for (int i = 0; i < 10; i++)

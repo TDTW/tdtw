@@ -16,6 +16,8 @@
 
 #include "controls.h"
 #include <game/client/nui.h>
+#include <windef.h>
+#include <begin_code.h>
 
 
 CControls::CControls()
@@ -36,6 +38,7 @@ void CControls::OnReset()
 
 	m_InputDirectionLeft = 0;
 	m_InputDirectionRight = 0;
+
 }
 
 void CControls::OnRelease()
@@ -227,10 +230,6 @@ void CControls::OnRender()
 	else
 		m_TargetPos = m_MousePos;
 
-	if(m_InputData.m_Fire)
-	{
-		m_pClient->m_ControllerNui.GetElement("Fire")->Pos.cPos(150, 150, 200, 400);
-	}
 }
 
 bool CControls::OnMouseMove(float x, float y)

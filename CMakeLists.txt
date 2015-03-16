@@ -418,6 +418,7 @@ file(GLOB PNGLITE src/engine/external/pnglite/*.c)
 
 
 set(EXECUTABLE_OUTPUT_PATH ${CMAKE_SOURCE_DIR}/)
+set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_SOURCE_DIR})
 
 if(OS_WINDOWS)
     set(CMAKE_CXX_FLAGS_DEBUG "${CMAKE_CXX_FLAGS_DEBUG} -static-libgcc -static-libstdc++")

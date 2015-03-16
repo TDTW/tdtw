@@ -12,7 +12,6 @@
 #include "render.h"
 #include "tdtwserver/tdtwserver.h"
 #include "nui.h"
-
 class CGameClient : public IGameClient
 {
 	class CStack
@@ -63,7 +62,7 @@ class CGameClient : public IGameClient
 
 	int64 m_LastSendInfo;
 
-
+	CControllerNui *m_ControllerNui;
 
 	static void ConTeam(IConsole::IResult *pResult, void *pUserData);
 	static void ConKill(IConsole::IResult *pResult, void *pUserData);
@@ -72,31 +71,6 @@ class CGameClient : public IGameClient
 	static void ConchainSpecialInfoupdate(IConsole::IResult *pResult, void *pUserData, IConsole::FCommandCallback pfnCallback, void *pCallbackUserData);
 
 public:
-	class CControllerNui
-	{
-	public:
-		struct SNUIElements
-		{
-			const char *Name;
-			CNUI *Element;
-		};
-		array <SNUIElements> aNui;
-
-		CNUI *GetElement(const char *Name)
-		{
-			for (int i = 0; i < aNui.size(); ++i)
-			{
-				if(!strcmp(aNui[i].Name, Name))
-					return aNui[i].Element;
-			}
-
-			SNUIElements NewElement = SNUIElements{Name, new CNUI};
-			aNui.add(NewElement);
-			return NewElement.Element;
-		}
-	} m_ControllerNui;
-
-
 	IKernel *Kernel() { return IInterface::Kernel(); }
 	IEngine *Engine() const { return m_pEngine; }
 	class IGraphics *Graphics() const { return m_pGraphics; }
@@ -116,6 +90,8 @@ public:
 	class IEditor *Editor() { return m_pEditor; }
 	class IFriends *Friends() { return m_pFriends; }
 	class ITDTWServer *TDTWServer() { return m_pTDTWServer; }
+	CControllerNui *ControllerNui() { return m_ControllerNui; }
+
 
 	int NetobjNumCorrections() { return m_NetObjHandler.NumObjCorrections(); }
 	const char *NetobjCorrectedOn() { return m_NetObjHandler.CorrectedObjOn(); }

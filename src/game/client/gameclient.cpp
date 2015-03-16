@@ -51,7 +51,6 @@
 #include "components/sounds.h"
 #include "components/spectator.h"
 #include "components/voting.h"
-#include <base/tl/base.h>
 
 CGameClient g_GameClient;
 
@@ -231,6 +230,7 @@ void CGameClient::OnInit()
 	m_pTDTWServer = Kernel()->RequestInterface<ITDTWServer>();
 	m_pGraphics = Kernel()->RequestInterface<IGraphics>();
 	m_pTDTWServer->Init();
+	m_ControllerNui = new CControllerNui(this);
 	// Antiping
 	m_Average_Prediction_Offset = -1;
 	m_Prediction_Offset_Summ = 0;
@@ -508,6 +508,8 @@ void CGameClient::OnRender()
 	for(int i = 0; i < m_All.m_Num; i++)
 		m_All.m_paComponents[i]->OnRender();
 
+	for(int i= 0; i < m_ControllerNui->GetSize(); i++)
+		m_ControllerNui->GetElement(i)->Render();
 
 
 	// clear new tick flags
