@@ -8,18 +8,31 @@
 
 enum ANIMATION_TYPE
 {
-	LINEAR,
-	FADEIN,
-	FADEOUT,
-	BALL,
-	SIN,
-	INCENTER,
-	FADEBOTH,
-	FADEBOTH2,
-	STEPS,
-	LAMP,
-	JUMPIN,
-	JUMPOUT
+	EaseIN,				// плавно, вначале медленно, вконце быстро, общая скорость - очень медленно
+	EaseOUT,			// плавно, вначале быстро, вконце медленно, общая скорость - очень медленно
+	EaseINOUT,			// плавно, вначале и конце медленно, общая скорость - очень медленно
+	EaseIN2,			// плавно, вначале медленно, вконце быстро, общая скорость - медленно
+	EaseOUT2,			// плавно, вначале быстро, вконце медленно, общая скорость - медленно
+	EaseINOUT2,			// плавно, вначале и конце медленно, общая скорость - медленно
+	EaseIN3,			// плавно, вначале медленно, вконце быстро, общая скорость - средне
+	EaseOUT3,			// плавно, вначале быстро, вконце медленно, общая скорость - средне
+	EaseINOUT3,			// плавно, вначале и конце медленно, общая скорость - средне
+	EaseIN4,			// плавно, вначале медленно, вконце быстро, общая скорость - быстро
+	EaseOUT4,			// плавно, вначале быстро, вконце медленно, общая скорость - быстро
+	EaseINOUT4,			// плавно, вначале и конце медленно, общая скорость - быстро
+	EaseIN5,			// плавно, вначале медленно, вконце быстро, общая скорость - очень быстро
+	EaseOUT5,			// плавно, вначале быстро, вконце медленно, общая скорость - очень быстро
+	EaseINOUT5,			// плавно, вначале и конце медленно, общая скорость - очень быстро
+	EaseINBack,			// плавно c запозданием, вначале запаздываем
+	EaseOUTBack,		// плавно c запозданием, вконце запаздываем
+	EaseINOUTBack,		// плавно c запозданием, вначале и вконце запаздываем
+	EaseINElastic,		// плавно, вконце эластично
+	EaseOUTElastic,		// плавно, вначале эластично
+	EaseINOUTElastic,	// плавно, в центре эластично
+	EaseINBounce,		// плавно, прыгает медленно
+	EaseOUTBounce,		// плавно, сразу прыгает
+	EaseINOUTBounce,	// плавно, прыгает и вначале и вконце
+	Default,
 };
 
 enum RENDER_LEVEL
@@ -37,45 +50,51 @@ public:
 	CNUI(class CGameClient *pClient);
 
 	void Render();
+	void SetLifeTime(int LifeTime, float EndLifeDur = 1);
+	void SetEndLife(float EndLifeDur = 1);
+	void SetEndLifeAnimation(ANIMATION_TYPE animation_type, vec4 Coord);
 
 	class IClient *Client() const;
 	class IGraphics *Graphics() const;
 	class CRenderTools *RenderTools() const;
 
-	class CPos *GetPos() { return m_Pos; }
+	class CValue *GetPos() { return m_Pos; }
+	class CValue *GetColor() { return m_Color; }
+
 	void SetRenderLevel(RENDER_LEVEL Level) {m_Renderlevel = Level;}
 	RENDER_LEVEL GetRenderLevel() {return m_Renderlevel;}
 private:
-	class CPos *m_Pos;
+	bool m_DieProcess;
+	bool m_EndLife;
+	float m_EndLifeDur;
+	double m_EndLifeTime;
+
+	vec4 m_DieCoord;
+	ANIMATION_TYPE m_DieAnimation;
+
+	class CValue *m_Pos;
+	class CValue *m_Color;
 	class CGameClient *m_pClient;
 	RENDER_LEVEL m_Renderlevel;
 };
 
-class CPos
+class CValue
 {
-	struct sCoord
-	{
-		float x;
-		float y;
-		float w;
-		float h;
-	};
-
 public:
-	CPos(CNUI *pNUI);
-	void Init(float x, float y, float w, float h);
-	void Init(float x, float y, float w, float h, float time, ANIMATION_TYPE animation_type);
+	CValue(CNUI *pNUI);
+	void Init(vec4 value);
+	void Init(vec4 value, float time, ANIMATION_TYPE animation_type);
 
 	void Recalculate();
 
 	double m_AnimTime;
 	double m_AnimEndTime;
 	ANIMATION_TYPE m_Animation;
-	sCoord m_Coord, m_NewCoord, m_OldCoord;
+	vec4 m_Value, m_NewValue, m_OldValue;
 
 private:
 	CNUI *m_pNui;
-	float Animation(ANIMATION_TYPE anim, float min, float max, double time);
+	vec4 Animation(ANIMATION_TYPE anim, vec4 min, vec4 max, double time);
 };
 
 class CControllerNui
@@ -95,7 +114,6 @@ public:
 private:
 	class CGameClient *m_pClient;
 	array <SNUIElements *> m_aNui;
-	void SortArray();
 };
 
 #endif //GAME_CLIENT_NUI_H

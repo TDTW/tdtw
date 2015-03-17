@@ -4,69 +4,150 @@
 CNUI::CNUI(class CGameClient *pClient)
 {
 	m_pClient = pClient;
-	m_Pos = new CPos(this);
+	m_Pos = new CValue(this);
+	m_Color = new CValue(this);
 	m_Renderlevel = NORMAL;
+
+	m_DieProcess = false;
+	m_EndLife = false;
+	m_EndLifeDur = 0.0f;
+	m_EndLifeTime = 0.0f;
+
+	m_DieCoord = vec4(0.0f, 0.0f, 0.0f, 0.0f);
+	m_DieAnimation = Default;
 }
 
+void CNUI::SetLifeTime(int LifeTime, float EndLifeDur)
+{
+	m_EndLife = true;
+	m_EndLifeDur = EndLifeDur;
+	m_EndLifeTime = Client()->GameTick() + LifeTime * Client()->GameTickSpeed();
+}
+
+void CNUI::SetEndLife(float EndLifeDur)
+{
+	m_EndLife = true;
+	m_EndLifeDur = EndLifeDur;
+}
+
+void CNUI::SetEndLifeAnimation(ANIMATION_TYPE animation_type, vec4 Coord)
+{
+	m_DieAnimation = animation_type;
+	m_DieCoord = Coord;
+}
 
 void CNUI::Render()
 {
 	CUIRect Screen = *m_pClient->UI()->Screen();
 	Graphics()->MapScreen(Screen.x, Screen.y, Screen.w, Screen.h);
 
+	if(m_EndLife && m_EndLifeTime < Client()->GameTick() && !m_DieProcess)
+	{
+		m_Color->Init(vec4(m_Color->m_Value.r, m_Color->m_Value.g, m_Color->m_Value.b, 0.0f), m_EndLifeDur, EaseIN);
+
+		if(m_DieAnimation != Default)
+			m_Pos->Init(m_DieCoord, m_EndLifeDur, m_DieAnimation);
+
+		m_DieProcess = true;
+	}
+
 	if(m_Pos->m_AnimTime < Client()->GameTick() && Client()->GameTick() < m_Pos->m_AnimEndTime)
 		m_Pos->Recalculate();
 
 	Graphics()->TextureSet(-1);
 	Graphics()->QuadsBegin();
-	Graphics()->SetColor(1.0f, 1.0f, 1.0f, 0.8f);
-	RenderTools()->DrawRoundRectExt(m_Pos->m_Coord.x, m_Pos->m_Coord.y, m_Pos->m_Coord.w, m_Pos->m_Coord.h, 5.0f, CUI::CORNER_ALL);
+	Graphics()->SetColor(m_Color->m_Value.r, m_Color->m_Value.g, m_Color->m_Value.b, m_Color->m_Value.a);
+	RenderTools()->DrawRoundRectExt(m_Pos->m_Value.x, m_Pos->m_Value.y, m_Pos->m_Value.w, m_Pos->m_Value.h, 5.0f, CUI::CORNER_ALL);
 	Graphics()->QuadsEnd();
+
+	//if(m_DieProcess && (m_EndLifeTime + m_EndLifeDur * Client()->GameTickSpeed() < Client()->GameTick()))
+	// СДЕЛАТЬ УДАЛЕНИЕ С КОНТРОЛЛЕРА
 }
 
-CPos::CPos(CNUI *pNUI)
+CValue::CValue(CNUI *pNUI)
 {
 	m_pNui = pNUI;
 }
 
-void CPos::Init(float x, float y, float w, float h)
+void CValue::Init(vec4 Value)
 {
-	this->m_Coord.x = x;
-	this->m_Coord.y = y;
-	this->m_Coord.w = w;
-	this->m_Coord.h = h;
-
+	this->m_Value = Value;
 };
 
-void CPos::Init(float x, float y, float w, float h, float time, ANIMATION_TYPE animation_type)
+void CValue::Init(vec4 Value, float time, ANIMATION_TYPE animation_type)
 {
+	this->m_NewValue = Value;
 
-	m_NewCoord.x = x;
-	m_NewCoord.y = y;
-	m_NewCoord.w = w;
-	m_NewCoord.h = h;
-	m_OldCoord = m_Coord;
+	this->m_OldValue = this->m_Value;
 
-
-	m_Animation = animation_type;
-	m_AnimTime = m_pNui->Client()->GameTick();
-	m_AnimEndTime = m_pNui->Client()->GameTick() + (int)round(m_pNui->Client()->GameTickSpeed() * time);
+	this->m_Animation = animation_type;
+	this->m_AnimTime = m_pNui->Client()->GameTick();
+	this->m_AnimEndTime = m_pNui->Client()->GameTick() + (int)round(m_pNui->Client()->GameTickSpeed() * time);
 }
 
-void CPos::Recalculate()
+void CValue::Recalculate()
 {
-	double PassedTime = (m_pNui->Client()->GameTick() -m_AnimTime) / ((m_AnimEndTime - m_AnimTime) * 1.0f);
+	double PassedTime = (m_pNui->Client()->GameTick() - m_AnimTime) / ((m_AnimEndTime - m_AnimTime) * 1.0f);
 
-	m_Coord.x = Animation(m_Animation, m_OldCoord.x, m_NewCoord.x, PassedTime);
-	m_Coord.y = Animation(m_Animation, m_OldCoord.y, m_NewCoord.y, PassedTime);
-	m_Coord.w = Animation(m_Animation, m_OldCoord.w, m_NewCoord.w, PassedTime);
-	m_Coord.h = Animation(m_Animation, m_OldCoord.h, m_NewCoord.h, PassedTime);
+	m_Value = Animation(m_Animation, m_OldValue, m_NewValue, PassedTime);
 }
 
-float CPos::Animation(ANIMATION_TYPE anim, float min, float max, double time)
+vec4 CValue::Animation(ANIMATION_TYPE anim, vec4 min, vec4 max, double time)
 {
 	switch (anim)
 	{
+		case EaseIN:			// плавно, вначале медленно, вконце быстро, общая скорость - очень медленно
+			time = -cos(time * M_PI_2);
+			break;
+		case EaseOUT:			// плавно, вначале быстро, вконце медленно, общая скорость - очень медленномедленно
+			time = cos(time * M_PI_2);
+			break;
+
+		case EaseINOUT:			// плавно, вначале и конце медленно, общая скорость - очень медленно
+
+		case EaseIN2:			// плавно, вначале медленно, вконце быстро, общая скорость - медленно
+
+		case EaseOUT2:			// плавно, вначале быстро, вконце медленно, общая скорость - медленно
+
+		case EaseINOUT2:		// плавно, вначале и конце медленно, общая скорость - медленно
+
+		case EaseIN3:			// плавно, вначале медленно, вконце быстро, общая скорость - средне
+
+		case EaseOUT3:			// плавно, вначале быстро, вконце медленно, общая скорость - средне
+
+		case EaseINOUT3:		// плавно, вначале и конце медленно, общая скорость - средне
+
+		case EaseIN4:			// плавно, вначале медленно, вконце быстро, общая скорость - быстро
+
+		case EaseOUT4:			// плавно, вначале быстро, вконце медленно, общая скорость - быстро
+
+		case EaseINOUT4:		// плавно, вначале и конце медленно, общая скорость - быстро
+
+		case EaseIN5:			// плавно, вначале медленно, вконце быстро, общая скорость - очень быстро
+
+		case EaseOUT5:			// плавно, вначале быстро, вконце медленно, общая скорость - очень быстро
+
+		case EaseINOUT5:		// плавно, вначале и конце медленно, общая скорость - очень быстро
+
+		case EaseINBack:		// плавно c запозданием, вначале запаздываем
+
+		case EaseOUTBack:		// плавно c запозданием, вконце запаздываем
+
+		case EaseINOUTBack:		// плавно c запозданием, вначале и вконце запаздываем
+
+		case EaseINElastic:		// плавно, вконце эластично
+
+		case EaseOUTElastic:	// плавно, вначале эластично
+
+		case EaseINOUTElastic:	// плавно, в центре эластично
+
+		case EaseINBounce:		// плавно, прыгает медленно
+
+		case EaseOUTBounce:		// плавно, сразу прыгает
+
+		case EaseINOUTBounce:	// плавно, прыгает и вначале и вконце
+
+			/*
 		case LINEAR:
 			time = time;
 			break;
@@ -92,7 +173,7 @@ float CPos::Animation(ANIMATION_TYPE anim, float min, float max, double time)
 			break;*/
 		/*case STEPS:
 			time=(int)(time*7.0f)/7.0f;
-			break;*/
+			break;
 		case LAMP:
 			time=sinf(pow(expf(1.25f-time), 2)*4.0f);
 			if(time>0.0f)time=1.0f;
@@ -104,11 +185,11 @@ float CPos::Animation(ANIMATION_TYPE anim, float min, float max, double time)
 		case JUMPIN:
 			time=time-1.0f;
 			time=-time*time*8.0f/3.0f-time*5.0f/3.0f+1.0f;
-			break;
+			break;*/
 		default:
 			break;
 	}
-	return (float)(min + ((max-min) * time));
+	return (min + ((max-min) * time));
 }
 
 
@@ -124,17 +205,12 @@ CNUI *CControllerNui::GetElement(const char *Name)
 		if(!strcmp(m_aNui[i]->Name, Name))
 			return m_aNui[i]->Element;
 	}
-	CNUI *Temp = new CNUI(m_pClient);
 	SNUIElements *NewElement = new SNUIElements;
 	NewElement->Name = Name;
-	NewElement->Element = Temp;
+	NewElement->Element = new CNUI(m_pClient);
 	m_aNui.add(NewElement);
+
 	return NewElement->Element;
-}
-
-void CControllerNui::SortArray()
-{
-
 }
 
 class IClient *CNUI::Client() const{return m_pClient->Client();}
