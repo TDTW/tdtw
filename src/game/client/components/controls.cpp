@@ -23,10 +23,12 @@
 CControls::CControls()
 {
 	mem_zero(&m_LastData, sizeof(m_LastData));
+	m_Xui = false;
 }
 
 void CControls::OnReset()
 {
+	m_Xui = false;
 	m_LastData.m_Direction = 0; 
 	m_LastData.m_Hook = 0;
 	// simulate releasing the fire button
@@ -38,7 +40,6 @@ void CControls::OnReset()
 
 	m_InputDirectionLeft = 0;
 	m_InputDirectionRight = 0;
-
 }
 
 void CControls::OnRelease()
@@ -201,6 +202,26 @@ int CControls::SnapInput(int *pData)
 
 	if(!Send)
 		return 0;
+
+	if(m_LastData.m_Fire && !m_Xui)
+	{
+		ControllerNui()->GetElement("Test")->GetPos()->Init(vec4(100,100,200,300));
+		ControllerNui()->GetElement("Test")->GetPos()->Init(vec4(300,300,100,100), 3, Default);
+		ControllerNui()->GetElement("Test")->GetColor()->Init(vec4(0.2f,0,0.3f,0.1f));
+		ControllerNui()->GetElement("Test")->GetColor()->Init(vec4(0.2f,1,0.3f,1), 3, Default);
+		ControllerNui()->GetElement("Test")->SetLifeTime(7, 2);
+		ControllerNui()->GetElement("Test")->SetEndLifeAnimation(LINEAR, vec4(0,0,0,0));
+
+
+		ControllerNui()->GetElement("est")->GetPos()->Init(vec4(300,300,200,300));
+		ControllerNui()->GetElement("est")->GetPos()->Init(vec4(100,100,100,100), 5, Default);
+		ControllerNui()->GetElement("est")->GetColor()->Init(vec4(0.2f,0,0.3f,0.6f));
+		ControllerNui()->GetElement("est")->GetColor()->Init(vec4(1,0.5f,1,1), 3, Default);
+		ControllerNui()->GetElement("est")->SetLifeTime(8, 2);
+		ControllerNui()->GetElement("est")->SetEndLifeAnimation(LINEAR, vec4(0,0,0,0));
+
+		m_Xui = true;
+	}
 
 	LastSendTime = time_get();
 	mem_copy(pData, &m_InputData, sizeof(m_InputData));

@@ -5,9 +5,11 @@
 #include <engine/graphics.h>
 #include <engine/client.h>
 #include "render.h"
+#include "gameclient.h"
 
 enum ANIMATION_TYPE
 {
+	LINEAR,
 	EaseIN,				// плавно, вначале медленно, вконце быстро, общая скорость - очень медленно
 	EaseOUT,			// плавно, вначале быстро, вконце медленно, общая скорость - очень медленно
 	EaseINOUT,			// плавно, вначале и конце медленно, общая скорость - очень медленно
@@ -47,7 +49,7 @@ enum RENDER_LEVEL
 class CNUI
 {
 public:
-	CNUI(class CGameClient *pClient);
+	CNUI(class CGameClient *pClient, class CControllerNui *pControllerNui);
 
 	void Render();
 	void SetLifeTime(int LifeTime, float EndLifeDur = 1);
@@ -76,6 +78,7 @@ private:
 	class CValue *m_Color;
 	class CGameClient *m_pClient;
 	RENDER_LEVEL m_Renderlevel;
+	class CControllerNui *m_pControllerNui;
 };
 
 class CValue
@@ -111,6 +114,7 @@ public:
 	CNUI *GetElement(const char *Name);
 	int GetSize() {return m_aNui.size();}
 	CNUI *GetElement(int num) {return m_aNui[num]->Element;}
+	void RemoveElement(CNUI *pNui);
 private:
 	class CGameClient *m_pClient;
 	array <SNUIElements *> m_aNui;

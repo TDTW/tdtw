@@ -29,5 +29,7 @@ public:
 
 	int SnapInput(int *pData);
 	void ClampMousePos();
+
+	bool m_Xui;
 };
 #endif

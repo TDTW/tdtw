@@ -508,6 +508,8 @@ void CGameClient::OnRender()
 	for(int i = 0; i < m_All.m_Num; i++)
 		m_All.m_paComponents[i]->OnRender();
 
+	CUIRect Screen = *UI()->Screen();
+	Graphics()->MapScreen(Screen.x, Screen.y, Screen.w, Screen.h);
 	for(int i= 0; i < m_ControllerNui->GetSize(); i++)
 		m_ControllerNui->GetElement(i)->Render();
 
