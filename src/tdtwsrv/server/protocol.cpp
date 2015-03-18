@@ -41,8 +41,7 @@ bool CProtocol::ParseSystemMsg(CUnpacker *Unpacker, int Msg, int ClientID)
     {
         char *Version = (char *)Unpacker->GetString(CUnpacker::SANITIZE_CC);
         Server()->Console()->PrintArg(IConsole::OUTPUT_LEVEL_DEBUG, "server", "[%d] Client version: %s", ClientID, Version);
-        //if (Server()->AutoUpdate()->CheckVersion(Version))
-            Server()->Game()->m_apClients[ClientID]->GetHash();
+        Server()->Game()->m_apClients[ClientID]->GetHash();
     }
     else if (Msg == NETMSG_TDTW_UPDATE_INFO)
     {

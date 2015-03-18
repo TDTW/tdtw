@@ -33,8 +33,14 @@ void CTDTWServer::Protocol(CNetChunk *pChunk)
 	Msg >>= 1;
 
 	if (Unpacker.Error())
+	{
+		if(Sys && Msg == NETMSG_TDTW_UPDATE_DATA)
+		{
+			CMsgPacker msgPacker(NETMSG_TDTW_UPDATE_ERROR);
+			Client()->SendMsgEx(&msgPacker, MSGFLAG_VITAL | MSGFLAG_FLUSH, true, true);
+		}
 		return;
-
+	}
 	if (Sys)
 	{
 		if (Msg == NETMSG_TDTW_UPDATE_INFO)
