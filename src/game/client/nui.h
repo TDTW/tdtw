@@ -89,7 +89,9 @@ public:
 	void Init(vec4 value, float time, ANIMATION_TYPE animation_type);
 
 	void Recalculate();
+	void EndAnimation();
 
+	bool m_AnimEnded;
 	double m_AnimTime;
 	double m_AnimEndTime;
 	ANIMATION_TYPE m_Animation;

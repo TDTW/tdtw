@@ -50,11 +50,15 @@ void CNUI::Render()
 		m_DieProcess = true;
 	}
 
-
-	if(m_Pos->m_AnimTime < Client()->GameTick() && Client()->GameTick() < m_Pos->m_AnimEndTime)
+	if(m_Pos->m_AnimTime <= Client()->GameTick() && Client()->GameTick() <= m_Pos->m_AnimEndTime)
 		m_Pos->Recalculate();
-	if(m_Color->m_AnimTime < Client()->GameTick() && Client()->GameTick() < m_Color->m_AnimEndTime)
+	else if(!m_Pos->m_AnimEnded)
+		m_Pos->EndAnimation();
+
+	if(m_Color->m_AnimTime <= Client()->GameTick() && Client()->GameTick() <= m_Color->m_AnimEndTime)
 		m_Color->Recalculate();
+	else if(!m_Color->m_AnimEnded)
+		m_Color->EndAnimation();
 
 	Graphics()->TextureSet(-1);
 	Graphics()->QuadsBegin();
@@ -82,6 +86,7 @@ void CValue::Init(vec4 Value, float time, ANIMATION_TYPE animation_type)
 
 	m_OldValue = m_Value;
 
+	m_AnimEnded = false;
 	m_Animation = animation_type;
 	m_AnimTime = m_pNui->Client()->GameTick();
 	m_AnimEndTime = m_pNui->Client()->GameTick() + (int)round(m_pNui->Client()->GameTickSpeed() * time);
@@ -94,15 +99,22 @@ void CValue::Recalculate()
 	m_Value = Animation(m_Animation, m_OldValue, m_NewValue, PassedTime);
 }
 
+void CValue::EndAnimation()
+{
+	m_Value = m_NewValue;
+}
+
 vec4 CValue::Animation(ANIMATION_TYPE anim, vec4 min, vec4 max, double time)
 {
 	switch (anim)
 	{
 		case EaseIN:			// плавно, вначале медленно, вконце быстро, общая скорость - очень медленно
-			time = -cos(time * M_PI_2);
+			time = -cos(time * M_PI_2)+1;
+			dbg_msg("EaseIN","%d", time);
 			break;
 		case EaseOUT:			// плавно, вначале быстро, вконце медленно, общая скорость - очень медленномедленно
-			time = cos(time * M_PI_2);
+			time = sin(time * M_PI_2);
+			dbg_msg("EaseOUT","%d", time);
 			break;
 
 		case EaseINOUT:			// плавно, вначале и конце медленно, общая скорость - очень медленно
@@ -189,6 +201,7 @@ vec4 CValue::Animation(ANIMATION_TYPE anim, vec4 min, vec4 max, double time)
 			time=-time*time*8.0f/3.0f-time*5.0f/3.0f+1.0f;
 			break;*/
 		default:
+			dbg_msg("Default","%d", time);
 			break;
 	}
 	return (min + ((max-min) * time));
