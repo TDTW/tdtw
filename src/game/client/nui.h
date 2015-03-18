@@ -2,8 +2,6 @@
 #define GAME_CLIENT_NUI_H
 
 #include <base/tl/array.h>
-#include <engine/graphics.h>
-#include <engine/client.h>
 #include "render.h"
 #include "gameclient.h"
 
@@ -46,18 +44,71 @@ enum RENDER_LEVEL
 	HIGHTEST,
 };
 
-class CNUI
+enum CORNER_TYPES
+{
+	CORNER_TL = 1,
+	CORNER_TR = 2,
+	CORNER_BL = 4,
+	CORNER_BR = 8,
+
+	CORNER_T = CORNER_TL | CORNER_TR,
+	CORNER_B = CORNER_BL | CORNER_BR,
+	CORNER_R = CORNER_TR | CORNER_BR,
+	CORNER_L = CORNER_TL | CORNER_BL,
+
+	CORNER_ALL = CORNER_T | CORNER_B
+};
+
+enum ELEMENT_TYPES
+{
+	ELEMENT_BLOCK,
+	ELEMENT_TEXT,
+	ELEMENT_QUAD,
+	ELEMENT_TEE
+};
+
+enum TEXT_ALIGN
+{
+	ALIGN_CENTER,
+	ALIGN_LEFT,
+	ALIGN_RIGHT
+};
+
+class CNUIElements
 {
 public:
-	CNUI(class CGameClient *pClient, class CControllerNui *pControllerNui);
+	const char *m_pName;
 
-	void Render();
+	CNUIElements(class CGameClient *pClient, class CControllerNui *pControllerNui, const char *Name);
+
+	virtual void Render()
+	{
+	};
+
+	virtual void SetQuad()
+	{
+	};
+
+	virtual void SetText(bool TextUpdate, float Height, TEXT_ALIGN Align, const char *pText, ...)
+	{
+	};
+
+	virtual void SetBlock(float RoundCorner, CORNER_TYPES Type)
+	{
+	};
+
+	void PreRender();
+
+	void PostRender();
+
 	void SetLifeTime(int LifeTime, float EndLifeDur = 1);
 	void SetEndLife(float EndLifeDur = 1);
 	void SetEndLifeAnimation(ANIMATION_TYPE animation_type, vec4 Coord);
 
 	class IClient *Client() const;
 	class IGraphics *Graphics() const;
+
+	class ITextRender *TextRender() const;
 	class CRenderTools *RenderTools() const;
 
 	class CValue *GetPos() { return m_pPos; }
@@ -65,7 +116,8 @@ public:
 
 	void SetRenderLevel(RENDER_LEVEL Level) {m_Renderlevel = Level;}
 	RENDER_LEVEL GetRenderLevel() {return m_Renderlevel;}
-private:
+
+protected:
 	bool m_DieProcess;
 	bool m_EndLife;
 	float m_EndLifeDur;
@@ -81,10 +133,61 @@ private:
 	class CControllerNui *m_pControllerNui;
 };
 
+class CElementBlock : public CNUIElements
+{
+public:
+	CElementBlock(class CGameClient *pClient, class CControllerNui *pControllerNui, const char *Name);
+
+	virtual void Render();
+
+	virtual void SetBlock(float RoundCorner, CORNER_TYPES Type);
+
+private:
+	float m_RoundCorner;
+	CORNER_TYPES m_CornerType;
+
+};
+
+class CElementText : public CNUIElements
+{
+public:
+	CElementText(class CGameClient *pClient, class CControllerNui *pControllerNui, const char *Name);
+
+	virtual void Render();
+
+	virtual void SetText(bool TextUpdate, float Height, TEXT_ALIGN Align, const char *pText, ...);
+
+private:
+	void ParseTypes(const char *String);
+
+	enum TYPES
+	{
+		INT,
+		FLOAT,
+		STRING
+	};
+
+	struct sArg
+	{
+		void *m_Args;
+		TYPES m_ArgType;
+		int m_EndPos;
+	};
+
+	float m_Height;
+	TEXT_ALIGN m_Align;
+
+	bool m_TextUpdate;
+	char m_UnUpdatedText[255];    // TODO: Unlimited Text Size
+	const char *m_pTextTemplate;
+
+	array<sArg *> m_aArgs;
+};
+
 class CValue
 {
 public:
-	CValue(CNUI *pNUI);
+	CValue(CNUIElements *pNUI);
 	void Init(vec4 value);
 	void Init(vec4 value, float time, ANIMATION_TYPE animation_type);
 
@@ -98,7 +201,7 @@ public:
 	vec4 m_Value, m_NewValue, m_OldValue;
 
 private:
-	CNUI *m_pNui;
+	CNUIElements *m_pNui;
 	vec4 Animation(ANIMATION_TYPE anim, vec4 min, vec4 max, double time);
 };
 
@@ -107,19 +210,19 @@ class CControllerNui
 public:
 	CControllerNui(class CGameClient *Client);
 
-	struct SNUIElements
-	{
-		const char *Name;
-		CNUI *Element;
-	};
-
-	CNUI *GetElement(const char *Name);
+	CNUIElements *GetElement(ELEMENT_TYPES Type, const char *Name);
 	int GetSize() {return m_aNui.size();}
-	CNUI *GetElement(int num) {return m_aNui[num]->Element;}
-	void RemoveElement(CNUI *pNui);
+
+	CNUIElements *GetElement(int num)
+	{
+		return m_aNui[num];
+	}
+
+	void RemoveElement(CNUIElements *pNui);
 private:
 	class CGameClient *m_pClient;
-	array <SNUIElements *> m_aNui;
+
+	array<CNUIElements *> m_aNui;
 };
 
 #endif //GAME_CLIENT_NUI_H

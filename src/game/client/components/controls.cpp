@@ -24,6 +24,7 @@ CControls::CControls()
 {
 	mem_zero(&m_LastData, sizeof(m_LastData));
 	m_Xui = false;
+	m_Xui2 = 0;
 }
 
 void CControls::OnReset()
@@ -205,22 +206,31 @@ int CControls::SnapInput(int *pData)
 
 	if(m_LastData.m_Fire && !m_Xui)
 	{
-		ControllerNui()->GetElement("Test")->GetPos()->Init(vec4(100,100,200,300));
-		ControllerNui()->GetElement("Test")->GetPos()->Init(vec4(300,300,100,100), 3, Default);
-		ControllerNui()->GetElement("Test")->GetColor()->Init(vec4(0.2f,0,0.3f,0.1f));
-		ControllerNui()->GetElement("Test")->GetColor()->Init(vec4(0.2f,1,0.3f,1), 3, Default);
-		ControllerNui()->GetElement("Test")->SetLifeTime(7, 2);
-		ControllerNui()->GetElement("Test")->SetEndLifeAnimation(LINEAR, vec4(0,0,0,0));
+		ControllerNui()->GetElement(ELEMENT_BLOCK, "Test")->GetPos()->Init(vec4(100, 100, 200, 200));
+		ControllerNui()->GetElement(ELEMENT_BLOCK, "Test")->GetPos()->Init(vec4(100, 100, 100, 100), 0.5f, (ANIMATION_TYPE) m_Xui2);
+		ControllerNui()->GetElement(ELEMENT_BLOCK, "Test")->GetColor()->Init(vec4(0.2f, 0, 0.3f, 0.1f));
+		ControllerNui()->GetElement(ELEMENT_BLOCK, "Test")->GetColor()->Init(vec4(0.2f, 1, 0.3f, 1), 0.3f, (ANIMATION_TYPE) m_Xui2);
+		ControllerNui()->GetElement(ELEMENT_BLOCK, "Test")->SetLifeTime(7, 2);
+		ControllerNui()->GetElement(ELEMENT_BLOCK, "Test")->SetEndLifeAnimation(LINEAR, vec4(0, 0, 0, 0));
 
 
-		ControllerNui()->GetElement("est")->GetPos()->Init(vec4(300,300,200,300));
-		ControllerNui()->GetElement("est")->GetPos()->Init(vec4(100,100,100,100), 5, Default);
-		ControllerNui()->GetElement("est")->GetColor()->Init(vec4(0.2f,0,0.3f,0.6f));
-		ControllerNui()->GetElement("est")->GetColor()->Init(vec4(1,0.5f,1,1), 3, Default);
-		ControllerNui()->GetElement("est")->SetLifeTime(8, 2);
-		ControllerNui()->GetElement("est")->SetEndLifeAnimation(LINEAR, vec4(0,0,0,0));
+		ControllerNui()->GetElement(ELEMENT_BLOCK, "est")->GetPos()->Init(vec4(300, 300, 200, 300));
+		ControllerNui()->GetElement(ELEMENT_BLOCK, "est")->GetPos()->Init(vec4(100, 100, 200, 300), 0.3f, (ANIMATION_TYPE) m_Xui2);
+		ControllerNui()->GetElement(ELEMENT_BLOCK, "est")->GetColor()->Init(vec4(0.2f, 0, 0.3f, 0.6f));
+		ControllerNui()->GetElement(ELEMENT_BLOCK, "est")->GetColor()->Init(vec4(1, 0.5f, 1, 1), 0.5f, (ANIMATION_TYPE) m_Xui2);
+		ControllerNui()->GetElement(ELEMENT_BLOCK, "est")->SetLifeTime(8, 2);
+		ControllerNui()->GetElement(ELEMENT_BLOCK, "est")->SetEndLifeAnimation(LINEAR, vec4(0, 0, 0, 0));
+
+		ControllerNui()->GetElement(ELEMENT_TEXT, "Score")->GetPos()->Init(vec4(100, 100, 0, 0));
+		//ControllerNui()->GetElement(ELEMENT_TEXT, "Score")->GetPos()->Init(vec4(100,100,0,0), 0.3f, (ANIMATION_TYPE)m_Xui2);
+		ControllerNui()->GetElement(ELEMENT_TEXT, "Score")->GetColor()->Init(vec4(0, 0, 0, 1));
+		ControllerNui()->GetElement(ELEMENT_TEXT, "Score")->GetColor()->Init(vec4(0.2f, 0.8f, 0.5f, 0.8f), 10, (ANIMATION_TYPE) m_Xui2);
+
+		static int temp[] = {2, 3, 4};
+		ControllerNui()->GetElement(ELEMENT_TEXT, "Score")->SetText(true, 25.0f, ALIGN_CENTER, "TEST %d %d %d", &temp[0], &temp[1], &temp[2]);
 
 		m_Xui = true;
+		m_Xui2 = (m_Xui2 + 1) % 3;
 	}
 
 	LastSendTime = time_get();

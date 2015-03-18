@@ -516,7 +516,11 @@ void CGameClient::OnRender()
 	CUIRect Screen = *UI()->Screen();
 	Graphics()->MapScreen(Screen.x, Screen.y, Screen.w, Screen.h);
 	for(int i= 0; i < m_ControllerNui->GetSize(); i++)
+	{
+		m_ControllerNui->GetElement(i)->PreRender();
 		m_ControllerNui->GetElement(i)->Render();
+		m_ControllerNui->GetElement(i)->PostRender();
+	}
 
 
 	// clear new tick flags
