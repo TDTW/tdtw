@@ -3,17 +3,17 @@
 #include <game/client/component.h>
 #include <base/tl/array.h>
 
+enum NotificationType
+{
+	NT_DEFAULT,
+	NT_IMPORTANT,
+	NT_CHAT,
+};
+
 class CNotification : public CComponent
 {
 public:
 	CNotification();
-
-	enum NotificationType
-	{
-		NT_DEFAULT,
-		NT_IMPORTANT,
-		NT_CHAT,
-	};
 
 	void RenderNotification(NotificationType Type, const char *pTitle, const char *pText);
 	virtual void OnRender() {};

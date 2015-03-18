@@ -9,7 +9,6 @@
 #include <game/layers.h>
 #include <game/gamecore.h>
 #include <string.h>
-#include <game/client/components/notification.h>
 #include "render.h"
 #include "tdtwserver/tdtwserver.h"
 #include "nui.h"
@@ -231,7 +230,7 @@ public:
 	virtual void OnGameOver();
 	virtual void OnStartGame();
 
-	virtual void SendNotification(CNotification::NotificationType Type, const char *pTitle, const char *pText);
+	virtual void SendNotification(int Type);
 
 	virtual const char *GetItemName(int Type);
 	virtual const char *Version();

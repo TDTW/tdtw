@@ -7,7 +7,7 @@ CNotification::CNotification()
 
 void CNotification::RenderNotification(NotificationType Type, const char *pTitle, const char *pText)
 {
-	Notify *pNotify;
+	Notify *pNotify = new Notify;
 	pNotify->Type = Type;
 	pNotify->pTitle = pTitle;
 	pNotify->pText = pText;

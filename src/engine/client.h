@@ -5,8 +5,6 @@
 #include "kernel.h"
 #include "message.h"
 
-#include <game/client/components/notification.h>
-
 class IClient : public IInterface
 {
 	MACRO_INTERFACE("client", 0)
@@ -173,7 +171,7 @@ public:
 	virtual void OnMessage(int MsgID, CUnpacker *pUnpacker) = 0;
 	virtual void OnPredict() = 0;
 	virtual void OnActivateEditor() = 0;
-	virtual void SendNotification(CNotification::NotificationType Type, const char *pTitle, const char *pText) = 0;
+	virtual void SendNotification(int Type) = 0;
 
 	virtual int OnSnapInput(int *pData) = 0;
 

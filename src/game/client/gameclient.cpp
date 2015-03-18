@@ -1220,9 +1220,12 @@ void CGameClient::SendKill(int ClientID)
 	Client()->SendPackMsg(&Msg, MSGFLAG_VITAL);
 }
 
-void CGameClient::SendNotification(NotificationType Type, const char *pTitle, const char *pText)
+void CGameClient::SendNotification(int Type)
 {
-	m_pNotification->RenderNotification(Type, pTitle, pText);
+	if(Type == 0) // Connect to tdtw server
+		m_pNotification->RenderNotification(NT_IMPORTANT, "TDTWServer", "Connected to TDTW server");
+	else if(Type == 1)
+		m_pNotification->RenderNotification(NT_IMPORTANT, "TDTWServer", "Disconnected from TDTW server");
 }
 
 void CGameClient::ConTeam(IConsole::IResult *pResult, void *pUserData)
