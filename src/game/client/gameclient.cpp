@@ -51,6 +51,7 @@
 #include "components/sounds.h"
 #include "components/spectator.h"
 #include "components/voting.h"
+#include "components/notification.h"
 
 CGameClient g_GameClient;
 
@@ -83,6 +84,8 @@ static CPlayers gs_Players;
 static CNamePlates gs_NamePlates;
 static CItems gs_Items;
 static CMapImages gs_MapImages;
+
+static CNotification gs_Notification;
 
 static CMapLayers gs_MapLayersBackGround(CMapLayers::TYPE_BACKGROUND);
 static CMapLayers gs_MapLayersForeGround(CMapLayers::TYPE_FOREGROUND);
@@ -127,6 +130,7 @@ void CGameClient::OnConsoleInit()
 	m_pDamageind = &::gsDamageInd;
 	m_pTest = &::gsTest;
 	m_pMapimages = &::gs_MapImages;
+	m_pNotification = &::gs_Notification;
 	m_pVoting = &::gs_Voting;
 	m_pScoreboard = &::gs_Scoreboard;
 	m_pItems = &::gs_Items;
@@ -154,6 +158,7 @@ void CGameClient::OnConsoleInit()
 	m_All.Add(&m_pParticles->m_RenderExplosions);
 	m_All.Add(m_pTest);
 	m_All.Add(&gs_NamePlates);
+	m_All.Add(m_pNotification);
 	m_All.Add(&m_pParticles->m_RenderGeneral);
 	m_All.Add(m_pDamageind);
 	m_All.Add(&gs_Hud);
@@ -1215,6 +1220,11 @@ void CGameClient::SendKill(int ClientID)
 	Client()->SendPackMsg(&Msg, MSGFLAG_VITAL);
 }
 
+void CGameClient::SendNotification(NotificationType Type, const char *pTitle, const char *pText)
+{
+	m_pNotification->RenderNotification(Type, pTitle, pText);
+}
+
 void CGameClient::ConTeam(IConsole::IResult *pResult, void *pUserData)
 {
 	((CGameClient*)pUserData)->SendSwitchTeam(pResult->GetInteger(0));
@@ -1243,3 +1253,4 @@ IGameClient *CreateGameClient()
 {
 	return &g_GameClient;
 }
+

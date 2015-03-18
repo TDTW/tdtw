@@ -60,8 +60,8 @@ public:
 	class IGraphics *Graphics() const;
 	class CRenderTools *RenderTools() const;
 
-	class CValue *GetPos() { return m_Pos; }
-	class CValue *GetColor() { return m_Color; }
+	class CValue *GetPos() { return m_pPos; }
+	class CValue *GetColor() { return m_pColor; }
 
 	void SetRenderLevel(RENDER_LEVEL Level) {m_Renderlevel = Level;}
 	RENDER_LEVEL GetRenderLevel() {return m_Renderlevel;}
@@ -74,8 +74,8 @@ private:
 	vec4 m_DieCoord;
 	ANIMATION_TYPE m_DieAnimation;
 
-	class CValue *m_Pos;
-	class CValue *m_Color;
+	class CValue *m_pPos;
+	class CValue *m_pColor;
 	class CGameClient *m_pClient;
 	RENDER_LEVEL m_Renderlevel;
 	class CControllerNui *m_pControllerNui;

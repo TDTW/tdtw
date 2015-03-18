@@ -5,8 +5,8 @@ CNUI::CNUI(class CGameClient *pClient, class CControllerNui *pControllerNui)
 	m_pClient = pClient;
 	m_pControllerNui = pControllerNui;
 
-	m_Pos = new CValue(this);
-	m_Color = new CValue(this);
+	m_pPos = new CValue(this);
+	m_pColor = new CValue(this);
 	m_Renderlevel = NORMAL;
 
 	m_DieProcess = false;
@@ -42,28 +42,28 @@ void CNUI::Render()
 
 	if(m_EndLife && m_EndLifeTime < Client()->GameTick() && !m_DieProcess)
 	{
-		m_Color->Init(vec4(m_Color->m_Value.r, m_Color->m_Value.g, m_Color->m_Value.b, 0.0f), m_EndLifeDur, Default); //TODO animation
+		m_pColor->Init(vec4(m_pColor->m_Value.r, m_pColor->m_Value.g, m_pColor->m_Value.b, 0.0f), m_EndLifeDur, Default); //TODO animation
 
 		if(m_DieAnimation != Default)
-			m_Pos->Init(m_DieCoord, m_EndLifeDur, m_DieAnimation);
+			m_pPos->Init(m_DieCoord, m_EndLifeDur, m_DieAnimation);
 
 		m_DieProcess = true;
 	}
 
-	if(m_Pos->m_AnimTime <= Client()->GameTick() && Client()->GameTick() <= m_Pos->m_AnimEndTime)
-		m_Pos->Recalculate();
-	else if(!m_Pos->m_AnimEnded)
-		m_Pos->EndAnimation();
+	if(m_pPos->m_AnimTime <= Client()->GameTick() && Client()->GameTick() <= m_pPos->m_AnimEndTime)
+		m_pPos->Recalculate();
+	else if(!m_pPos->m_AnimEnded)
+		m_pPos->EndAnimation();
 
-	if(m_Color->m_AnimTime <= Client()->GameTick() && Client()->GameTick() <= m_Color->m_AnimEndTime)
-		m_Color->Recalculate();
-	else if(!m_Color->m_AnimEnded)
-		m_Color->EndAnimation();
+	if(m_pColor->m_AnimTime <= Client()->GameTick() && Client()->GameTick() <= m_pColor->m_AnimEndTime)
+		m_pColor->Recalculate();
+	else if(!m_pColor->m_AnimEnded)
+		m_pColor->EndAnimation();
 
 	Graphics()->TextureSet(-1);
 	Graphics()->QuadsBegin();
-	Graphics()->SetColor(m_Color->m_Value.r, m_Color->m_Value.g, m_Color->m_Value.b, m_Color->m_Value.a);
-	RenderTools()->DrawRoundRectExt(m_Pos->m_Value.x, m_Pos->m_Value.y, m_Pos->m_Value.w, m_Pos->m_Value.h, 5.0f, CUI::CORNER_ALL);
+	Graphics()->SetColor(m_pColor->m_Value.r, m_pColor->m_Value.g, m_pColor->m_Value.b, m_pColor->m_Value.a);
+	RenderTools()->DrawRoundRectExt(m_pPos->m_Value.x, m_pPos->m_Value.y, m_pPos->m_Value.w, m_pPos->m_Value.h, 5.0f, CUI::CORNER_ALL);
 	Graphics()->QuadsEnd();
 
 	if(m_DieProcess && (m_EndLifeTime + m_EndLifeDur * Client()->GameTickSpeed() < Client()->GameTick()))

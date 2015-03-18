@@ -54,6 +54,8 @@
 
 #include "SDL.h"
 #include <string>
+#include <game/client/components/notification.h>
+
 #ifdef main
 #undef main
 #endif
@@ -1515,6 +1517,7 @@ void CClient::PumpNetworkTdtw(void *pUser)
 		{
 			pThis->SetStateTdtw(IClient::STATE_TDTW_OFFLINE);
 			//Disconnect();
+			pThis->m_pGameClient->SendNotification(NT_DEFAULT, "TDTWServer", "TDTW Server disconnected");
 			pThis->m_NetTdtw.Disconnect(0);
 			char aBuf[256];
 			str_format(aBuf, sizeof(aBuf), "offline error='%s'", pThis->m_NetTdtw.ErrorString());
@@ -1533,6 +1536,7 @@ void CClient::PumpNetworkTdtw(void *pUser)
 		{
 			// we switched to online
 			pThis->m_pConsole->Print(IConsole::OUTPUT_LEVEL_STANDARD, "tdtw", "TDTW Server connected");
+			pThis->m_pGameClient->SendNotification(NT_DEFAULT, "TDTWServer", "TDTW Server connected");
 			pThis->SetStateTdtw(IClient::STATE_TDTW_ONLINE);
 			CMsgPacker Msg(NETMSG_TDTW_VERSION);
 			Msg.AddString(GAME_VERSION, 30);

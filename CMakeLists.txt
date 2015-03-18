@@ -1,5 +1,5 @@
 cmake_minimum_required(VERSION 2.8.4)
-project(worlds_of_teeworlds)
+project(tdtw)
 
 SET(OS_WINDOWS FALSE)
 SET(OS_BSD_FAMILY FALSE)
@@ -293,6 +293,8 @@ set(SOURCE_FILES
     src/game/client/components/motd.h
     src/game/client/components/nameplates.cpp
     src/game/client/components/nameplates.h
+    src/game/client/components/notification.cpp
+    src/game/client/components/notification.h
     src/game/client/components/particles.cpp
     src/game/client/components/particles.h
     src/game/client/components/players.cpp

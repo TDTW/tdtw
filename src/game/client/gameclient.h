@@ -9,9 +9,11 @@
 #include <game/layers.h>
 #include <game/gamecore.h>
 #include <string.h>
+#include <game/client/components/notification.h>
 #include "render.h"
 #include "tdtwserver/tdtwserver.h"
 #include "nui.h"
+
 class CGameClient : public IGameClient
 {
 	class CStack
@@ -229,6 +231,8 @@ public:
 	virtual void OnGameOver();
 	virtual void OnStartGame();
 
+	virtual void SendNotification(CNotification::NotificationType Type, const char *pTitle, const char *pText);
+
 	virtual const char *GetItemName(int Type);
 	virtual const char *Version();
 	virtual const char *NetVersion();
@@ -257,6 +261,7 @@ public:
 	class CSounds *m_pSounds;
 	class CMotd *m_pMotd;
 	class CMapImages *m_pMapimages;
+	class CNotification *m_pNotification;
 	class CVoting *m_pVoting;
 	class CScoreboard *m_pScoreboard;
 	class CItems *m_pItems;
