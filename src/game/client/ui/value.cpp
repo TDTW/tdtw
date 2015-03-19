@@ -13,6 +13,7 @@ void CValue::Init(vec4 Value)
 {
 	m_Value = Value;
 	m_NewValue = Value;
+	m_AnimEnded = true;
 }
 
 void CValue::Init(vec4 Value, float time, ANIMATION_TYPE animation_type)
@@ -22,13 +23,13 @@ void CValue::Init(vec4 Value, float time, ANIMATION_TYPE animation_type)
 
 	m_AnimEnded = false;
 	m_Animation = animation_type;
-	m_AnimTime = m_pNui->Client()->GameTick();
-	m_AnimEndTime = m_pNui->Client()->GameTick() + (int)round(m_pNui->Client()->GameTickSpeed() * time);
+	m_AnimTime = time_get();
+	m_AnimEndTime = time_get() + (int)round(time_freq() * time);
 }
 
 void CValue::Recalculate()
 {
-	double PassedTime = (m_pNui->Client()->GameTick() - m_AnimTime) / ((m_AnimEndTime - m_AnimTime) * 1.0f);
+	double PassedTime = (time_get() - m_AnimTime) / ((m_AnimEndTime - m_AnimTime) * 1.0f);
 
 	m_Value = Animation(m_Animation, m_OldValue, m_NewValue, PassedTime);
 }

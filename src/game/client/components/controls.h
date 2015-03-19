@@ -30,7 +30,5 @@ public:
 	int SnapInput(int *pData);
 	void ClampMousePos();
 
-	bool m_Xui;
-	int m_Xui2;
 };
 #endif

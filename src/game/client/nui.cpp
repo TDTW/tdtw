@@ -10,19 +10,16 @@ CControllerNui::CControllerNui(CGameClient *Client)
 
 CNUIElements *CControllerNui::ParseElementName(const char *pSrc)
 {
-	CNUIElements *pParent = 0;
-	bool First = true;
-	for(int i = 0; i < str_length(pSrc) ; i++)
+	for(int i = str_length(pSrc); i >= 0; i--)
 	{
 		if(pSrc[i] == '.')
 		{
-			char name[64] = {0};
-			mem_copy(name, pSrc, i);
-			pParent = GetElement(ELEMENT_BLOCK, name);
-
+			char *name = new char[64] {0};
+			str_copy(name, pSrc, i+1);
+			return GetElement(ELEMENT_BLOCK, name);
 		}
 	}
-	return pParent == 0 ? NULL : pParent;
+	return 0;
 }
 
 CNUIElements *CControllerNui::GetElement(ELEMENT_TYPES Type, const char *Name)
@@ -51,7 +48,9 @@ CNUIElements *CControllerNui::GetElement(ELEMENT_TYPES Type, const char *Name)
 	}
 	if(pParent != NULL && pNewElement != NULL)
 		pNewElement->m_pParent = pParent;
-	dbg_msg("GetElement", "Created");
+	if(pParent)
+		dbg_msg("GetElement", "Created %s->%s",pParent->m_pName, pNewElement->m_pName);
+	else dbg_msg("GetElement", "Created %s", pNewElement->m_pName);
 	m_aNui.add(pNewElement);
 	return pNewElement;
 }

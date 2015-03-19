@@ -189,7 +189,7 @@ void CGameClient::OnConsoleInit()
 	Console()->Register("team", "i", CFGFLAG_CLIENT, ConTeam, this, "Switch team");
 	Console()->Register("kill", "", CFGFLAG_CLIENT, ConKill, this, "Kill yourself");
 	Console()->Register("dynamic_camera_toggle", "", CFGFLAG_CLIENT, ConDynCameraToggle, this, "Toggle dynamic camera");
-
+	Console()->Register("test", "", CFGFLAG_CLIENT, ConTest, this, "Fire");
 	// register server dummy commands for tab completion
 	Console()->Register("tune", "si", CFGFLAG_SERVER, 0, 0, "Tune variable to value");
 	Console()->Register("tune_reset", "", CFGFLAG_SERVER, 0, 0, "Reset tuning");
@@ -1240,6 +1240,18 @@ void CGameClient::ConTeam(IConsole::IResult *pResult, void *pUserData)
 void CGameClient::ConKill(IConsole::IResult *pResult, void *pUserData)
 {
 	((CGameClient*)pUserData)->SendKill(-1);
+}
+
+void CGameClient::ConTest(IConsole::IResult *pResult, void *pUserData)
+{
+	((CGameClient*)pUserData)->ControllerNui()->GetElement(ELEMENT_BLOCK, "Test")->GetPos()->Init(vec4(100, 100, 200, 200));
+	((CGameClient*)pUserData)->ControllerNui()->GetElement(ELEMENT_BLOCK, "Test")->GetPos()->Init(vec4(150, 170, 100, 100), 3, LINEAR);
+	((CGameClient*)pUserData)->ControllerNui()->GetElement(ELEMENT_BLOCK, "Test")->GetColor()->Init(vec4(1, 1, 1, 1));
+	((CGameClient*)pUserData)->ControllerNui()->GetElement(ELEMENT_BLOCK, "Test.Text")->GetPos()->Init(vec4(100, 100, 100, 100));
+	((CGameClient*)pUserData)->ControllerNui()->GetElement(ELEMENT_BLOCK, "Test.Text")->GetColor()->Init(vec4(0.2f, 0.0f, 0.3f, 1.0f));
+	((CGameClient*)pUserData)->ControllerNui()->GetElement(ELEMENT_TEXT, "Test.Text.asd")->GetPos()->Init(vec4(100, 100, 100, 100));
+	((CGameClient*)pUserData)->ControllerNui()->GetElement(ELEMENT_TEXT, "Test.Text.asd")->GetColor()->Init(vec4(0, 0, 0, 1.0f));
+	((CGameClient*)pUserData)->ControllerNui()->GetElement(ELEMENT_TEXT, "Test.Text.asd")->SetText(false, 25.0f, ALIGN_CENTER, "TEST %d %d %d", 1, 2, 3);
 }
 
 void CGameClient::ConDynCameraToggle(IConsole::IResult *pResult, void *pUserData)

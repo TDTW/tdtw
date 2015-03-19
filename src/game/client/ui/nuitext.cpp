@@ -2,8 +2,11 @@
 #include <stdarg.h>
 #include <stdio.h>
 #include <engine/shared/config.h>
+#include <game/client/ui.h>
+#include <game/client/gameclient.h>
 #include "nuitext.h"
 #include "nelements.h"
+#include <engine/graphics.h>
 #include "value.h"
 CElementText::CElementText(class CGameClient *pClient, class CControllerNui *pControllerNui, const char *Name)
 		: CNUIElements(pClient, pControllerNui, Name)
@@ -63,20 +66,29 @@ void CElementText::Render()
 	{
 		str_copy(Text, m_UnUpdatedText, sizeof(m_UnUpdatedText));
 	}
+	if(m_pParent != NULL)
+		m_pPosGlobal = m_pParent->GetChildPosGlobal();
+	else
+		m_pPosGlobal = vec4(0, 0, 0, 0);
+
+	vec4 Pos = m_pPosLocal->m_Value;
+	Pos.x += m_pPosGlobal.x;
+	Pos.y += m_pPosGlobal.y;
 
 	TextRender()->TextColor(m_pColor->m_Value.r, m_pColor->m_Value.g, m_pColor->m_Value.b, m_pColor->m_Value.a);    // TODO: Selected
 	if (m_Align == 0)
 	{
 		float tw = TextRender()->TextWidth(0, m_Height, Text, -1);
-		TextRender()->Text(0, m_pPos->m_Value.x + m_pPos->m_Value.w / 2 - tw / 2, m_pPos->m_Value.y - m_Height / 10, m_Height, Text, -1);
+		TextRender()->Text(0, Pos.x + Pos.w / 2 - tw / 2, Pos.y - m_Height / 10, m_Height, Text, -1);
 	}
 	else if (m_Align < 0)
-		TextRender()->Text(0, m_pPos->m_Value.x, m_pPos->m_Value.y - m_Height / 10, m_Height, Text, -1);
+		TextRender()->Text(0, Pos.x, Pos.y - m_Height / 10, m_Height, Text, -1);
 	else if (m_Align > 0)
 	{
 		float tw = TextRender()->TextWidth(0, m_Height, Text, -1);
-		TextRender()->Text(0, m_pPos->m_Value.x + m_pPos->m_Value.w - tw, m_pPos->m_Value.y - m_Height / 10, m_Height, Text, -1);
+		TextRender()->Text(0, Pos.x + Pos.w - tw, Pos.y - m_Height / 10, m_Height, Text, -1);
 	}
+
 	TextRender()->TextColor(1, 1, 1, 1);
 }
 

@@ -1,6 +1,7 @@
 #ifndef GAME_CLIENT_UI_NELEMENTS_H
 #define GAME_CLIENT_UI_NELEMENTS_H
 #include <base/vmath.h>
+
 enum RENDER_LEVEL
 {
 	LOWEST,
@@ -96,9 +97,9 @@ public:
 	class ITextRender *TextRender() const;
 	class CRenderTools *RenderTools() const;
 
-	class CValue *GetPos() { return m_pPos; }
+	class CValue *GetPos() { return m_pPosLocal; }
 	class CValue *GetColor() { return m_pColor; }
-
+	vec4 GetChildPosGlobal();
 	void SetRenderLevel(RENDER_LEVEL Level) {m_Renderlevel = Level;}
 	RENDER_LEVEL GetRenderLevel() {return m_Renderlevel;}
 
@@ -112,7 +113,8 @@ protected:
 	vec4 m_DieCoord;
 	ANIMATION_TYPE m_DieAnimation;
 
-	class CValue *m_pPos;
+	class CValue *m_pPosLocal;
+	vec4 m_pPosGlobal;
 	class CValue *m_pColor;
 	class CGameClient *m_pClient;
 	RENDER_LEVEL m_Renderlevel;
