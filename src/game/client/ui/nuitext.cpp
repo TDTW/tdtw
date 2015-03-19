@@ -2,16 +2,10 @@
 #include <stdarg.h>
 #include <stdio.h>
 #include <engine/shared/config.h>
-#include <game/client/ui.h>
 #include <game/client/gameclient.h>
-#include "nuitext.h"
-#include "nelements.h"
-#include <engine/graphics.h>
-#include "value.h"
 CElementText::CElementText(class CGameClient *pClient, class CControllerNui *pControllerNui, const char *Name)
 		: CNUIElements(pClient, pControllerNui, Name)
 {
-	m_Height = 0;
 	m_Align = ALIGN_LEFT;
 	m_TextUpdate = false;
 }
@@ -75,18 +69,20 @@ void CElementText::Render()
 	Pos.x += m_pPosGlobal.x;
 	Pos.y += m_pPosGlobal.y;
 
+	float Height = Pos.h * (g_Config.m_UiScale / 100.0f);
+
 	TextRender()->TextColor(m_pColor->m_Value.r, m_pColor->m_Value.g, m_pColor->m_Value.b, m_pColor->m_Value.a);    // TODO: Selected
 	if (m_Align == 0)
 	{
-		float tw = TextRender()->TextWidth(0, m_Height, Text, -1);
-		TextRender()->Text(0, Pos.x + Pos.w / 2 - tw / 2, Pos.y - m_Height / 10, m_Height, Text, -1);
+		float tw = TextRender()->TextWidth(0, Height, Text, -1);
+		TextRender()->Text(0, Pos.x + Pos.w / 2 - tw / 2, Pos.y - Height / 10, Height, Text, -1);
 	}
 	else if (m_Align < 0)
-		TextRender()->Text(0, Pos.x, Pos.y - m_Height / 10, m_Height, Text, -1);
+		TextRender()->Text(0, Pos.x, Pos.y - Height / 10, Height, Text, -1);
 	else if (m_Align > 0)
 	{
-		float tw = TextRender()->TextWidth(0, m_Height, Text, -1);
-		TextRender()->Text(0, Pos.x + Pos.w - tw, Pos.y - m_Height / 10, m_Height, Text, -1);
+		float tw = TextRender()->TextWidth(0, Height, Text, -1);
+		TextRender()->Text(0, Pos.x + Pos.w - tw, Pos.y - Height / 10, Height, Text, -1);
 	}
 
 	TextRender()->TextColor(1, 1, 1, 1);
@@ -120,7 +116,7 @@ void CElementText::ParseTypes(const char *String)
 	}
 }
 
-void CElementText::SetText(bool TextUpdate, float Height, TEXT_ALIGN Align, const char *pText, ...)
+void CElementText::SetText(bool TextUpdate, TEXT_ALIGN Align, const char *pText, ...)
 {
 	m_aArgs.clear();
 	va_list pArguments;
@@ -144,6 +140,5 @@ void CElementText::SetText(bool TextUpdate, float Height, TEXT_ALIGN Align, cons
 
 	m_TextUpdate = TextUpdate;
 	m_pTextTemplate = pText;
-	m_Height = Height * (g_Config.m_UiScale / 100.0f);
 	m_Align = Align;
 }

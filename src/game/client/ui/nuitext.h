@@ -13,7 +13,7 @@ public:
 
 	virtual void Render();
 
-	virtual void SetText(bool TextUpdate, float Height, TEXT_ALIGN Align, const char *pText, ...);
+	virtual void SetText(bool TextUpdate, TEXT_ALIGN Align, const char *pText, ...);
 
 private:
 	void ParseTypes(const char *String);
@@ -32,7 +32,6 @@ private:
 		int m_EndPos;
 	};
 
-	float m_Height;
 	TEXT_ALIGN m_Align;
 
 	bool m_TextUpdate;

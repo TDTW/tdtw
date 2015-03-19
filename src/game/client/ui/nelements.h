@@ -75,7 +75,7 @@ public:
 	{
 	};
 
-	virtual void SetText(bool TextUpdate, float Height, TEXT_ALIGN Align, const char *pText, ...)
+	virtual void SetText(bool TextUpdate, TEXT_ALIGN Align, const char *pText, ...)
 	{
 	};
 
@@ -113,8 +113,8 @@ protected:
 	vec4 m_DieCoord;
 	ANIMATION_TYPE m_DieAnimation;
 
-	class CValue *m_pPosLocal;
 	vec4 m_pPosGlobal;
+	class CValue *m_pPosLocal;
 	class CValue *m_pColor;
 	class CGameClient *m_pClient;
 	RENDER_LEVEL m_Renderlevel;

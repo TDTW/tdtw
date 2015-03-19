@@ -6,15 +6,12 @@
 #include <engine/graphics.h>
 #include <engine/textrender.h>
 #include <engine/demo.h>
-#include <engine/map.h>
 #include <engine/storage.h>
 #include <engine/sound.h>
 #include <engine/serverbrowser.h>
-#include <engine/shared/demo.h>
 #include <engine/shared/config.h>
 
 #include <game/generated/protocol.h>
-#include <game/generated/protocol_tdtw.h>
 #include <game/generated/client_data.h>
 
 #include <game/localization.h>
@@ -1249,9 +1246,9 @@ void CGameClient::ConTest(IConsole::IResult *pResult, void *pUserData)
 	((CGameClient*)pUserData)->ControllerNui()->GetElement(ELEMENT_BLOCK, "Test")->GetColor()->Init(vec4(1, 1, 1, 1));
 	((CGameClient*)pUserData)->ControllerNui()->GetElement(ELEMENT_BLOCK, "Test.Text")->GetPos()->Init(vec4(100, 100, 100, 100));
 	((CGameClient*)pUserData)->ControllerNui()->GetElement(ELEMENT_BLOCK, "Test.Text")->GetColor()->Init(vec4(0.2f, 0.0f, 0.3f, 1.0f));
-	((CGameClient*)pUserData)->ControllerNui()->GetElement(ELEMENT_TEXT, "Test.Text.asd")->GetPos()->Init(vec4(100, 100, 100, 100));
+	((CGameClient *) pUserData)->ControllerNui()->GetElement(ELEMENT_TEXT, "Test.Text.asd")->GetPos()->Init(vec4(100.0f, 100.0f, 100.0f, 25.0f));
 	((CGameClient*)pUserData)->ControllerNui()->GetElement(ELEMENT_TEXT, "Test.Text.asd")->GetColor()->Init(vec4(0, 0, 0, 1.0f));
-	((CGameClient*)pUserData)->ControllerNui()->GetElement(ELEMENT_TEXT, "Test.Text.asd")->SetText(false, 25.0f, ALIGN_CENTER, "TEST %d %d %d", 1, 2, 3);
+	((CGameClient *) pUserData)->ControllerNui()->GetElement(ELEMENT_TEXT, "Test.Text.asd")->SetText(false, ALIGN_CENTER, "TEST %d %d %d", 1, 2, 3);
 }
 
 void CGameClient::ConDynCameraToggle(IConsole::IResult *pResult, void *pUserData)
