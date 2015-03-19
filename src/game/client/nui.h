@@ -23,13 +23,13 @@ public:
 	CControllerNui(class CGameClient *Client);
 
 	CNUIElements *GetElement(ELEMENT_TYPES Type, const char *Name);
+	CNUIElements *ParseElementName(const char *pSrc);
 	int GetSize() {return m_aNui.size();}
 
 	CNUIElements *GetElement(int num)
 	{
 		return m_aNui[num];
 	}
-
 	void RemoveElement(CNUIElements *pNui);
 private:
 	class CGameClient *m_pClient;

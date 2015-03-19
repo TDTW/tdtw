@@ -8,7 +8,7 @@
 CNUIElements::CNUIElements(class CGameClient *pClient, class CControllerNui *pControllerNui, const char *Name)
 {
 	m_pName = Name;
-
+	m_pParent = 0;
 	m_pClient = pClient;
 	m_pControllerNui = pControllerNui;
 

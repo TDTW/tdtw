@@ -102,6 +102,7 @@ public:
 	void SetRenderLevel(RENDER_LEVEL Level) {m_Renderlevel = Level;}
 	RENDER_LEVEL GetRenderLevel() {return m_Renderlevel;}
 
+	CNUIElements *m_pParent;
 protected:
 	bool m_DieProcess;
 	bool m_EndLife;

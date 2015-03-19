@@ -206,7 +206,7 @@ int CControls::SnapInput(int *pData)
 
 	if(m_LastData.m_Fire && !m_Xui)
 	{
-		ControllerNui()->GetElement(ELEMENT_BLOCK, "Test")->GetPos()->Init(vec4(100, 100, 200, 200));
+		/*ControllerNui()->GetElement(ELEMENT_BLOCK, "Test")->GetPos()->Init(vec4(100, 100, 200, 200));
 		ControllerNui()->GetElement(ELEMENT_BLOCK, "Test")->GetPos()->Init(vec4(100, 100, 100, 100), 0.5f, (ANIMATION_TYPE) m_Xui2);
 		ControllerNui()->GetElement(ELEMENT_BLOCK, "Test")->GetColor()->Init(vec4(0.2f, 0, 0.3f, 0.1f));
 		ControllerNui()->GetElement(ELEMENT_BLOCK, "Test")->GetColor()->Init(vec4(0.2f, 1, 0.3f, 1), 0.3f, (ANIMATION_TYPE) m_Xui2);
@@ -227,7 +227,8 @@ int CControls::SnapInput(int *pData)
 		ControllerNui()->GetElement(ELEMENT_TEXT, "Score")->GetColor()->Init(vec4(0.2f, 0.8f, 0.5f, 0.8f), 10, (ANIMATION_TYPE) m_Xui2);
 
 		static int temp[] = {2, 3, 4};
-		ControllerNui()->GetElement(ELEMENT_TEXT, "Score")->SetText(true, 25.0f, ALIGN_CENTER, "TEST %d %d %d", &temp[0], &temp[1], &temp[2]);
+		ControllerNui()->GetElement(ELEMENT_TEXT, "Score")->SetText(true, 25.0f, ALIGN_CENTER, "TEST %d %d %d", &temp[0], &temp[1], &temp[2]);*/
+		ControllerNui()->GetElement(ELEMENT_BLOCK, "4pok.Mixa.Pixa.Spoki4")->GetPos()->Init(vec4(100, 100, 200, 200));
 
 		m_Xui = true;
 		m_Xui2 = (m_Xui2 + 1) % 3;

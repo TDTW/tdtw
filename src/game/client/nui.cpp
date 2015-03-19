@@ -8,21 +8,40 @@ CControllerNui::CControllerNui(CGameClient *Client)
 	m_pClient = Client;
 }
 
+CNUIElements *CControllerNui::ParseElementName(const char *pSrc)
+{
+	CNUIElements *pParent = 0;
+	bool First = true;
+	for(int i = 0; i < str_length(pSrc) ; i++)
+	{
+		if(pSrc[i] == '.')
+		{
+			char name[64] = {0};
+			mem_copy(name, pSrc, i);
+			pParent = GetElement(ELEMENT_BLOCK, name);
+
+		}
+	}
+	return pParent == 0 ? NULL : pParent;
+}
+
 CNUIElements *CControllerNui::GetElement(ELEMENT_TYPES Type, const char *Name)
 {
+	dbg_msg("GetElement", "%s", Name);
 	for (int i = 0; i < m_aNui.size(); ++i)
 	{
 		if (!strcmp(m_aNui[i]->m_pName, Name))
 			return m_aNui[i];
 	}
-	CNUIElements *NewElement = NULL;
+	CNUIElements *pNewElement = NULL;
+	CNUIElements *pParent = ParseElementName(Name);
 	switch (Type)
 	{
 		case ELEMENT_BLOCK:
-			NewElement = new CElementBlock(m_pClient, this, Name);
+			pNewElement = new CElementBlock(m_pClient, this, Name);
 			break;
 		case ELEMENT_TEXT:
-			NewElement = new CElementText(m_pClient, this, Name);
+			pNewElement = new CElementText(m_pClient, this, Name);
 			break;
 		case ELEMENT_QUAD:
 		case ELEMENT_TEE:
@@ -30,8 +49,11 @@ CNUIElements *CControllerNui::GetElement(ELEMENT_TYPES Type, const char *Name)
 			//NewElement = new CNUIElements(m_pClient, this, Name);
 			break;
 	}
-	m_aNui.add(NewElement);
-	return NewElement;
+	if(pParent != NULL && pNewElement != NULL)
+		pNewElement->m_pParent = pParent;
+	dbg_msg("GetElement", "Created");
+	m_aNui.add(pNewElement);
+	return pNewElement;
 }
 
 void CControllerNui::RemoveElement(CNUIElements *pNui)

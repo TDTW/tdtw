@@ -44,11 +44,11 @@ vec4 CValue::Animation(ANIMATION_TYPE anim, vec4 min, vec4 max, double time)
 	{
 		case EaseIN:			// плавно, вначале медленно, вконце быстро, общая скорость - очень медленно
 			time = -cos(time * pi / 2) + 1;
-			dbg_msg("EaseIN","%d", time);
+			//dbg_msg("EaseIN","%d", time);
 			break;
 		case EaseOUT:			// плавно, вначале быстро, вконце медленно, общая скорость - очень медленномедленно
 			time = sin(time * pi / 2);
-			dbg_msg("EaseOUT","%d", time);
+			//dbg_msg("EaseOUT","%d", time);
 			break;
 
 		case EaseINOUT:			// плавно, вначале и конце медленно, общая скорость - очень медленно
@@ -135,7 +135,7 @@ vec4 CValue::Animation(ANIMATION_TYPE anim, vec4 min, vec4 max, double time)
 			time=-time*time*8.0f/3.0f-time*5.0f/3.0f+1.0f;
 			break;*/
 		default:
-			dbg_msg("Default","%d", time);
+			//dbg_msg("Default","%d", time);
 			break;
 	}
 	return (min + ((max-min) * time));
