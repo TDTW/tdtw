@@ -61,10 +61,6 @@ void CElementText::Render()
 	{
 		str_copy(Text, m_UnUpdatedText, sizeof(m_UnUpdatedText));
 	}
-	if(m_pParent != NULL)
-		m_pPosGlobal = m_pParent->GetChildPosGlobal();
-	else
-		m_pPosGlobal = vec4(0, 0, 0, 0);
 
 	vec4 Pos = m_pPosLocal->m_Value;
 	Pos.x += m_pPosGlobal.x;

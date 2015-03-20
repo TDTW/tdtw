@@ -103,12 +103,36 @@ public:
 	virtual class CValue *GetColorOutline()
 	{
 	};
+
+	void SetChildClipping();
+
+	void DisableParentClipping()
+	{
+		m_StopClipByParent = true;
+	}
+
+	void EnableParentClipping()
+	{
+		m_StopClipByParent = false;
+	}
+
+	vec4 GetClipPos();
+
+	bool GetClipEnable()
+	{
+		return m_ClipUsed;
+	};
 	vec4 GetChildPosGlobal();
 	void SetRenderLevel(RENDER_LEVEL Level) {m_Renderlevel = Level;}
 	RENDER_LEVEL GetRenderLevel() {return m_Renderlevel;}
 
 	CNUIElements *m_pParent;
 protected:
+	bool m_StopClipByParent;
+	bool m_ClipUsed;
+	float m_XScale;
+	float m_YScale;
+
 	bool m_DieProcess;
 	bool m_EndLife;
 	float m_EndLifeDur;
