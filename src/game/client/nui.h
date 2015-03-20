@@ -31,10 +31,19 @@ public:
 		return m_aNui[num];
 	}
 	void RemoveElement(CNUIElements *pNui);
+
+	CNUIElements *m_pUnderMouse;
+	CNUIElements *m_pActiveElement;
+	CNUIElements *m_pLastActiveElement;
+
+	void OnMouseMove(vec2 MousePos);
+
+	vec2 GetMousePos();
 private:
 	class CGameClient *m_pClient;
-
+	vec2 m_MousePosition;
 	array<CNUIElements *> m_aNui;
+
 };
 
 #endif //GAME_CLIENT_NUI_H

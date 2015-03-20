@@ -15,7 +15,7 @@ CElementBlock::CElementBlock(class CGameClient *pClient, class CControllerNui *p
 void CElementBlock::Render()
 {
 	if(m_pParent != NULL)
-		m_pPosGlobal =m_pParent->GetChildPosGlobal();
+		m_pPosGlobal = m_pParent->GetChildPosGlobal();
 	else
 		m_pPosGlobal = vec4(0, 0, 0, 0);
 

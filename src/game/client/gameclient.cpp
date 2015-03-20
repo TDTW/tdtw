@@ -320,6 +320,7 @@ void CGameClient::DispatchInput()
 			if(m_Input.m_paComponents[h]->OnMouseMove(x, y))
 				break;
 		}
+		ControllerNui()->OnMouseMove(vec2(x, y));
 	}
 
 	// handle key presses
@@ -512,6 +513,7 @@ void CGameClient::OnRender()
 
 	CUIRect Screen = *UI()->Screen();
 	Graphics()->MapScreen(Screen.x, Screen.y, Screen.w, Screen.h);
+//	ControllerNui()->MouseUpdate();
 	for(int i= 0; i < m_ControllerNui->GetSize(); i++)
 	{
 		m_ControllerNui->GetElement(i)->PreRender();
@@ -1242,11 +1244,16 @@ void CGameClient::ConKill(IConsole::IResult *pResult, void *pUserData)
 void CGameClient::ConTest(IConsole::IResult *pResult, void *pUserData)
 {
 	((CGameClient*)pUserData)->ControllerNui()->GetElement(ELEMENT_BLOCK, "Test")->GetPos()->Init(vec4(100, 100, 200, 200));
-	//((CGameClient*)pUserData)->ControllerNui()->GetElement(ELEMENT_BLOCK, "Test")->GetPos()->Init(vec4(150, 170, 100, 100), 1, EaseOUT);
+	((CGameClient*)pUserData)->ControllerNui()->GetElement(ELEMENT_BLOCK, "Test")->GetPos()->Init(vec4(150, 170, 100, 100), 1, EaseOUT);
 	((CGameClient*)pUserData)->ControllerNui()->GetElement(ELEMENT_BLOCK, "Test")->GetColor()->Init(vec4(1, 1, 1, 1));
 	((CGameClient *) pUserData)->ControllerNui()->GetElement(ELEMENT_BLOCK, "Test")->GetColor()->Init(vec4(0.5f, 1, 0.5f, 0.8f), 1, EaseOUT);
+	//((CGameClient*)pUserData)->ControllerNui()->GetElement(ELEMENT_BLOCK, "Test")->m_UseVisualMouse = true;
 	((CGameClient *) pUserData)->ControllerNui()->GetElement(ELEMENT_BLOCK, "Test.Text")->GetPos()->Init(vec4(50, 50, 100, 100));
 	((CGameClient*)pUserData)->ControllerNui()->GetElement(ELEMENT_BLOCK, "Test.Text")->GetColor()->Init(vec4(0.2f, 0.0f, 0.3f, 1.0f));
+	((CGameClient*)pUserData)->ControllerNui()->GetElement(ELEMENT_BLOCK, "Test.Text")->SetCallbacksVisual(NULL,NULL,NULL,NULL);
+	((CGameClient*)pUserData)->ControllerNui()->GetElement(ELEMENT_BLOCK, "Test.Text")->SetCallbacksEvents(NULL,NULL,NULL);
+
+
 
 	((CGameClient *) pUserData)->ControllerNui()->GetElement(ELEMENT_TEXT, "Test.Text.asd")->GetPos()->Init(vec4(10.0f, 10.0f, 80.0f, 15.0f));
 	((CGameClient *) pUserData)->ControllerNui()->GetElement(ELEMENT_TEXT, "Test.Text.asd")->GetPos()->Init(vec4(30.0f, 30.0f, 80.0f, 25.0f), 1, EaseIN);
