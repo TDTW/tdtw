@@ -83,9 +83,9 @@ public:
 	{
 	};
 
-	void PreRender();
+	virtual void PreRender();
 
-	void PostRender();
+	virtual void PostRender();
 
 	void SetLifeTime(int LifeTime, float EndLifeDur = 1);
 	void SetEndLife(float EndLifeDur = 1);
@@ -99,6 +99,10 @@ public:
 
 	class CValue *GetPos() { return m_pPosLocal; }
 	class CValue *GetColor() { return m_pColor; }
+
+	virtual class CValue *GetColorOutline()
+	{
+	};
 	vec4 GetChildPosGlobal();
 	void SetRenderLevel(RENDER_LEVEL Level) {m_Renderlevel = Level;}
 	RENDER_LEVEL GetRenderLevel() {return m_Renderlevel;}

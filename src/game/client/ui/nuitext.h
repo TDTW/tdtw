@@ -11,9 +11,15 @@ class CElementText : public CNUIElements
 public:
 	CElementText(class CGameClient *pClient, class CControllerNui *pControllerNui, const char *Name);
 
-	virtual void Render();
+	virtual class CValue *GetColorOutline()
+	{
+		return m_pColorOutline;
+	};
 
+	virtual void Render();
 	virtual void SetText(bool TextUpdate, TEXT_ALIGN Align, const char *pText, ...);
+
+	virtual void PreRender();
 
 private:
 	void ParseTypes(const char *String);
@@ -32,6 +38,7 @@ private:
 		int m_EndPos;
 	};
 
+	class CValue *m_pColorOutline;
 	TEXT_ALIGN m_Align;
 
 	bool m_TextUpdate;

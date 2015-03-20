@@ -8,6 +8,7 @@ CElementText::CElementText(class CGameClient *pClient, class CControllerNui *pCo
 {
 	m_Align = ALIGN_LEFT;
 	m_TextUpdate = false;
+	m_pColorOutline = new CValue(this);
 }
 
 void CheckProcent2(char *message)
@@ -71,6 +72,7 @@ void CElementText::Render()
 
 	float Height = Pos.h * (g_Config.m_UiScale / 100.0f);
 
+	TextRender()->TextOutlineColor(m_pColorOutline->m_Value.r, m_pColorOutline->m_Value.g, m_pColorOutline->m_Value.b, m_pColorOutline->m_Value.a);
 	TextRender()->TextColor(m_pColor->m_Value.r, m_pColor->m_Value.g, m_pColor->m_Value.b, m_pColor->m_Value.a);    // TODO: Selected
 	if (m_Align == 0)
 	{
@@ -86,6 +88,7 @@ void CElementText::Render()
 	}
 
 	TextRender()->TextColor(1, 1, 1, 1);
+	TextRender()->TextOutlineColor(0.0f, 0.0f, 0.0f, 0.3f);
 }
 
 void CElementText::ParseTypes(const char *String)
@@ -141,4 +144,17 @@ void CElementText::SetText(bool TextUpdate, TEXT_ALIGN Align, const char *pText,
 	m_TextUpdate = TextUpdate;
 	m_pTextTemplate = pText;
 	m_Align = Align;
+}
+
+void CElementText::PreRender()
+{
+	if (m_EndLife && m_EndLifeTime < time_get() && !m_DieProcess)
+		m_pColorOutline->Init(vec4(m_pColorOutline->m_Value.r, m_pColorOutline->m_Value.g, m_pColorOutline->m_Value.b, 0.0f), m_EndLifeDur, Default); //TODO animation
+
+	CNUIElements::PreRender();
+
+	if (m_pColorOutline->m_AnimTime <= time_get() && time_get() <= m_pColorOutline->m_AnimEndTime)
+		m_pColorOutline->Recalculate();
+	else if (!m_pColorOutline->m_AnimEnded)
+		m_pColorOutline->EndAnimation();
 }

@@ -1242,12 +1242,17 @@ void CGameClient::ConKill(IConsole::IResult *pResult, void *pUserData)
 void CGameClient::ConTest(IConsole::IResult *pResult, void *pUserData)
 {
 	((CGameClient*)pUserData)->ControllerNui()->GetElement(ELEMENT_BLOCK, "Test")->GetPos()->Init(vec4(100, 100, 200, 200));
-	((CGameClient*)pUserData)->ControllerNui()->GetElement(ELEMENT_BLOCK, "Test")->GetPos()->Init(vec4(150, 170, 100, 100), 3, LINEAR);
+	//((CGameClient*)pUserData)->ControllerNui()->GetElement(ELEMENT_BLOCK, "Test")->GetPos()->Init(vec4(150, 170, 100, 100), 1, EaseOUT);
 	((CGameClient*)pUserData)->ControllerNui()->GetElement(ELEMENT_BLOCK, "Test")->GetColor()->Init(vec4(1, 1, 1, 1));
-	((CGameClient*)pUserData)->ControllerNui()->GetElement(ELEMENT_BLOCK, "Test.Text")->GetPos()->Init(vec4(100, 100, 100, 100));
+	((CGameClient *) pUserData)->ControllerNui()->GetElement(ELEMENT_BLOCK, "Test")->GetColor()->Init(vec4(0.5f, 1, 0.5f, 0.8f), 1, EaseOUT);
+	((CGameClient *) pUserData)->ControllerNui()->GetElement(ELEMENT_BLOCK, "Test.Text")->GetPos()->Init(vec4(50, 50, 100, 100));
 	((CGameClient*)pUserData)->ControllerNui()->GetElement(ELEMENT_BLOCK, "Test.Text")->GetColor()->Init(vec4(0.2f, 0.0f, 0.3f, 1.0f));
-	((CGameClient *) pUserData)->ControllerNui()->GetElement(ELEMENT_TEXT, "Test.Text.asd")->GetPos()->Init(vec4(100.0f, 100.0f, 100.0f, 25.0f));
+
+	((CGameClient *) pUserData)->ControllerNui()->GetElement(ELEMENT_TEXT, "Test.Text.asd")->GetPos()->Init(vec4(10.0f, 10.0f, 80.0f, 15.0f));
+	((CGameClient *) pUserData)->ControllerNui()->GetElement(ELEMENT_TEXT, "Test.Text.asd")->GetPos()->Init(vec4(30.0f, 30.0f, 80.0f, 25.0f), 1, EaseIN);
 	((CGameClient*)pUserData)->ControllerNui()->GetElement(ELEMENT_TEXT, "Test.Text.asd")->GetColor()->Init(vec4(0, 0, 0, 1.0f));
+	((CGameClient *) pUserData)->ControllerNui()->GetElement(ELEMENT_TEXT, "Test.Text.asd")->GetColorOutline()->Init(vec4(0, 0, 1, 1.0f));
+	((CGameClient *) pUserData)->ControllerNui()->GetElement(ELEMENT_TEXT, "Test.Text.asd")->GetColorOutline()->Init(vec4(1, 0, 0, 1.0f), 1, EaseIN);
 	((CGameClient *) pUserData)->ControllerNui()->GetElement(ELEMENT_TEXT, "Test.Text.asd")->SetText(false, ALIGN_CENTER, "TEST %d %d %d", 1, 2, 3);
 }
 
