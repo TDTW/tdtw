@@ -1,10 +1,11 @@
 #include <engine/client.h>
 #include <base/vmath.h>
+#include <engine/input.h>
 #include "nuitext.h"
 #include "value.h"
 #include <engine/graphics.h>
 #include <game/client/nui.h>
-#include <engine/external/zlib/deflate.h>
+#include <engine/keys.h>
 
 CNUIElements::CNUIElements(class CGameClient *pClient, class CControllerNui *pControllerNui, const char *Name)
 {
@@ -27,6 +28,18 @@ CNUIElements::CNUIElements(class CGameClient *pClient, class CControllerNui *pCo
 	m_DieAnimation = Default;
 
 	m_ClipUsed = false;
+
+	m_FocusOn = NULL;
+	m_FocusOut = NULL;
+	m_MouseDown = NULL;
+	m_MouseUp = NULL;
+
+	m_Click = NULL;
+	m_DblClick = NULL;
+	m_RightClick = NULL;
+
+	m_UseVisualMouse = false;
+	m_UseEventMouse = false;
 }
 
 void CNUIElements::SetLifeTime(int LifeTime, float EndLifeDur)
@@ -34,6 +47,23 @@ void CNUIElements::SetLifeTime(int LifeTime, float EndLifeDur)
 	m_EndLife = true;
 	m_EndLifeDur = EndLifeDur;
 	m_EndLifeTime = time_get() + LifeTime * time_freq();
+}
+
+void CNUIElements::SetCallbacksVisual(CallBack FocusOn, CallBack FocusOut, CallBack MouseDown, CallBack MouseUp)
+{
+	m_FocusOn = FocusOn;
+	m_FocusOut = FocusOut;
+	m_MouseDown = MouseDown;
+	m_MouseUp = MouseUp;
+	m_UseVisualMouse = true;
+}
+
+void CNUIElements::SetCallbacksEvents(CallBack Click, CallBack DblClick, CallBack RightClick)
+{
+	m_Click = Click;
+	m_DblClick = DblClick;
+	m_RightClick = RightClick;
+	m_UseEventMouse = true;
 }
 
 void CNUIElements::SetEndLife(float EndLifeDur)
@@ -46,6 +76,68 @@ void CNUIElements::SetEndLifeAnimation(ANIMATION_TYPE animation_type, vec4 Coord
 {
 	m_DieAnimation = animation_type;
 	m_DieCoord = Coord;
+}
+
+bool CNUIElements::MouseInside()
+{
+	if(m_pControllerNui->GetMousePos().x >= GetChildPosGlobal().x &&
+			m_pControllerNui->GetMousePos().x <= GetChildPosGlobal().x+m_pPosLocal->m_Value.w &&
+			m_pControllerNui->GetMousePos().y >= GetChildPosGlobal().y &&
+			m_pControllerNui->GetMousePos().y <= GetChildPosGlobal().y+m_pPosLocal->m_Value.h)
+		return true;
+	return false;
+}
+
+void CNUIElements::CheckMouseVisual()
+{
+	if(MouseInside() && m_pControllerNui->m_pUnderMouse != this) //FOCUS ON
+	{
+		m_pControllerNui->m_pUnderMouse = this;
+		if(m_FocusOn)
+			m_FocusOn(this);
+		dbg_msg("ELEMENT", "FOCUS ON %s", m_pName);
+	}
+	else if(m_pControllerNui->m_pUnderMouse == this && !MouseInside()) //FOCUS OUT
+	{
+		m_pControllerNui->m_pUnderMouse = NULL;
+		if(m_FocusOut)
+			m_FocusOut(this);
+		m_pControllerNui->m_pActiveElement = NULL;
+		dbg_msg("ELEMENT", "FOCUS OUT %s", m_pName);
+	}
+
+	if(m_pControllerNui->m_pUnderMouse == this && m_pClient->Input()->KeyDown(KEY_MOUSE_1))
+	{
+		if(m_MouseDown)
+			m_MouseDown(this);
+		m_pControllerNui->m_pActiveElement = this;
+		dbg_msg("ELEMENT", "MOUSE DOWN %s", m_pName);
+	}
+	else if(m_pControllerNui->m_pUnderMouse == this && m_pClient->Input()->KeyUp(KEY_MOUSE_1))
+	{
+		if(m_MouseUp)
+			m_MouseUp(this);
+		if(m_Click)
+			m_Click(this);
+		m_pControllerNui->m_pLastActiveElement = m_pControllerNui->m_pActiveElement;
+		dbg_msg("ELEMENT", "MOUSE UP %s", m_pName);
+	}
+}
+
+void CNUIElements::CheckMouseEvent()
+{
+	if(m_pControllerNui->m_pUnderMouse == this && m_pClient->Input()->MouseDoubleClick())
+	{
+		if(m_DblClick && !m_Click)
+			m_DblClick(this);
+		dbg_msg("ELEMENT", "Dbl Click %s",m_pName);
+	}
+	if(m_pControllerNui->m_pUnderMouse == this && m_pClient->Input()->KeyUp(KEY_MOUSE_2))
+	{
+		if(m_RightClick && !m_DblClick)
+			m_RightClick(this);
+		dbg_msg("ELEMENT", "Right Click %s",m_pName);
+	}
 }
 
 void CNUIElements::PreRender()
@@ -81,6 +173,9 @@ void CNUIElements::PreRender()
 		Graphics()->ClipEnable((int) Pos.x, (int) Pos.y, (int) Pos.w, (int) Pos.h);
 		//dbg_msg("olol", "%d %d %d %d", (int)Pos.x, (int)Pos.y, (int)Pos.w, (int)Pos.h);
 	}
+
+	if(m_UseVisualMouse && !m_DieProcess)
+		CheckMouseVisual();
 }
 
 void CNUIElements::PostRender()
@@ -90,6 +185,9 @@ void CNUIElements::PostRender()
 
 	if (m_pParent && m_pParent->GetClipEnable() && !m_StopClipByParent)
 		Graphics()->ClipDisable();
+	
+	if(m_UseEventMouse && !m_DieProcess)
+		CheckMouseEvent();
 }
 
 vec4 CNUIElements::GetChildPosGlobal()
@@ -133,3 +231,4 @@ vec4 CNUIElements::GetClipPos()
 
 	return Pos;
 }
+vec4 CNUIElements::GetChildPosGlobal()  { return m_pPosGlobal+m_pPosLocal->m_Value; }

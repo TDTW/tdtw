@@ -96,6 +96,7 @@ public:
 	int KeyReleases(int Key) { return m_aInputCount[m_InputCurrent][Key].m_Releases; }
 	int KeyPresses(int Key) { return m_aInputCount[m_InputCurrent][Key].m_Presses; }
 	int KeyDown(int Key) { return KeyPressed(Key)&&!KeyWasPressed(Key); }
+	int KeyUp(int Key) { return !KeyPressed(Key)&&KeyWasPressed(Key); }
 	const char *KeyName(int Key) { return (Key >= 0 && Key < 512) ? g_aaKeyStrings[Key] : g_aaKeyStrings[0]; }
     //Joystick
     virtual int GetAxis(int Axis) = 0;

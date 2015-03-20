@@ -320,6 +320,7 @@ void CGameClient::DispatchInput()
 			if(m_Input.m_paComponents[h]->OnMouseMove(x, y))
 				break;
 		}
+		ControllerNui()->OnMouseMove(vec2(x, y));
 	}
 
 	// handle key presses
@@ -512,6 +513,7 @@ void CGameClient::OnRender()
 
 	CUIRect Screen = *UI()->Screen();
 	Graphics()->MapScreen(Screen.x, Screen.y, Screen.w, Screen.h);
+//	ControllerNui()->MouseUpdate();
 	for(int i= 0; i < m_ControllerNui->GetSize(); i++)
 	{
 		m_ControllerNui->GetElement(i)->PreRender();
@@ -1250,6 +1252,10 @@ void CGameClient::ConTest(IConsole::IResult *pResult, void *pUserData)
 	((CGameClient *) pUserData)->ControllerNui()->GetElement(ELEMENT_BLOCK, "Test.Text")->GetColor()->Init(vec4(0.2f, 0.0f, 0.3f, 1.0f));
 	((CGameClient *) pUserData)->ControllerNui()->GetElement(ELEMENT_BLOCK, "Test")->SetChildClipping();
 	((CGameClient *) pUserData)->ControllerNui()->GetElement(ELEMENT_BLOCK, "Test.Text")->SetChildClipping();
+	((CGameClient *) pUserData)->ControllerNui()->GetElement(ELEMENT_BLOCK, "Test.Text")->SetCallbacksVisual(NULL,NULL,NULL,NULL);
+	((CGameClient *) pUserData)->ControllerNui()->GetElement(ELEMENT_BLOCK, "Test.Text")->SetCallbacksEvents(NULL,NULL,NULL);
+
+
 
 	((CGameClient *) pUserData)->ControllerNui()->GetElement(ELEMENT_TEXT, "Test.Text.asd")->GetPos()->Init(vec4(10.0f, 10.0f, 80.0f, 25.0f));
 	((CGameClient *) pUserData)->ControllerNui()->GetElement(ELEMENT_TEXT, "Test.Text.asd")->GetPos()->Init(vec4(130.0f, 30.0f, 80.0f, 25.0f), 1, EaseIN);

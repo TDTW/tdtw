@@ -60,6 +60,8 @@ enum CORNER_TYPES
 	CORNER_ALL = CORNER_T | CORNER_B
 };
 
+typedef void (*CallBack)(class CNUIElements *Element);
+
 class CNUIElements
 {
 public:
@@ -83,8 +85,10 @@ public:
 	{
 	};
 
+	void SetCallbacksVisual(CallBack FocusOn, CallBack FocusOut, CallBack MouseDown, CallBack MouseUp);
+	void SetCallbacksEvents(CallBack Click, CallBack DblClick, CallBack RightClick);
+	
 	virtual void PreRender();
-
 	virtual void PostRender();
 
 	void SetLifeTime(int LifeTime, float EndLifeDur = 1);
@@ -127,7 +131,18 @@ public:
 	RENDER_LEVEL GetRenderLevel() {return m_Renderlevel;}
 
 	CNUIElements *m_pParent;
+	bool m_UseVisualMouse;
 protected:
+	//Visual
+	CallBack m_FocusOn;
+	CallBack m_FocusOut;
+	CallBack m_MouseDown;
+	CallBack m_MouseUp;
+	//Event
+	CallBack m_Click;
+	CallBack m_DblClick;
+	CallBack m_RightClick;
+
 	bool m_StopClipByParent;
 	bool m_ClipUsed;
 	float m_XScale;
@@ -147,6 +162,15 @@ protected:
 	class CGameClient *m_pClient;
 	RENDER_LEVEL m_Renderlevel;
 	class CControllerNui *m_pControllerNui;
+
+
+	bool m_UseEventMouse;
+private:
+	void CheckMouseVisual();
+
+	void CheckMouseEvent();
+
+	bool MouseInside();
 };
 
 #endif //GAME_CLIENT_UI_NELEMENTS_H

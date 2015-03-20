@@ -1,12 +1,40 @@
 #include <engine/graphics.h>
 #include <engine/client.h>
 #include <engine/textrender.h>
+#include <engine/shared/config.h>
 #include "nui.h"
 
 CControllerNui::CControllerNui(CGameClient *Client)
 {
 	m_pClient = Client;
+	m_pUnderMouse = NULL;
+	m_pActiveElement = NULL;
+	m_pLastActiveElement = NULL;
+	m_MousePosition = vec2(0,0);
 }
+
+void CControllerNui::OnMouseMove(vec2 MousePos)
+{
+	float Fac = (float)(g_Config.m_UiMousesens)/g_Config.m_InpMousesens;
+	MousePos.x = MousePos.x*Fac;
+	MousePos.y = MousePos.y*Fac;
+	m_MousePosition.x += MousePos.x;
+	m_MousePosition.y += MousePos.y;
+	if(m_MousePosition.x < 0) m_MousePosition.x = 0;
+	if(m_MousePosition.y < 0) m_MousePosition.y = 0;
+	if(m_MousePosition.x > m_pClient->Graphics()->ScreenWidth()) m_MousePosition.x = m_pClient->Graphics()->ScreenWidth();
+	if(m_MousePosition.y > m_pClient->Graphics()->ScreenHeight()) m_MousePosition.y = m_pClient->Graphics()->ScreenHeight();
+}
+vec2 CControllerNui::GetMousePos()
+{
+	CUIRect *pScreen = m_pClient->UI()->Screen();
+
+	float MousePositionX = (m_MousePosition.x/(float)m_pClient->Graphics()->ScreenWidth())*pScreen->w;
+	float MousePositionY = (m_MousePosition.y/(float)m_pClient->Graphics()->ScreenHeight())*pScreen->h;
+	//dbg_msg("MOUSE", "%f %f", MousePositionX, MousePositionY);
+	return vec2(MousePositionX, MousePositionY);
+}
+
 
 CNUIElements *CControllerNui::ParseElementName(const char *pSrc)
 {
@@ -14,7 +42,8 @@ CNUIElements *CControllerNui::ParseElementName(const char *pSrc)
 	{
 		if(pSrc[i] == '.')
 		{
-			char *name = new char[64] {0};
+			char *name = new char[64];
+			memset(name, 0, 64);
 			str_copy(name, pSrc, i+1);
 			return GetElement(ELEMENT_BLOCK, name);
 		}
