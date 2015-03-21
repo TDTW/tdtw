@@ -1244,9 +1244,9 @@ void CGameClient::ConKill(IConsole::IResult *pResult, void *pUserData)
 static int type = -1;
 void Test(CNUIElements *test)
 {
-	type = (type + 1) % 3;
+	type = (type + 1) % 1;
 	test->GetPos()->Init(vec4(0, 50, 100, 100));
-	test->GetPos()->Init(vec4(200, 50, 100, 100), 1, (ANIMATION_TYPE) (type + (int) EaseINBounce));
+	test->GetPos()->Init(vec4(200, 50, 100, 100), 3, (ANIMATION_TYPE) (type + (int) EaseINOUTBounce));
 }
 void Test2(CNUIElements *test)
 {

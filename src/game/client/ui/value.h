@@ -59,6 +59,8 @@ private:
 	class CNUIElements *m_pNui;
 
 	vec4 Animation(ANIMATION_TYPE anim, vec4 min, vec4 max, float time);
+
+	float BounceOut(float time);
 };
 
 #endif //GAME_CLIENT_UI_VALUE_H

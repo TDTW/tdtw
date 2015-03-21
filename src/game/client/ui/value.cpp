@@ -201,150 +201,34 @@ vec4 CValue::Animation(ANIMATION_TYPE anim, vec4 min, vec4 max, float time)
 			break;
 
 		case EaseINElastic:		// плавно, вконце эластично
-			s = 1.70158f;
-			p = time * 0.3f;
-			a = (time < 0) ? -1 : 1;
-
-			if (time < 0)
-				s = p / 4;
-			else
-				s = p / (2 * pi) * sinf(a);
-
-			time -= 1;
-			time = -(a * powf(2.0f, 10 * time)) * sinf((time * (time + 1) - s) * (2 * pi) / p);
+			time = sinf(13 * pi / 2.0f * time) * powf(2.0f, 10 * (time - 1));
 			break;
 		case EaseOUTElastic:	// плавно, вначале эластично
-			s = 1.70158f;
-			p = time * 0.3f;
-			a = (time < 0) ? -1 : 1;
-
-			if (time < 0)
-				s = p / 4;
-			else
-				s = p / (2 * pi) * sinf(a);
-
-			time = a * powf(2.0f, -10 * time) * sinf((time * time - s) * (2 * pi) / p) + 1;
+			time = sinf(-13 * pi / 2.0f * (time + 1)) * powf(2.0f, -10 * time) + 1;
 			break;
 		case EaseINOUTElastic:	// плавно, в центре эластично
-			d = time;
-			time *= 2;
-
-			s = 1.70158f;
-			p = d * (0.3f * 1.5f);
-			a = (time < 0) ? -1 : 1;
-
-			if (time < 0)
-				s = p / 4;
-			else
-				s = p / (2 * pi) * sinf(a);
-
-			if (time < 1)
+			if (time < 0.5)
 			{
-				time -= 1;
-				time = -0.5f * (a * powf(2.0f, 10 * time) * sinf((time * d - s) * (2 * pi) / p));
+				time = 0.5f * sinf(13 * pi / 2.0f * (2 * time)) * powf(2.0f, 10 * ((2.0f * time) - 1));
 			}
 			else
 			{
-				time -= 1;
-				time = a * powf(2.0f, -10 * time) * sinf((time * d - s) * (2 * pi) / p) * 0.5f + 1;
+				time = 0.5f * (sinf(-13 * pi / 2.0f * ((2 * time - 1) + 1)) * powf(2.0f, -10 * (2.0f * time - 1)) + 2);
 			}
 
 			break;
 
 		case EaseINBounce:        // плавно, прыгает медленно
-			time = 1.0f - time;
-			if (time < 1 / 2.75f)
-			{
-				time = 1 - 7.5625f * time * time;
-			}
-			else if (time < 2 / 2.75f)
-			{
-				time -= 1.5f / 2.75f;
-				time = 1 - 7.5625f * time * time - 0.75f;
-			}
-			else if (time < 2.5 / 2.75f)
-			{
-				time -= 2.25f / 2.75f;
-				time = 1 - 7.5625f * time * time - 0.9375f;
-			}
-			else
-			{
-				time -= 2.625f / 2.75f;
-				time = 1 - 7.5625f * time * time - 0.984375f;
-			}
+			time = 1 - BounceOut(1 - time);
 			break;
 		case EaseOUTBounce:		// плавно, сразу прыгает
-			if (time < 1 / 2.75f)
-			{
-				time = 7.5625f * time * time;
-			}
-			else if (time < 2 / 2.75f)
-			{
-				time -= 1.5f / 2.75f;
-				time = 7.5625f * time * time + 0.75f;
-			}
-			else if (time < 2.5 / 2.75f)
-			{
-				time -= 2.25f / 2.75f;
-				time = 7.5625f * time * time + 0.9375f;
-			}
-			else
-			{
-				time -= 2.625f / 2.75f;
-				time = 7.5625f * time * time + 0.984375f;
-			}
+			time = BounceOut(time);
 			break;
 		case EaseINOUTBounce:	// плавно, прыгает и вначале и вконце
-			d = time;
-			time *= 2;
-			if (time < 1)
-			{
-				time = 1.0f - time;
-				if (time < 1 / 2.75f)
-				{
-					time = 1 - 7.5625f * time * time;
-				}
-				else if (time < 2 / 2.75f)
-				{
-					time -= 1.5f / 2.75f;
-					time = 1 - 7.5625f * time * time - 0.75f;
-				}
-				else if (time < 2.5 / 2.75f)
-				{
-					time -= 2.25f / 2.75f;
-					time = 1 - 7.5625f * time * time - 0.9375f;
-				}
-				else
-				{
-					time -= 2.625f / 2.75f;
-					time = 1 - 7.5625f * time * time - 0.984375f;
-				}
-				time *= 0.5f;
-			}
+			if (time < 0.5f)
+				time = 0.5f * (1 - BounceOut(1 - time * 2));
 			else
-			{
-				time -= d;
-				if (time < 1 / 2.75f)
-				{
-					time = 7.5625f * time * time;
-				}
-				else if (time < 2 / 2.75f)
-				{
-					time -= 1.5f / 2.75f;
-					time = 7.5625f * time * time + 0.75f;
-				}
-				else if (time < 2.5 / 2.75f)
-				{
-					time -= 2.25f / 2.75f;
-					time = 7.5625f * time * time + 0.9375f;
-				}
-				else
-				{
-					time -= 2.625f / 2.75f;
-					time = 7.5625f * time * time + 0.984375f;
-				}
-				time = time * 0.5f + 0.5f;
-			}
+				time = 0.5f * BounceOut(time * 2 - 1) + 0.5f;
 			break;
 
 		default:
@@ -352,4 +236,25 @@ vec4 CValue::Animation(ANIMATION_TYPE anim, vec4 min, vec4 max, float time)
 			break;
 	}
 	return (min + ((max-min) * time));
+}
+
+float CValue::BounceOut(float time)
+{
+	if (time < 4 / 11.0f)
+	{
+		time = (121 * time * time) / 16.0f;
+	}
+	else if (time < 8 / 11.0f)
+	{
+		time = (363 / 40.0f * time * time) - (99 / 10.0f * time) + 17 / 5.0f;
+	}
+	else if (time < 9 / 10.0f)
+	{
+		time = (4356 / 361.0f * time * time) - (35442 / 1805.0f * time) + 16061 / 1805.0f;
+	}
+	else
+	{
+		time = (54 / 5.0f * time * time) - (513 / 25.0f * time) + 268 / 25.0f;
+	}
+	return time;
 }
