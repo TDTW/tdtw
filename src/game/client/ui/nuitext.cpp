@@ -54,6 +54,11 @@ void CElementText::Render()
 					str_format(TempStr, sizeof(TempStr), TempStr, *(char *) m_aArgs[i]->m_Args);
 					str_append(Text, TempStr, sizeof(TempStr));
 					break;
+				case LONG:
+					str_format(TempStr, sizeof(TempStr), TempStr, *(long *) m_aArgs[i]->m_Args);
+					str_append(Text, TempStr, sizeof(TempStr));
+					break;
+
 			}
 		}
 	}
@@ -110,6 +115,15 @@ void CElementText::ParseTypes(const char *String)
 					m_aArgs[Temp]->m_ArgType = STRING;
 					m_aArgs[Temp++]->m_EndPos = nLetter + 1;
 					break;
+				case 'l':
+					m_aArgs[Temp]->m_ArgType = LONG;
+					m_aArgs[Temp++]->m_EndPos = nLetter + 1;
+					break;
+			}
+			if (String[nLetter + 1] == '0' && String[nLetter + 2] == '.' && String[nLetter + 3] == '2' && String[nLetter + 4] == 'f')
+			{
+				m_aArgs[Temp]->m_ArgType = FLOAT;
+				m_aArgs[Temp++]->m_EndPos = nLetter + 4;
 			}
 		}
 	}

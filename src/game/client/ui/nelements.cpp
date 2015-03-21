@@ -2,7 +2,6 @@
 #include <base/vmath.h>
 #include <engine/input.h>
 #include "nuitext.h"
-#include "value.h"
 #include <engine/graphics.h>
 #include <game/client/nui.h>
 #include <engine/keys.h>
@@ -66,6 +65,7 @@ void CNUIElements::SetCallbacksEvents(CallBack Click, CallBack DblClick, CallBac
 	m_DblClick = DblClick;
 	m_RightClick = RightClick;
 	m_UseEventMouse = true;
+	m_UseVisualMouse = true;
 }
 
 void CNUIElements::SetEndLife(float EndLifeDur)
@@ -118,8 +118,6 @@ void CNUIElements::CheckMouseVisual()
 	{
 		if(m_MouseUp)
 			m_MouseUp(this);
-		if(m_Click)
-			m_Click(this);
 		m_pControllerNui->m_pLastActiveElement = m_pControllerNui->m_pActiveElement;
 		//dbg_msg("ELEMENT", "MOUSE UP %s", m_pName);
 	}
@@ -127,6 +125,13 @@ void CNUIElements::CheckMouseVisual()
 
 void CNUIElements::CheckMouseEvent()
 {
+	if (m_pControllerNui->m_pUnderMouse == this && m_pClient->Input()->KeyUp(KEY_MOUSE_1))
+	{
+		if (m_Click)
+			m_Click(this);
+		m_pControllerNui->m_pLastActiveElement = m_pControllerNui->m_pActiveElement;
+		//dbg_msg("ELEMENT", "MOUSE UP %s", m_pName);
+	}
 	if(m_pControllerNui->m_pUnderMouse == this && m_pClient->Input()->MouseDoubleClick())
 	{
 		if(m_DblClick && !m_Click)

@@ -1240,9 +1240,13 @@ void CGameClient::ConKill(IConsole::IResult *pResult, void *pUserData)
 {
 	((CGameClient*)pUserData)->SendKill(-1);
 }
+
+static int type = -1;
 void Test(CNUIElements *test)
 {
-	test->GetColor()->Init(vec4(1,1,1,1), 0.5f, Default);
+	type = (type + 1) % 3;
+	test->GetPos()->Init(vec4(0, 50, 100, 100));
+	test->GetPos()->Init(vec4(200, 50, 100, 100), 1, (ANIMATION_TYPE) (type + (int) EaseINBounce));
 }
 void Test2(CNUIElements *test)
 {
@@ -1256,7 +1260,15 @@ void Test3(CNUIElements *test)
 }
 void CGameClient::ConTest(IConsole::IResult *pResult, void *pUserData)
 {
-	((CGameClient *) pUserData)->ControllerNui()->RemoveElement("Test");
+	((CGameClient *) pUserData)->ControllerNui()->GetElement(ELEMENT_BLOCK, "Test")->GetPos()->Init(vec4(0, 50, 100, 100));
+	((CGameClient *) pUserData)->ControllerNui()->GetElement(ELEMENT_BLOCK, "Test")->GetColor()->Init(vec4(1, 1, 1, 1));
+	((CGameClient *) pUserData)->ControllerNui()->GetElement(ELEMENT_BLOCK, "Test")->SetCallbacksEvents(Test, NULL, NULL);
+
+	((CGameClient *) pUserData)->ControllerNui()->GetElement(ELEMENT_TEXT, "Test.Text2")->GetPos()->Init(vec4(0, 20, 100, 10));
+	((CGameClient *) pUserData)->ControllerNui()->GetElement(ELEMENT_TEXT, "Test.Text2")->GetColor()->Init(vec4(1, 0, 0, 1));
+	((CGameClient *) pUserData)->ControllerNui()->GetElement(ELEMENT_TEXT, "Test.Text2")->SetText(true, ALIGN_CENTER, "Type = %d", &type);
+
+	/*((CGameClient *) pUserData)->ControllerNui()->RemoveElement("Test");
 	((CGameClient *) pUserData)->ControllerNui()->RemoveElement("Test1");
 	((CGameClient *) pUserData)->ControllerNui()->RemoveElement("Test2");
 	((CGameClient *) pUserData)->ControllerNui()->RemoveElement("Test3");
@@ -1298,7 +1310,8 @@ void CGameClient::ConTest(IConsole::IResult *pResult, void *pUserData)
 	((CGameClient *) pUserData)->ControllerNui()->GetElement(ELEMENT_TEXT, "Test.Text.asd")->GetColor()->Init(vec4(0, 0, 0, 1.0f));
 	((CGameClient *) pUserData)->ControllerNui()->GetElement(ELEMENT_TEXT, "Test.Text.asd")->GetColorOutline()->Init(vec4(0, 0, 1, 1.0f));
 	((CGameClient *) pUserData)->ControllerNui()->GetElement(ELEMENT_TEXT, "Test.Text.asd")->GetColorOutline()->Init(vec4(1, 0, 0, 1.0f), 1, Default);
-	((CGameClient *) pUserData)->ControllerNui()->GetElement(ELEMENT_TEXT, "Test.Text.asd")->SetText(false, ALIGN_CENTER, "TEST %d %d %d", 1, 2, 3);
+	((CGameClient *) pUserData)->ControllerNui()->GetElement(ELEMENT_TEXT, "Test.Text.asd")->SetText(false, ALIGN_CENTER, "TEST %d %d %d", 1, 2, 3);*/
+
 }
 
 void CGameClient::ConDynCameraToggle(IConsole::IResult *pResult, void *pUserData)

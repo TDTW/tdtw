@@ -28,7 +28,8 @@ private:
 	{
 		INT,
 		FLOAT,
-		STRING
+		STRING,
+		LONG
 	};
 
 	struct sArg
