@@ -46,6 +46,8 @@ public:
 	void Init(vec4 value);
 	void Init(vec4 value, float time, ANIMATION_TYPE animation_type);
 
+	void InitPlus(vec4 value, float time, ANIMATION_TYPE animation_type);
+
 	void Recalculate();
 	void EndAnimation();
 

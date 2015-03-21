@@ -258,3 +258,14 @@ float CValue::BounceOut(float time)
 	}
 	return time;
 }
+
+void CValue::InitPlus(vec4 Value, float time, ANIMATION_TYPE animation_type)
+{
+	m_NewValue = m_Value + Value;
+	m_OldValue = m_Value;
+
+	m_AnimEnded = false;
+	m_Animation = animation_type;
+	m_AnimTime = time_get();
+	m_AnimEndTime = time_get() + (int) round(time_freq() * time);
+}
