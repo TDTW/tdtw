@@ -98,7 +98,8 @@ public:
 		return m_ClipUsed;
 	};
 	vec4 GetChildPosGlobal();
-	void SetRenderLevel(RENDER_LEVEL Level) {m_Renderlevel = Level;}
+
+	void SetRenderLevel(RENDER_LEVEL Level);
 	RENDER_LEVEL GetRenderLevel() {return m_Renderlevel;}
 
 	CNUIElements *m_pParent;

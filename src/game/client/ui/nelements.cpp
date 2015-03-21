@@ -247,3 +247,8 @@ vec4 CNUIElements::GetClipWithoutScale()
 	}
 	return Pos;
 }
+
+void CNUIElements::SetRenderLevel(RENDER_LEVEL Level)
+{
+	m_pControllerNui->ChangeElementLevel(this, Level);
+}

@@ -95,11 +95,21 @@ public:
 	}
 
 	/*
-		Function: remove_index_fast
+		Function: move_after
 
-		Remarks:
-			- Invalidates ranges
+		Remakrs:
+			- Swap latest and current type by index
 	*/
+	void move_after(const T &index, T after)
+	{
+		T Temp = index;
+		remove(index);
+
+		incsize();
+
+		insert(Temp, plain_range<T>::plain_range(after, after));
+
+	}
 	void remove_index_fast(int index)
 	{
 		list[index] = list[num_elements-1];

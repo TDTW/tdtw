@@ -11,6 +11,10 @@ CControllerNui::CControllerNui(CGameClient *Client)
 	m_pActiveElement = NULL;
 	m_pLastActiveElement = NULL;
 	m_MousePosition = vec2(0,0);
+	for (int i = 0; i < 5; i++)
+	{
+		m_aLastRenderLevel[i] = NULL;
+	}
 }
 
 void CControllerNui::OnMouseMove(vec2 MousePos)
@@ -82,8 +86,11 @@ CNUIElements *CControllerNui::GetElement(ELEMENT_TYPES Type, const char *Name)
 		pNewElement->m_pParent = pParent;
 	if(pParent)
 		dbg_msg("GetElement", "Created %s->%s",pParent->m_pName, pNewElement->m_pName);
-	else dbg_msg("GetElement", "Created %s", pNewElement->m_pName);
+	else
+		dbg_msg("GetElement", "Created %s", pNewElement->m_pName);
+
 	m_aNui.add(pNewElement);
+	ChangeElementLevel(pNewElement, NORMAL);
 	return pNewElement;
 }
 
@@ -117,4 +124,21 @@ class ITextRender *CNUIElements::TextRender() const
 class CRenderTools *CNUIElements::RenderTools() const
 {
 	return m_pClient->RenderTools();
+}
+
+void CControllerNui::ChangeElementLevel(CNUIElements *Element, RENDER_LEVEL Level)
+{
+	for (int i = 0; i < m_aNui.size(); ++i)
+	{
+		if (m_aNui[i] == Element)
+		{
+			if (m_aNui[i - 1] && Element->GetRenderLevel() == m_aNui[i - 1]->GetRenderLevel())
+				m_aLastRenderLevel[Element->GetRenderLevel()] = m_aNui[i - 1];
+			else
+				m_aLastRenderLevel[Element->GetRenderLevel()] = NULL;
+		}
+	}
+
+	m_aNui.move_after(Element, m_aLastRenderLevel[Level]);
+	m_aLastRenderLevel[Level] = Element;
 }
