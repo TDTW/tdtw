@@ -1240,7 +1240,14 @@ void CGameClient::ConKill(IConsole::IResult *pResult, void *pUserData)
 {
 	((CGameClient*)pUserData)->SendKill(-1);
 }
-
+void Test(CNUIElements *test)
+{
+	test->GetColor()->Init(vec4(1,1,1,1), 0.5f, Default);
+}
+void Test2(CNUIElements *test)
+{
+	test->GetColor()->Init(vec4(0.2f, 0.0f, 0.3f, 1.0f), 0.5f, Default);
+}
 void CGameClient::ConTest(IConsole::IResult *pResult, void *pUserData)
 {
 	((CGameClient *) pUserData)->ControllerNui()->GetElement(ELEMENT_BLOCK, "Test")->GetPos()->Init(vec4(100, 100, 200, 200));
@@ -1248,11 +1255,11 @@ void CGameClient::ConTest(IConsole::IResult *pResult, void *pUserData)
 	((CGameClient *) pUserData)->ControllerNui()->GetElement(ELEMENT_BLOCK, "Test")->GetColor()->Init(vec4(1, 1, 1, 1));
 	((CGameClient *) pUserData)->ControllerNui()->GetElement(ELEMENT_BLOCK, "Test")->GetColor()->Init(vec4(0.5f, 1, 0.5f, 0.8f), 1, Default);
 	((CGameClient *) pUserData)->ControllerNui()->GetElement(ELEMENT_BLOCK, "Test.Text")->GetPos()->Init(vec4(50, 50, 100, 100));
-	//((CGameClient *) pUserData)->ControllerNui()->GetElement(ELEMENT_BLOCK, "Test.Text")->GetPos()->Init(vec4(120, 120, 100, 100), 2, Default);
+	((CGameClient *) pUserData)->ControllerNui()->GetElement(ELEMENT_BLOCK, "Test.Text")->GetPos()->Init(vec4(120, 120, 100, 100), 2, Default);
 	((CGameClient *) pUserData)->ControllerNui()->GetElement(ELEMENT_BLOCK, "Test.Text")->GetColor()->Init(vec4(0.2f, 0.0f, 0.3f, 1.0f));
 	((CGameClient *) pUserData)->ControllerNui()->GetElement(ELEMENT_BLOCK, "Test")->SetChildClipping();
 	((CGameClient *) pUserData)->ControllerNui()->GetElement(ELEMENT_BLOCK, "Test.Text")->SetChildClipping();
-	((CGameClient *) pUserData)->ControllerNui()->GetElement(ELEMENT_BLOCK, "Test.Text")->SetCallbacksVisual(NULL,NULL,NULL,NULL);
+	((CGameClient *) pUserData)->ControllerNui()->GetElement(ELEMENT_BLOCK, "Test.Text")->SetCallbacksVisual(Test,Test2,NULL,NULL);
 	((CGameClient *) pUserData)->ControllerNui()->GetElement(ELEMENT_BLOCK, "Test.Text")->SetCallbacksEvents(NULL,NULL,NULL);
 
 

@@ -6,6 +6,7 @@
 #include <engine/graphics.h>
 #include <game/client/nui.h>
 #include <engine/keys.h>
+#include <engine/external/zlib/deflate.h>
 
 CNUIElements::CNUIElements(class CGameClient *pClient, class CControllerNui *pControllerNui, const char *Name)
 {
@@ -80,12 +81,10 @@ void CNUIElements::SetEndLifeAnimation(ANIMATION_TYPE animation_type, vec4 Coord
 
 bool CNUIElements::MouseInside()
 {
-	if(m_pControllerNui->GetMousePos().x >= GetChildPosGlobal().x &&
-			m_pControllerNui->GetMousePos().x <= GetChildPosGlobal().x+m_pPosLocal->m_Value.w &&
-			m_pControllerNui->GetMousePos().y >= GetChildPosGlobal().y &&
-			m_pControllerNui->GetMousePos().y <= GetChildPosGlobal().y+m_pPosLocal->m_Value.h)
-		return true;
-	return false;
+		return m_pControllerNui->GetMousePos().x >= GetClipWithoutScale().x &&
+				m_pControllerNui->GetMousePos().x <= GetClipWithoutScale().x+GetClipWithoutScale().w &&
+				m_pControllerNui->GetMousePos().y >= GetClipWithoutScale().y &&
+				m_pControllerNui->GetMousePos().y <= GetClipWithoutScale().y+GetClipWithoutScale().h;
 }
 
 void CNUIElements::CheckMouseVisual()
@@ -95,7 +94,7 @@ void CNUIElements::CheckMouseVisual()
 		m_pControllerNui->m_pUnderMouse = this;
 		if(m_FocusOn)
 			m_FocusOn(this);
-		dbg_msg("ELEMENT", "FOCUS ON %s", m_pName);
+		//dbg_msg("ELEMENT", "FOCUS ON %s", m_pName);
 	}
 	else if(m_pControllerNui->m_pUnderMouse == this && !MouseInside()) //FOCUS OUT
 	{
@@ -103,7 +102,7 @@ void CNUIElements::CheckMouseVisual()
 		if(m_FocusOut)
 			m_FocusOut(this);
 		m_pControllerNui->m_pActiveElement = NULL;
-		dbg_msg("ELEMENT", "FOCUS OUT %s", m_pName);
+		//dbg_msg("ELEMENT", "FOCUS OUT %s", m_pName);
 	}
 
 	if(m_pControllerNui->m_pUnderMouse == this && m_pClient->Input()->KeyDown(KEY_MOUSE_1))
@@ -111,7 +110,7 @@ void CNUIElements::CheckMouseVisual()
 		if(m_MouseDown)
 			m_MouseDown(this);
 		m_pControllerNui->m_pActiveElement = this;
-		dbg_msg("ELEMENT", "MOUSE DOWN %s", m_pName);
+		//dbg_msg("ELEMENT", "MOUSE DOWN %s", m_pName);
 	}
 	else if(m_pControllerNui->m_pUnderMouse == this && m_pClient->Input()->KeyUp(KEY_MOUSE_1))
 	{
@@ -120,7 +119,7 @@ void CNUIElements::CheckMouseVisual()
 		if(m_Click)
 			m_Click(this);
 		m_pControllerNui->m_pLastActiveElement = m_pControllerNui->m_pActiveElement;
-		dbg_msg("ELEMENT", "MOUSE UP %s", m_pName);
+		//dbg_msg("ELEMENT", "MOUSE UP %s", m_pName);
 	}
 }
 
@@ -130,13 +129,13 @@ void CNUIElements::CheckMouseEvent()
 	{
 		if(m_DblClick && !m_Click)
 			m_DblClick(this);
-		dbg_msg("ELEMENT", "Dbl Click %s",m_pName);
+		//dbg_msg("ELEMENT", "Dbl Click %s",m_pName);
 	}
 	if(m_pControllerNui->m_pUnderMouse == this && m_pClient->Input()->KeyUp(KEY_MOUSE_2))
 	{
 		if(m_RightClick && !m_DblClick)
 			m_RightClick(this);
-		dbg_msg("ELEMENT", "Right Click %s",m_pName);
+		//dbg_msg("ELEMENT", "Right Click %s",m_pName);
 	}
 }
 
@@ -210,15 +209,26 @@ void CNUIElements::SetChildClipping()
 
 vec4 CNUIElements::GetClipPos()
 {
+	vec4 Pos = GetClipWithoutScale();
+
+	Pos.x *= m_XScale;
+	Pos.y *= m_YScale;
+	Pos.w *= m_XScale;
+	Pos.h *= m_YScale;
+	return Pos;
+}
+
+vec4 CNUIElements::GetClipWithoutScale()
+{
 	vec4 Pos;
-	Pos.x = GetChildPosGlobal().x * m_XScale;
-	Pos.y = GetChildPosGlobal().y * m_YScale;
-	Pos.w = m_pPosLocal->m_Value.w * m_XScale;
-	Pos.h = m_pPosLocal->m_Value.h * m_YScale;
+	Pos.x = GetChildPosGlobal().x;
+	Pos.y = GetChildPosGlobal().y;
+	Pos.w = m_pPosLocal->m_Value.w;
+	Pos.h = m_pPosLocal->m_Value.h;
 
 	if (m_pParent && m_pParent->GetClipEnable())
 	{
-		vec4 ParentPos = m_pParent->GetClipPos();
+		vec4 ParentPos = m_pParent->GetClipWithoutScale();
 		if (Pos.x < ParentPos.x)
 			Pos.x = ParentPos.x;
 		if (Pos.y < ParentPos.y)
@@ -228,7 +238,5 @@ vec4 CNUIElements::GetClipPos()
 		if (Pos.y + Pos.h > ParentPos.y + ParentPos.h)
 			Pos.h = (ParentPos.y + ParentPos.h) - Pos.y;
 	}
-
 	return Pos;
 }
-vec4 CNUIElements::GetChildPosGlobal()  { return m_pPosGlobal+m_pPosLocal->m_Value; }

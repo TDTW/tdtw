@@ -131,17 +131,9 @@ public:
 	RENDER_LEVEL GetRenderLevel() {return m_Renderlevel;}
 
 	CNUIElements *m_pParent;
-	bool m_UseVisualMouse;
+
 protected:
 	//Visual
-	CallBack m_FocusOn;
-	CallBack m_FocusOut;
-	CallBack m_MouseDown;
-	CallBack m_MouseUp;
-	//Event
-	CallBack m_Click;
-	CallBack m_DblClick;
-	CallBack m_RightClick;
 
 	bool m_StopClipByParent;
 	bool m_ClipUsed;
@@ -163,14 +155,24 @@ protected:
 	RENDER_LEVEL m_Renderlevel;
 	class CControllerNui *m_pControllerNui;
 
-
-	bool m_UseEventMouse;
 private:
+	CallBack m_FocusOn;
+	CallBack m_FocusOut;
+	CallBack m_MouseDown;
+	CallBack m_MouseUp;
+	//Event
+	CallBack m_Click;
+	CallBack m_DblClick;
+	CallBack m_RightClick;
+
+	bool m_UseVisualMouse;
+	bool m_UseEventMouse;
+
 	void CheckMouseVisual();
-
 	void CheckMouseEvent();
-
 	bool MouseInside();
+
+	vec4 GetClipWithoutScale();
 };
 
 #endif //GAME_CLIENT_UI_NELEMENTS_H
