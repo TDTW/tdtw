@@ -87,11 +87,11 @@ CNUIElements *CControllerNui::GetElement(ELEMENT_TYPES Type, const char *Name)
 	return pNewElement;
 }
 
-void CControllerNui::RemoveElement(CNUIElements *pNui)
+void CControllerNui::RemoveElement(char const *pName)
 {
 	for (int i = 0; i < m_aNui.size(); ++i)
 	{
-		if (m_aNui[i] == pNui)
+		if (!strcmp(m_aNui[i]->m_pName, pName))
 		{
 			m_aNui.remove_index(i);
 			break;

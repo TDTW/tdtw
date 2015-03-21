@@ -17,13 +17,13 @@ void CElementBlock::Render()
 	else
 		m_pPosGlobal = vec4(0, 0, 0, 0);
 
-	vec4 Pos = m_pPosLocal->m_Value;
+	vec4 Pos = m_pPosLocal.m_Value;
 	Pos.x += m_pPosGlobal.x;
 	Pos.y += m_pPosGlobal.y;
 
 	Graphics()->TextureSet(-1);
 	Graphics()->QuadsBegin();
-	Graphics()->SetColor(m_pColor->m_Value.r, m_pColor->m_Value.g, m_pColor->m_Value.b, m_pColor->m_Value.a);
+	Graphics()->SetColor(m_pColor.m_Value.r, m_pColor.m_Value.g, m_pColor.m_Value.b, m_pColor.m_Value.a);
 	RenderTools()->DrawRoundRectExt(Pos.x, Pos.y, Pos.w, Pos.h, m_RoundCorner, m_CornerType);
 	Graphics()->QuadsEnd();
 }

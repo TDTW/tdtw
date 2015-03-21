@@ -13,7 +13,7 @@ public:
 
 	virtual class CValue *GetColorOutline()
 	{
-		return m_pColorOutline;
+		return &m_pColorOutline;
 	};
 
 	virtual void Render();
@@ -38,7 +38,7 @@ private:
 		int m_EndPos;
 	};
 
-	class CValue *m_pColorOutline;
+	CValue m_pColorOutline;
 	TEXT_ALIGN m_Align;
 
 	bool m_TextUpdate;

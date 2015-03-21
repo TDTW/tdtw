@@ -30,7 +30,7 @@ public:
 	{
 		return m_aNui[num];
 	}
-	void RemoveElement(CNUIElements *pNui);
+	void RemoveElement(char const *pName);
 
 	CNUIElements *m_pUnderMouse;
 	CNUIElements *m_pActiveElement;

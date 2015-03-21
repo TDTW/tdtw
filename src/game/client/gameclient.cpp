@@ -1256,10 +1256,30 @@ void Test3(CNUIElements *test)
 }
 void CGameClient::ConTest(IConsole::IResult *pResult, void *pUserData)
 {
+	((CGameClient *) pUserData)->ControllerNui()->RemoveElement("Test");
+	((CGameClient *) pUserData)->ControllerNui()->RemoveElement("Test1");
+	((CGameClient *) pUserData)->ControllerNui()->RemoveElement("Test2");
+	((CGameClient *) pUserData)->ControllerNui()->RemoveElement("Test3");
+	((CGameClient *) pUserData)->ControllerNui()->RemoveElement("Test4");
+	((CGameClient *) pUserData)->ControllerNui()->RemoveElement("Test.Text");
+	((CGameClient *) pUserData)->ControllerNui()->RemoveElement("Test.Text.asd");
+
 	((CGameClient *) pUserData)->ControllerNui()->GetElement(ELEMENT_BLOCK, "Test")->GetPos()->Init(vec4(100, 100, 200, 200));
+	((CGameClient *) pUserData)->ControllerNui()->GetElement(ELEMENT_BLOCK, "Test1")->GetPos()->Init(vec4(300, 100, 200, 200));
+	((CGameClient *) pUserData)->ControllerNui()->GetElement(ELEMENT_BLOCK, "Test2")->GetPos()->Init(vec4(500, 100, 200, 200));
+	((CGameClient *) pUserData)->ControllerNui()->GetElement(ELEMENT_BLOCK, "Test3")->GetPos()->Init(vec4(100, 300, 200, 200));
+	((CGameClient *) pUserData)->ControllerNui()->GetElement(ELEMENT_BLOCK, "Test4")->GetPos()->Init(vec4(300, 300, 200, 200));
 	//((CGameClient *) pUserData)->ControllerNui()->GetElement(ELEMENT_BLOCK, "Test")->GetPos()->Init(vec4(150, 170, 100, 100), 1, EaseOUT);
 	((CGameClient *) pUserData)->ControllerNui()->GetElement(ELEMENT_BLOCK, "Test")->GetColor()->Init(vec4(1, 1, 1, 1));
 	((CGameClient *) pUserData)->ControllerNui()->GetElement(ELEMENT_BLOCK, "Test")->GetColor()->Init(vec4(0.5f, 1, 0.5f, 0.8f), 1, Default);
+	((CGameClient *) pUserData)->ControllerNui()->GetElement(ELEMENT_BLOCK, "Test1")->GetColor()->Init(vec4(1, 1, 1, 1));
+	((CGameClient *) pUserData)->ControllerNui()->GetElement(ELEMENT_BLOCK, "Test1")->GetColor()->Init(vec4(0.5f, 1, 0.5f, 0.8f), 1, Default);
+	((CGameClient *) pUserData)->ControllerNui()->GetElement(ELEMENT_BLOCK, "Test2")->GetColor()->Init(vec4(1, 1, 1, 1));
+	((CGameClient *) pUserData)->ControllerNui()->GetElement(ELEMENT_BLOCK, "Test2")->GetColor()->Init(vec4(0.5f, 1, 0.5f, 0.8f), 1, Default);
+	((CGameClient *) pUserData)->ControllerNui()->GetElement(ELEMENT_BLOCK, "Test3")->GetColor()->Init(vec4(1, 1, 1, 1));
+	((CGameClient *) pUserData)->ControllerNui()->GetElement(ELEMENT_BLOCK, "Test3")->GetColor()->Init(vec4(0.5f, 1, 0.5f, 0.8f), 1, Default);
+	((CGameClient *) pUserData)->ControllerNui()->GetElement(ELEMENT_BLOCK, "Test4")->GetColor()->Init(vec4(1, 1, 1, 1));
+	((CGameClient *) pUserData)->ControllerNui()->GetElement(ELEMENT_BLOCK, "Test4")->GetColor()->Init(vec4(0.5f, 1, 0.5f, 0.8f), 1, Default);
 	//((CGameClient *) pUserData)->ControllerNui()->GetElement(ELEMENT_BLOCK, "Test")->SetBlock(10.0f, CORNER_ALL);
 	((CGameClient *) pUserData)->ControllerNui()->GetElement(ELEMENT_BLOCK, "Test.Text")->GetPos()->Init(vec4(50, 50, 100, 100));
 	((CGameClient *) pUserData)->ControllerNui()->GetElement(ELEMENT_BLOCK, "Test.Text")->GetPos()->Init(vec4(120, 120, 100, 100), 2, Default);

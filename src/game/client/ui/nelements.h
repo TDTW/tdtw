@@ -1,7 +1,7 @@
 #ifndef GAME_CLIENT_UI_NELEMENTS_H
 #define GAME_CLIENT_UI_NELEMENTS_H
 #include <base/vmath.h>
-
+#include "value.h"
 enum RENDER_LEVEL
 {
 	LOWEST,
@@ -15,35 +15,6 @@ enum TEXT_ALIGN
 	ALIGN_CENTER,
 	ALIGN_LEFT,
 	ALIGN_RIGHT
-};
-enum ANIMATION_TYPE
-{
-	LINEAR,
-	EaseIN,				// плавно, вначале медленно, вконце быстро, общая скорость - очень медленно
-	EaseOUT,			// плавно, вначале быстро, вконце медленно, общая скорость - очень медленно
-	EaseINOUT,			// плавно, вначале и конце медленно, общая скорость - очень медленно
-	EaseIN2,			// плавно, вначале медленно, вконце быстро, общая скорость - медленно
-	EaseOUT2,			// плавно, вначале быстро, вконце медленно, общая скорость - медленно
-	EaseINOUT2,			// плавно, вначале и конце медленно, общая скорость - медленно
-	EaseIN3,			// плавно, вначале медленно, вконце быстро, общая скорость - средне
-	EaseOUT3,			// плавно, вначале быстро, вконце медленно, общая скорость - средне
-	EaseINOUT3,			// плавно, вначале и конце медленно, общая скорость - средне
-	EaseIN4,			// плавно, вначале медленно, вконце быстро, общая скорость - быстро
-	EaseOUT4,			// плавно, вначале быстро, вконце медленно, общая скорость - быстро
-	EaseINOUT4,			// плавно, вначале и конце медленно, общая скорость - быстро
-	EaseIN5,			// плавно, вначале медленно, вконце быстро, общая скорость - очень быстро
-	EaseOUT5,			// плавно, вначале быстро, вконце медленно, общая скорость - очень быстро
-	EaseINOUT5,			// плавно, вначале и конце медленно, общая скорость - очень быстро
-	EaseINBack,			// плавно c запозданием, вначале запаздываем
-	EaseOUTBack,		// плавно c запозданием, вконце запаздываем
-	EaseINOUTBack,		// плавно c запозданием, вначале и вконце запаздываем
-	EaseINElastic,		// плавно, вконце эластично
-	EaseOUTElastic,		// плавно, вначале эластично
-	EaseINOUTElastic,	// плавно, в центре эластично
-	EaseINBounce,		// плавно, прыгает медленно
-	EaseOUTBounce,		// плавно, сразу прыгает
-	EaseINOUTBounce,	// плавно, прыгает и вначале и вконце
-	Default,
 };
 enum CORNER_TYPES
 {
@@ -101,8 +72,8 @@ public:
 	class ITextRender *TextRender() const;
 	class CRenderTools *RenderTools() const;
 
-	class CValue *GetPos() { return m_pPosLocal; }
-	class CValue *GetColor() { return m_pColor; }
+	class CValue *GetPos() { return &m_pPosLocal; }
+	class CValue *GetColor() { return &m_pColor; }
 
 	virtual class CValue *GetColorOutline()
 	{
@@ -133,7 +104,6 @@ public:
 	CNUIElements *m_pParent;
 
 protected:
-	//Visual
 
 	bool m_StopClipByParent;
 	bool m_ClipUsed;
@@ -149,8 +119,8 @@ protected:
 	ANIMATION_TYPE m_DieAnimation;
 
 	vec4 m_pPosGlobal;
-	class CValue *m_pPosLocal;
-	class CValue *m_pColor;
+	CValue m_pPosLocal;
+	CValue m_pColor;
 	class CGameClient *m_pClient;
 	RENDER_LEVEL m_Renderlevel;
 	class CControllerNui *m_pControllerNui;

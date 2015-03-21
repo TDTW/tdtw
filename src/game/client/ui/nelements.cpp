@@ -15,10 +15,10 @@ CNUIElements::CNUIElements(class CGameClient *pClient, class CControllerNui *pCo
 	m_pClient = pClient;
 	m_pControllerNui = pControllerNui;
 
-	m_pPosLocal = new CValue(this);
+	m_pPosLocal = CValue(this);
 	m_pPosGlobal = vec4(0, 0, 0, 0);
 
-	m_pColor = new CValue(this);
+	m_pColor = CValue(this);
 	m_Renderlevel = NORMAL;
 
 	m_DieProcess = false;
@@ -145,23 +145,23 @@ void CNUIElements::PreRender()
 {
 	if(m_EndLife && m_EndLifeTime < time_get() && !m_DieProcess)
 	{
-		m_pColor->Init(vec4(m_pColor->m_Value.r, m_pColor->m_Value.g, m_pColor->m_Value.b, 0.0f), m_EndLifeDur, Default); //TODO animation
+		m_pColor.Init(vec4(m_pColor.m_Value.r, m_pColor.m_Value.g, m_pColor.m_Value.b, 0.0f), m_EndLifeDur, Default); //TODO animation
 
 		if(m_DieAnimation != Default)
-			m_pPosLocal->Init(m_DieCoord, m_EndLifeDur, m_DieAnimation);
+			m_pPosLocal.Init(m_DieCoord, m_EndLifeDur, m_DieAnimation);
 
 		m_DieProcess = true;
 	}
 
-	if(m_pPosLocal->m_AnimTime <= time_get() && time_get() <= m_pPosLocal->m_AnimEndTime)
-		m_pPosLocal->Recalculate();
-	else if(!m_pPosLocal->m_AnimEnded)
-		m_pPosLocal->EndAnimation();
+	if(m_pPosLocal.m_AnimTime <= time_get() && time_get() <= m_pPosLocal.m_AnimEndTime)
+		m_pPosLocal.Recalculate();
+	else if(!m_pPosLocal.m_AnimEnded)
+		m_pPosLocal.EndAnimation();
 
-	if(m_pColor->m_AnimTime <= time_get() && time_get() <= m_pColor->m_AnimEndTime)
-		m_pColor->Recalculate();
-	else if(!m_pColor->m_AnimEnded)
-		m_pColor->EndAnimation();
+	if(m_pColor.m_AnimTime <= time_get() && time_get() <= m_pColor.m_AnimEndTime)
+		m_pColor.Recalculate();
+	else if(!m_pColor.m_AnimEnded)
+		m_pColor.EndAnimation();
 
 	if (m_pParent != NULL)
 		m_pPosGlobal = m_pParent->GetChildPosGlobal();
@@ -182,7 +182,7 @@ void CNUIElements::PreRender()
 void CNUIElements::PostRender()
 {
 	if(m_DieProcess && (m_EndLifeTime + m_EndLifeDur * time_freq() < time_get()))
-		m_pControllerNui->RemoveElement(this);
+		m_pControllerNui->RemoveElement(m_pName);
 
 	if (m_pParent && m_pParent->GetClipEnable() && !m_StopClipByParent)
 		Graphics()->ClipDisable();
@@ -193,7 +193,7 @@ void CNUIElements::PostRender()
 
 vec4 CNUIElements::GetChildPosGlobal()
 {
-	return m_pPosGlobal + m_pPosLocal->m_Value;
+	return m_pPosGlobal + m_pPosLocal.m_Value;
 }
 
 void CNUIElements::SetChildClipping()
@@ -225,8 +225,8 @@ vec4 CNUIElements::GetClipWithoutScale()
 	vec4 Pos;
 	Pos.x = GetChildPosGlobal().x;
 	Pos.y = GetChildPosGlobal().y;
-	Pos.w = m_pPosLocal->m_Value.w;
-	Pos.h = m_pPosLocal->m_Value.h;
+	Pos.w = m_pPosLocal.m_Value.w;
+	Pos.h = m_pPosLocal.m_Value.h;
 
 	if (m_pParent && m_pParent->GetClipEnable())
 	{

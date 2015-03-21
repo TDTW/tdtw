@@ -4,6 +4,11 @@
 #include "value.h"
 #include "nelements.h"
 
+CValue::CValue()
+{
+
+}
+
 CValue::CValue(CNUIElements *pNUI)
 {
 	m_pNui = pNUI;
