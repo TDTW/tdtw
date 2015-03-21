@@ -647,7 +647,7 @@ void CGameClient::OnStateChange(int NewState, int OldState)
 void CGameClient::OnStateTdtwChange(int NewState, int OldState)
 {
 	// reset everything when not already connected (to keep gathered stuff)
-/* // TODO: Позже добавить при отключении, обнуление всякой хрени
+/* // TODO: РџРѕР·Р¶Рµ РґРѕР±Р°РІРёС‚СЊ РїСЂРё РѕС‚РєР»СЋС‡РµРЅРёРё, РѕР±РЅСѓР»РµРЅРёРµ РІСЃСЏРєРѕР№ С…СЂРµРЅРё
 	if (NewState < IClient::STATE_ONLINE)
 		OnReset();*/
 
@@ -1248,19 +1248,26 @@ void Test2(CNUIElements *test)
 {
 	test->GetColor()->Init(vec4(0.2f, 0.0f, 0.3f, 1.0f), 0.5f, Default);
 }
+void Test3(CNUIElements *test)
+{
+	//test->SetLifeTime(0,2);
+	test->SetEndLife(2);
+	test->SetEndLifeAnimation(Default, vec4(0,0,0,0));
+}
 void CGameClient::ConTest(IConsole::IResult *pResult, void *pUserData)
 {
 	((CGameClient *) pUserData)->ControllerNui()->GetElement(ELEMENT_BLOCK, "Test")->GetPos()->Init(vec4(100, 100, 200, 200));
 	//((CGameClient *) pUserData)->ControllerNui()->GetElement(ELEMENT_BLOCK, "Test")->GetPos()->Init(vec4(150, 170, 100, 100), 1, EaseOUT);
 	((CGameClient *) pUserData)->ControllerNui()->GetElement(ELEMENT_BLOCK, "Test")->GetColor()->Init(vec4(1, 1, 1, 1));
 	((CGameClient *) pUserData)->ControllerNui()->GetElement(ELEMENT_BLOCK, "Test")->GetColor()->Init(vec4(0.5f, 1, 0.5f, 0.8f), 1, Default);
+	//((CGameClient *) pUserData)->ControllerNui()->GetElement(ELEMENT_BLOCK, "Test")->SetBlock(10.0f, CORNER_ALL);
 	((CGameClient *) pUserData)->ControllerNui()->GetElement(ELEMENT_BLOCK, "Test.Text")->GetPos()->Init(vec4(50, 50, 100, 100));
 	((CGameClient *) pUserData)->ControllerNui()->GetElement(ELEMENT_BLOCK, "Test.Text")->GetPos()->Init(vec4(120, 120, 100, 100), 2, Default);
 	((CGameClient *) pUserData)->ControllerNui()->GetElement(ELEMENT_BLOCK, "Test.Text")->GetColor()->Init(vec4(0.2f, 0.0f, 0.3f, 1.0f));
 	((CGameClient *) pUserData)->ControllerNui()->GetElement(ELEMENT_BLOCK, "Test")->SetChildClipping();
 	((CGameClient *) pUserData)->ControllerNui()->GetElement(ELEMENT_BLOCK, "Test.Text")->SetChildClipping();
 	((CGameClient *) pUserData)->ControllerNui()->GetElement(ELEMENT_BLOCK, "Test.Text")->SetCallbacksVisual(Test,Test2,NULL,NULL);
-	((CGameClient *) pUserData)->ControllerNui()->GetElement(ELEMENT_BLOCK, "Test.Text")->SetCallbacksEvents(NULL,NULL,NULL);
+	((CGameClient *) pUserData)->ControllerNui()->GetElement(ELEMENT_BLOCK, "Test.Text")->SetCallbacksEvents(Test3,NULL,NULL);
 
 
 

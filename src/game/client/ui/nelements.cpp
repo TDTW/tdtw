@@ -17,6 +17,7 @@ CNUIElements::CNUIElements(class CGameClient *pClient, class CControllerNui *pCo
 
 	m_pPosLocal = new CValue(this);
 	m_pPosGlobal = vec4(0, 0, 0, 0);
+
 	m_pColor = new CValue(this);
 	m_Renderlevel = NORMAL;
 
@@ -71,6 +72,7 @@ void CNUIElements::SetEndLife(float EndLifeDur)
 {
 	m_EndLife = true;
 	m_EndLifeDur = EndLifeDur;
+	m_EndLifeTime = time_get();
 }
 
 void CNUIElements::SetEndLifeAnimation(ANIMATION_TYPE animation_type, vec4 Coord)

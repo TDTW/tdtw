@@ -61,21 +61,24 @@ CNUIElements *CControllerNui::GetElement(ELEMENT_TYPES Type, const char *Name)
 	}
 	CNUIElements *pNewElement = NULL;
 	CNUIElements *pParent = ParseElementName(Name);
-	switch (Type)
+	while(pNewElement == NULL)
 	{
-		case ELEMENT_BLOCK:
-			pNewElement = new CElementBlock(m_pClient, this, Name);
-			break;
-		case ELEMENT_TEXT:
-			pNewElement = new CElementText(m_pClient, this, Name);
-			break;
-		case ELEMENT_QUAD:
-		case ELEMENT_TEE:
-		default:
-			//NewElement = new CNUIElements(m_pClient, this, Name);
-			break;
+		switch (Type)
+		{
+			case ELEMENT_BLOCK:
+				pNewElement = new CElementBlock(m_pClient, this, Name);
+				break;
+			case ELEMENT_TEXT:
+				pNewElement = new CElementText(m_pClient, this, Name);
+				break;
+			case ELEMENT_QUAD:
+			case ELEMENT_TEE:
+			default:
+				//NewElement = new CNUIElements(m_pClient, this, Name);
+				break;
+		}
 	}
-	if(pParent != NULL && pNewElement != NULL)
+	if(pParent != NULL)
 		pNewElement->m_pParent = pParent;
 	if(pParent)
 		dbg_msg("GetElement", "Created %s->%s",pParent->m_pName, pNewElement->m_pName);
