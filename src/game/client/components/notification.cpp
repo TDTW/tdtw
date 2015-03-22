@@ -17,27 +17,29 @@ void CNotification::RenderNotification(NotificationType Type, const char *pTitle
 	dbg_msg("test", "%s: %s", pTitle, pText);
 }
 
-void OnMouseOver(CNUIElements *Main)
+void OnMouseOver(CNUIElements *Main, void *arg)
 {
+	CNotification *pThis = (CNotification *)arg;
 	Main->GetPos()->InitPlus(vec4(-10, 0, 0, 0), 1, EaseOUTElastic);
 	Main->GetColor()->InitPlus(vec4(0, 0, 0, 0.3f), 1, EaseOUTElastic);
 
-	CNUIElements *Text = ControllerNui()->GetElement(ELEMENT_TEXT, "Main.Background.Text");
+	CNUIElements *Text = pThis->ControllerNUI()->GetElement(ELEMENT_TEXT, "Main.Background.Text");
 	Text->GetColor()->InitPlus(vec4(0,0,0,0.5f), 1, EaseOUTElastic);
 }
 
-void OnMouseOut(CNUIElements *Main)
+void OnMouseOut(CNUIElements *Main, void *arg)
 {
+	CNotification *pThis = (CNotification *)arg;
 	Main->GetPos()->InitPlus(vec4(10, 0, 0, 0), 1, EaseOUTElastic);
 	Main->GetColor()->InitPlus(vec4(0, 0, 0, -0.3f), 1, EaseOUTElastic);
 
-	CNUIElements *Text = ControllerNui()->GetElement(ELEMENT_TEXT, "Main.Background.Text");
+	CNUIElements *Text = pThis->ControllerNUI()->GetElement(ELEMENT_TEXT, "Main.Background.Text");
 	Text->GetColor()->InitPlus(vec4(0,0,0,-0.5f), 1, EaseOUTElastic);
 }
 
 void CNotification::OnRender()
 {
-	if(m_Init == false)
+	if(!m_Init)
 	{
 		CNUIElements *Main = ControllerNui()->GetElement(ELEMENT_BLOCK, "Main.Background");
 
@@ -57,7 +59,7 @@ void CNotification::OnRender()
 		Text->GetPos()->Init(vec4(0, 15, 50, 20.0f));
 		Text->GetColor()->Init(vec4(1,1,1,0.5f));
 		Text->SetText(false, ALIGN_CENTER, "%d", 0);
-		Main->SetCallbacksVisual(OnMouseOver,OnMouseOut,NULL,NULL);
+		Main->SetCallbacksVisual(OnMouseOver, OnMouseOut, NULL, NULL, this);
 
 		m_Init = true;
 	}

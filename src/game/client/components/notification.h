@@ -17,6 +17,7 @@ public:
 
 	void RenderNotification(NotificationType Type, const char *pTitle, const char *pText);
 	virtual void OnRender();
+	class CControllerNui *ControllerNUI() {return ControllerNui();}
 private:
 	struct Notify
 	{

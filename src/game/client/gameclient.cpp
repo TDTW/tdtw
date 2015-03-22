@@ -1242,17 +1242,17 @@ void CGameClient::ConKill(IConsole::IResult *pResult, void *pUserData)
 }
 
 static int type = -1;
-void Test(CNUIElements *test)
+void Test(CNUIElements *test, void *arg)
 {
 	type = (type + 1) % 1;
 	test->GetPos()->Init(vec4(0, 50, 100, 100));
 	test->GetPos()->Init(vec4(200, 50, 100, 100), 3, (ANIMATION_TYPE) (type + (int) EaseINOUTBounce));
 }
-void Test2(CNUIElements *test)
+void Test2(CNUIElements *test, void *arg)
 {
 	test->GetColor()->Init(vec4(0.2f, 0.0f, 0.3f, 1.0f), 0.5f, Default);
 }
-void Test3(CNUIElements *test)
+void Test3(CNUIElements *test, void *arg)
 {
 	//test->SetLifeTime(0,2);
 	test->SetEndLife(2);
@@ -1262,7 +1262,7 @@ void CGameClient::ConTest(IConsole::IResult *pResult, void *pUserData)
 {
 	((CGameClient *) pUserData)->ControllerNui()->GetElement(ELEMENT_BLOCK, "Test")->GetPos()->Init(vec4(0, 50, 100, 100));
 	((CGameClient *) pUserData)->ControllerNui()->GetElement(ELEMENT_BLOCK, "Test")->GetColor()->Init(vec4(1, 1, 1, 1));
-	((CGameClient *) pUserData)->ControllerNui()->GetElement(ELEMENT_BLOCK, "Test")->SetCallbacksEvents(Test, NULL, NULL);
+	((CGameClient *) pUserData)->ControllerNui()->GetElement(ELEMENT_BLOCK, "Test")->SetCallbacksEvents(Test, NULL, NULL, pUserData);
 
 	((CGameClient *) pUserData)->ControllerNui()->GetElement(ELEMENT_TEXT, "Test.Text2")->GetPos()->Init(vec4(0, 20, 100, 10));
 	((CGameClient *) pUserData)->ControllerNui()->GetElement(ELEMENT_TEXT, "Test.Text2")->GetColor()->Init(vec4(1, 0, 0, 1));

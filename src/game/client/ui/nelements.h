@@ -31,7 +31,7 @@ enum CORNER_TYPES
 	CORNER_ALL = CORNER_T | CORNER_B
 };
 
-typedef void (*CallBack)(class CNUIElements *Element);
+typedef void (*CallBack)(class CNUIElements *Element, void *Arg);
 
 class CNUIElements
 {
@@ -56,8 +56,8 @@ public:
 	{
 	};
 
-	void SetCallbacksVisual(CallBack FocusOn, CallBack FocusOut, CallBack MouseDown, CallBack MouseUp);
-	void SetCallbacksEvents(CallBack Click, CallBack DblClick, CallBack RightClick);
+	void SetCallbacksVisual(CallBack FocusOn, CallBack FocusOut, CallBack MouseDown, CallBack MouseUp, void *Arg);
+	void SetCallbacksEvents(CallBack Click, CallBack DblClick, CallBack RightClick, void *Arg);
 	
 	virtual void PreRender();
 	virtual void PostRender();
@@ -135,6 +135,9 @@ private:
 	CallBack m_Click;
 	CallBack m_DblClick;
 	CallBack m_RightClick;
+
+	void *m_VisualArg;
+	void *m_EventArg;
 
 	bool m_UseVisualMouse;
 	bool m_UseEventMouse;

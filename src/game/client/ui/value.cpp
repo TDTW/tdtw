@@ -32,6 +32,17 @@ void CValue::Init(vec4 Value, float time, ANIMATION_TYPE animation_type)
 	m_AnimEndTime = time_get() + (int)round(time_freq() * time);
 }
 
+void CValue::InitPlus(vec4 Value, float time, ANIMATION_TYPE animation_type)
+{
+	m_NewValue = m_NewValue + Value;
+	m_OldValue = m_Value;
+
+	m_AnimEnded = false;
+	m_Animation = animation_type;
+	m_AnimTime = time_get();
+	m_AnimEndTime = time_get() + (int) round(time_freq() * time);
+}
+
 void CValue::Recalculate()
 {
 	float PassedTime = (float) (time_get() - m_AnimTime) / ((m_AnimEndTime - m_AnimTime) * 1.0f);
@@ -257,15 +268,4 @@ float CValue::BounceOut(float time)
 		time = (54 / 5.0f * time * time) - (513 / 25.0f * time) + 268 / 25.0f;
 	}
 	return time;
-}
-
-void CValue::InitPlus(vec4 Value, float time, ANIMATION_TYPE animation_type)
-{
-	m_NewValue = m_Value + Value;
-	m_OldValue = m_Value;
-
-	m_AnimEnded = false;
-	m_Animation = animation_type;
-	m_AnimTime = time_get();
-	m_AnimEndTime = time_get() + (int) round(time_freq() * time);
 }

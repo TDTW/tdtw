@@ -41,6 +41,9 @@ CNUIElements::CNUIElements(class CGameClient *pClient, class CControllerNui *pCo
 
 	m_UseVisualMouse = false;
 	m_UseEventMouse = false;
+
+	m_VisualArg = NULL;
+	m_EventArg = NULL;
 }
 
 void CNUIElements::SetLifeTime(int LifeTime, float EndLifeDur)
@@ -50,22 +53,24 @@ void CNUIElements::SetLifeTime(int LifeTime, float EndLifeDur)
 	m_EndLifeTime = time_get() + LifeTime * time_freq();
 }
 
-void CNUIElements::SetCallbacksVisual(CallBack FocusOn, CallBack FocusOut, CallBack MouseDown, CallBack MouseUp)
+void CNUIElements::SetCallbacksVisual(CallBack FocusOn, CallBack FocusOut, CallBack MouseDown, CallBack MouseUp, void *Arg)
 {
 	m_FocusOn = FocusOn;
 	m_FocusOut = FocusOut;
 	m_MouseDown = MouseDown;
 	m_MouseUp = MouseUp;
 	m_UseVisualMouse = true;
+	m_VisualArg = Arg;
 }
 
-void CNUIElements::SetCallbacksEvents(CallBack Click, CallBack DblClick, CallBack RightClick)
+void CNUIElements::SetCallbacksEvents(CallBack Click, CallBack DblClick, CallBack RightClick, void *Arg)
 {
 	m_Click = Click;
 	m_DblClick = DblClick;
 	m_RightClick = RightClick;
 	m_UseEventMouse = true;
 	m_UseVisualMouse = true;
+	m_EventArg = Arg;
 }
 
 void CNUIElements::SetEndLife(float EndLifeDur)
@@ -95,14 +100,14 @@ void CNUIElements::CheckMouseVisual()
 	{
 		m_pControllerNui->m_pUnderMouse = this;
 		if(m_FocusOn)
-			m_FocusOn(this);
+			m_FocusOn(this, m_VisualArg);
 		//dbg_msg("ELEMENT", "FOCUS ON %s", m_pName);
 	}
 	else if(m_pControllerNui->m_pUnderMouse == this && !MouseInside()) //FOCUS OUT
 	{
 		m_pControllerNui->m_pUnderMouse = NULL;
 		if(m_FocusOut)
-			m_FocusOut(this);
+			m_FocusOut(this, m_VisualArg);
 		m_pControllerNui->m_pActiveElement = NULL;
 		//dbg_msg("ELEMENT", "FOCUS OUT %s", m_pName);
 	}
@@ -110,14 +115,14 @@ void CNUIElements::CheckMouseVisual()
 	if(m_pControllerNui->m_pUnderMouse == this && m_pClient->Input()->KeyDown(KEY_MOUSE_1))
 	{
 		if(m_MouseDown)
-			m_MouseDown(this);
+			m_MouseDown(this, m_VisualArg);
 		m_pControllerNui->m_pActiveElement = this;
 		//dbg_msg("ELEMENT", "MOUSE DOWN %s", m_pName);
 	}
 	else if(m_pControllerNui->m_pUnderMouse == this && m_pClient->Input()->KeyUp(KEY_MOUSE_1))
 	{
 		if(m_MouseUp)
-			m_MouseUp(this);
+			m_MouseUp(this, m_VisualArg);
 		m_pControllerNui->m_pLastActiveElement = m_pControllerNui->m_pActiveElement;
 		//dbg_msg("ELEMENT", "MOUSE UP %s", m_pName);
 	}
@@ -128,20 +133,20 @@ void CNUIElements::CheckMouseEvent()
 	if (m_pControllerNui->m_pUnderMouse == this && m_pClient->Input()->KeyUp(KEY_MOUSE_1))
 	{
 		if (m_Click)
-			m_Click(this);
+			m_Click(this, m_EventArg);
 		m_pControllerNui->m_pLastActiveElement = m_pControllerNui->m_pActiveElement;
 		//dbg_msg("ELEMENT", "MOUSE UP %s", m_pName);
 	}
 	if(m_pControllerNui->m_pUnderMouse == this && m_pClient->Input()->MouseDoubleClick())
 	{
 		if(m_DblClick && !m_Click)
-			m_DblClick(this);
+			m_DblClick(this, m_EventArg);
 		//dbg_msg("ELEMENT", "Dbl Click %s",m_pName);
 	}
 	if(m_pControllerNui->m_pUnderMouse == this && m_pClient->Input()->KeyUp(KEY_MOUSE_2))
 	{
 		if(m_RightClick && !m_DblClick)
-			m_RightClick(this);
+			m_RightClick(this, m_EventArg);
 		//dbg_msg("ELEMENT", "Right Click %s",m_pName);
 	}
 }
