@@ -107,7 +107,7 @@ public:
 
 		incsize();
 
-		insert(Temp, plain_range<T>::plain_range(after, after));
+		//insert(Temp, plain_range<T>::plain_range(after, after));
 
 	}
 	void remove_index_fast(int index)

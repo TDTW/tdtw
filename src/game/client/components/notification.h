@@ -16,7 +16,7 @@ public:
 	CNotification();
 
 	void RenderNotification(NotificationType Type, const char *pTitle, const char *pText);
-	virtual void OnRender() {};
+	virtual void OnRender();
 private:
 	struct Notify
 	{
@@ -25,6 +25,8 @@ private:
 		const char *pText;
 	};
 	array<Notify *> m_aNotify;
+	bool m_Init;
+
 };
 
 

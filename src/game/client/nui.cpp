@@ -90,7 +90,7 @@ CNUIElements *CControllerNui::GetElement(ELEMENT_TYPES Type, const char *Name)
 		dbg_msg("GetElement", "Created %s", pNewElement->m_pName);
 
 	m_aNui.add(pNewElement);
-	ChangeElementLevel(pNewElement, NORMAL);
+	//ChangeElementLevel(pNewElement, NORMAL);
 	return pNewElement;
 }
 
