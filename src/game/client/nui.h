@@ -38,13 +38,12 @@ public:
 
 	void OnMouseMove(vec2 MousePos);
 
-	void ChangeElementLevel(CNUIElements *Element, RENDER_LEVEL Level);
+	void ChangeElementLevel();
 
 	vec2 GetMousePos();
 private:
 	class CGameClient *m_pClient;
 	vec2 m_MousePosition;
-	CNUIElements *m_aLastRenderLevel[5];
 	array<CNUIElements *> m_aNui;
 
 };

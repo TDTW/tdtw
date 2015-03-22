@@ -11,10 +11,6 @@ CControllerNui::CControllerNui(CGameClient *Client)
 	m_pActiveElement = NULL;
 	m_pLastActiveElement = NULL;
 	m_MousePosition = vec2(0,0);
-	for (int i = 0; i < 5; i++)
-	{
-		m_aLastRenderLevel[i] = NULL;
-	}
 }
 
 void CControllerNui::OnMouseMove(vec2 MousePos)
@@ -29,6 +25,7 @@ void CControllerNui::OnMouseMove(vec2 MousePos)
 	if(m_MousePosition.x > m_pClient->Graphics()->ScreenWidth()) m_MousePosition.x = m_pClient->Graphics()->ScreenWidth();
 	if(m_MousePosition.y > m_pClient->Graphics()->ScreenHeight()) m_MousePosition.y = m_pClient->Graphics()->ScreenHeight();
 }
+
 vec2 CControllerNui::GetMousePos()
 {
 	CUIRect *pScreen = m_pClient->UI()->Screen();
@@ -53,6 +50,14 @@ CNUIElements *CControllerNui::ParseElementName(const char *pSrc)
 		}
 	}
 	return 0;
+}
+
+void CControllerNui::ChangeElementLevel()
+{
+	for(int i=0; i < m_aNui.size(); i++)
+		for(int j=i; j < m_aNui.size(); j++)
+			if(m_aNui[j]->GetRenderLevel() < m_aNui[i]->GetRenderLevel())
+				m_aNui.swap(i, j);
 }
 
 CNUIElements *CControllerNui::GetElement(ELEMENT_TYPES Type, const char *Name)
@@ -90,7 +95,7 @@ CNUIElements *CControllerNui::GetElement(ELEMENT_TYPES Type, const char *Name)
 		dbg_msg("GetElement", "Created %s", pNewElement->m_pName);
 
 	m_aNui.add(pNewElement);
-	//ChangeElementLevel(pNewElement, NORMAL);
+	ChangeElementLevel();
 	return pNewElement;
 }
 
@@ -126,19 +131,3 @@ class CRenderTools *CNUIElements::RenderTools() const
 	return m_pClient->RenderTools();
 }
 
-void CControllerNui::ChangeElementLevel(CNUIElements *Element, RENDER_LEVEL Level)
-{
-	for (int i = 0; i < m_aNui.size(); ++i)
-	{
-		if (m_aNui[i] == Element)
-		{
-			if (m_aNui[i - 1] && Element->GetRenderLevel() == m_aNui[i - 1]->GetRenderLevel())
-				m_aLastRenderLevel[Element->GetRenderLevel()] = m_aNui[i - 1];
-			else
-				m_aLastRenderLevel[Element->GetRenderLevel()] = NULL;
-		}
-	}
-
-	m_aNui.move_after(Element, m_aLastRenderLevel[Level]);
-	m_aLastRenderLevel[Level] = Element;
-}

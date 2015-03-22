@@ -13,17 +13,17 @@ CElementBlock::CElementBlock(class CGameClient *pClient, class CControllerNui *p
 void CElementBlock::Render()
 {
 	if(m_pParent != NULL)
-		m_pPosGlobal = m_pParent->GetChildPosGlobal();
+		m_PosGlobal = m_pParent->GetChildPosGlobal();
 	else
-		m_pPosGlobal = vec4(0, 0, 0, 0);
+		m_PosGlobal = vec4(0, 0, 0, 0);
 
-	vec4 Pos = m_pPosLocal.m_Value;
-	Pos.x += m_pPosGlobal.x;
-	Pos.y += m_pPosGlobal.y;
+	vec4 Pos = m_PosLocal.m_Value;
+	Pos.x += m_PosGlobal.x;
+	Pos.y += m_PosGlobal.y;
 
 	Graphics()->TextureSet(-1);
 	Graphics()->QuadsBegin();
-	Graphics()->SetColor(m_pColor.m_Value.r, m_pColor.m_Value.g, m_pColor.m_Value.b, m_pColor.m_Value.a);
+	Graphics()->SetColor(m_Color.m_Value.r, m_Color.m_Value.g, m_Color.m_Value.b, m_Color.m_Value.a);
 	RenderTools()->DrawRoundRectExt(Pos.x, Pos.y, Pos.w, Pos.h, m_RoundCorner, m_CornerType);
 	Graphics()->QuadsEnd();
 }

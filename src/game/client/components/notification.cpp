@@ -54,6 +54,7 @@ void CNotification::OnRender()
 		Main->GetPos()->Init(vec4(MainRect.x+10, MainRect.y, MainRect.w, MainRect.h), 1, EaseOUTElastic);
 		Main->SetBlock(5.0f, CORNER_L);
 		Main->GetColor()->Init(vec4(0, 1, 0, 0.2f));
+		Main->SetRenderLevel(HIGHTEST);
 
 		CNUIElements *Text = ControllerNui()->GetElement(ELEMENT_TEXT, "Main.Background.Text");
 		Text->GetPos()->Init(vec4(0, 15, 50, 20.0f));

@@ -14,10 +14,10 @@ CNUIElements::CNUIElements(class CGameClient *pClient, class CControllerNui *pCo
 	m_pClient = pClient;
 	m_pControllerNui = pControllerNui;
 
-	m_pPosLocal = CValue(this);
-	m_pPosGlobal = vec4(0, 0, 0, 0);
+	m_PosLocal = CValue(this);
+	m_PosGlobal = vec4(0, 0, 0, 0);
 
-	m_pColor = CValue(this);
+	m_Color = CValue(this);
 	m_Renderlevel = NORMAL;
 
 	m_DieProcess = false;
@@ -42,8 +42,12 @@ CNUIElements::CNUIElements(class CGameClient *pClient, class CControllerNui *pCo
 	m_UseVisualMouse = false;
 	m_UseEventMouse = false;
 
-	m_VisualArg = NULL;
-	m_EventArg = NULL;
+	m_pVisualArg = NULL;
+	m_pEventArg = NULL;
+
+
+	m_EndLifeTimeCallback = NULL;
+	m_pEndLifeTimeArg = NULL;
 }
 
 void CNUIElements::SetLifeTime(int LifeTime, float EndLifeDur)
@@ -60,7 +64,7 @@ void CNUIElements::SetCallbacksVisual(CallBack FocusOn, CallBack FocusOut, CallB
 	m_MouseDown = MouseDown;
 	m_MouseUp = MouseUp;
 	m_UseVisualMouse = true;
-	m_VisualArg = Arg;
+	m_pVisualArg = Arg;
 }
 
 void CNUIElements::SetCallbacksEvents(CallBack Click, CallBack DblClick, CallBack RightClick, void *Arg)
@@ -70,7 +74,13 @@ void CNUIElements::SetCallbacksEvents(CallBack Click, CallBack DblClick, CallBac
 	m_RightClick = RightClick;
 	m_UseEventMouse = true;
 	m_UseVisualMouse = true;
-	m_EventArg = Arg;
+	m_pEventArg = Arg;
+}
+
+void CNUIElements::SetEndLifeTimeCallback(CallBack func, void *Arg)
+{
+	m_EndLifeTimeCallback = func;
+	m_pEndLifeTimeArg = Arg;
 }
 
 void CNUIElements::SetEndLife(float EndLifeDur)
@@ -100,14 +110,14 @@ void CNUIElements::CheckMouseVisual()
 	{
 		m_pControllerNui->m_pUnderMouse = this;
 		if(m_FocusOn)
-			m_FocusOn(this, m_VisualArg);
+			m_FocusOn(this, m_pVisualArg);
 		//dbg_msg("ELEMENT", "FOCUS ON %s", m_pName);
 	}
 	else if(m_pControllerNui->m_pUnderMouse == this && !MouseInside()) //FOCUS OUT
 	{
 		m_pControllerNui->m_pUnderMouse = NULL;
 		if(m_FocusOut)
-			m_FocusOut(this, m_VisualArg);
+			m_FocusOut(this, m_pVisualArg);
 		m_pControllerNui->m_pActiveElement = NULL;
 		//dbg_msg("ELEMENT", "FOCUS OUT %s", m_pName);
 	}
@@ -115,14 +125,14 @@ void CNUIElements::CheckMouseVisual()
 	if(m_pControllerNui->m_pUnderMouse == this && m_pClient->Input()->KeyDown(KEY_MOUSE_1))
 	{
 		if(m_MouseDown)
-			m_MouseDown(this, m_VisualArg);
+			m_MouseDown(this, m_pVisualArg);
 		m_pControllerNui->m_pActiveElement = this;
 		//dbg_msg("ELEMENT", "MOUSE DOWN %s", m_pName);
 	}
 	else if(m_pControllerNui->m_pUnderMouse == this && m_pClient->Input()->KeyUp(KEY_MOUSE_1))
 	{
 		if(m_MouseUp)
-			m_MouseUp(this, m_VisualArg);
+			m_MouseUp(this, m_pVisualArg);
 		m_pControllerNui->m_pLastActiveElement = m_pControllerNui->m_pActiveElement;
 		//dbg_msg("ELEMENT", "MOUSE UP %s", m_pName);
 	}
@@ -133,20 +143,20 @@ void CNUIElements::CheckMouseEvent()
 	if (m_pControllerNui->m_pUnderMouse == this && m_pClient->Input()->KeyUp(KEY_MOUSE_1))
 	{
 		if (m_Click)
-			m_Click(this, m_EventArg);
+			m_Click(this, m_pEventArg);
 		m_pControllerNui->m_pLastActiveElement = m_pControllerNui->m_pActiveElement;
 		//dbg_msg("ELEMENT", "MOUSE UP %s", m_pName);
 	}
 	if(m_pControllerNui->m_pUnderMouse == this && m_pClient->Input()->MouseDoubleClick())
 	{
 		if(m_DblClick && !m_Click)
-			m_DblClick(this, m_EventArg);
+			m_DblClick(this, m_pEventArg);
 		//dbg_msg("ELEMENT", "Dbl Click %s",m_pName);
 	}
 	if(m_pControllerNui->m_pUnderMouse == this && m_pClient->Input()->KeyUp(KEY_MOUSE_2))
 	{
 		if(m_RightClick && !m_DblClick)
-			m_RightClick(this, m_EventArg);
+			m_RightClick(this, m_pEventArg);
 		//dbg_msg("ELEMENT", "Right Click %s",m_pName);
 	}
 }
@@ -155,28 +165,35 @@ void CNUIElements::PreRender()
 {
 	if(m_EndLife && m_EndLifeTime < time_get() && !m_DieProcess)
 	{
-		m_pColor.Init(vec4(m_pColor.m_Value.r, m_pColor.m_Value.g, m_pColor.m_Value.b, 0.0f), m_EndLifeDur, Default); //TODO animation
+		if(!m_EndLifeTimeCallback)
+		{
+			m_Color.Init(vec4(m_Color.m_Value.r, m_Color.m_Value.g, m_Color.m_Value.b, 0.0f), m_EndLifeDur, Default); //TODO animation
 
-		if(m_DieAnimation != Default)
-			m_pPosLocal.Init(m_DieCoord, m_EndLifeDur, m_DieAnimation);
+			if(m_DieAnimation != Default)
+				m_PosLocal.Init(m_DieCoord, m_EndLifeDur, m_DieAnimation);
 
-		m_DieProcess = true;
+			m_DieProcess = true;
+		}
+		else
+		{
+			m_EndLifeTimeCallback(this, m_pEndLifeTimeArg);
+		}
 	}
 
-	if(m_pPosLocal.m_AnimTime <= time_get() && time_get() <= m_pPosLocal.m_AnimEndTime)
-		m_pPosLocal.Recalculate();
-	else if(!m_pPosLocal.m_AnimEnded)
-		m_pPosLocal.EndAnimation();
+	if(m_PosLocal.m_AnimTime <= time_get() && time_get() <= m_PosLocal.m_AnimEndTime)
+		m_PosLocal.Recalculate();
+	else if(!m_PosLocal.m_AnimEnded)
+		m_PosLocal.EndAnimation();
 
-	if(m_pColor.m_AnimTime <= time_get() && time_get() <= m_pColor.m_AnimEndTime)
-		m_pColor.Recalculate();
-	else if(!m_pColor.m_AnimEnded)
-		m_pColor.EndAnimation();
+	if(m_Color.m_AnimTime <= time_get() && time_get() <= m_Color.m_AnimEndTime)
+		m_Color.Recalculate();
+	else if(!m_Color.m_AnimEnded)
+		m_Color.EndAnimation();
 
 	if (m_pParent != NULL)
-		m_pPosGlobal = m_pParent->GetChildPosGlobal();
+		m_PosGlobal = m_pParent->GetChildPosGlobal();
 	else
-		m_pPosGlobal = vec4(0, 0, 0, 0);
+		m_PosGlobal = vec4(0, 0, 0, 0);
 
 	if (m_pParent && m_pParent->GetClipEnable() && !m_StopClipByParent)
 	{
@@ -203,7 +220,7 @@ void CNUIElements::PostRender()
 
 vec4 CNUIElements::GetChildPosGlobal()
 {
-	return m_pPosGlobal + m_pPosLocal.m_Value;
+	return m_PosGlobal + m_PosLocal.m_Value;
 }
 
 void CNUIElements::SetChildClipping()
@@ -235,8 +252,8 @@ vec4 CNUIElements::GetClipWithoutScale()
 	vec4 Pos;
 	Pos.x = GetChildPosGlobal().x;
 	Pos.y = GetChildPosGlobal().y;
-	Pos.w = m_pPosLocal.m_Value.w;
-	Pos.h = m_pPosLocal.m_Value.h;
+	Pos.w = m_PosLocal.m_Value.w;
+	Pos.h = m_PosLocal.m_Value.h;
 
 	if (m_pParent && m_pParent->GetClipEnable())
 	{
@@ -255,5 +272,8 @@ vec4 CNUIElements::GetClipWithoutScale()
 
 void CNUIElements::SetRenderLevel(RENDER_LEVEL Level)
 {
-	m_pControllerNui->ChangeElementLevel(this, Level);
+	m_Renderlevel = Level;
+	m_pControllerNui->ChangeElementLevel();
 }
+
+

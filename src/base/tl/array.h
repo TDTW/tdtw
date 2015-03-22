@@ -98,18 +98,15 @@ public:
 		Function: move_after
 
 		Remakrs:
-			- Swap latest and current type by index
+			- Swap two and current type by index
 	*/
-	void move_after(const T &index, T after)
+	void swap(int first, int second)
 	{
-		T Temp = index;
-		remove(index);
-
-		incsize();
-
-		//insert(Temp, plain_range<T>::plain_range(after, after));
-
+		T temp = list[first];
+		list[first] = list[second];
+		list[second] = temp;
 	}
+
 	void remove_index_fast(int index)
 	{
 		list[index] = list[num_elements-1];
