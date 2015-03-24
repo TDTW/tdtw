@@ -103,7 +103,6 @@ void CTDTWServer::Protocol(CNetChunk *pChunk)
 
 			if (m_FileDownloadAmount == m_FileTotalSize)
 			{
-				const char *pError;
 				m_pConsole->Print(IConsole::OUTPUT_LEVEL_ADDINFO, "updater", "File successfully donwloaded");
 
 				if (m_FileHandle)
