@@ -28,7 +28,7 @@ public:
 	array<CNUIElements *> *GetNotifyArray() { return &m_aNotify; }
 	array<SNotify> *GetNotifyWaitArray() {return &m_aNotifyWait;}
 	SNotify *GetNextNotify() {return &m_aNotifyWait[0];}
-	int m_Size;
+
 private:
 	bool m_Init;
 	array<CNUIElements *> m_aNotify;
@@ -36,7 +36,7 @@ private:
 	char *TempNames[5];
 	char *TempTitle[5];
 	char *TempText[5];
-
+	int m_Size;
 	bool AddNew(NotificationType Type, char const *pTitle, char const *pText);
 };
 

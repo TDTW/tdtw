@@ -93,10 +93,10 @@ void CElementText::Render()
 	TextRender()->TextOutlineColor(0.0f, 0.0f, 0.0f, 0.3f);
 }
 
-void CElementText::ParseTypes(const char *String)
+void CElementText::ParseTypes(const char *String, va_list pArguments)
 {
 	unsigned int MessageLength = (unsigned int) str_length(String);
-	int Temp = 0;
+	sArg *Temp = NULL;
 	for (unsigned int nLetter = 0; nLetter <= MessageLength; nLetter++)
 	{
 		if (String[nLetter] == '%' && String[nLetter + 1])
@@ -104,45 +104,41 @@ void CElementText::ParseTypes(const char *String)
 			switch (String[nLetter + 1])
 			{
 				case 'd':
-					m_aArgs[Temp]->m_ArgType = INT;
-					m_aArgs[Temp++]->m_EndPos = nLetter + 1;
+					Temp = new sArg;
+					Temp->m_ArgType = INT;
+					Temp->m_EndPos = nLetter + 1;
+					Temp->m_Args = va_arg(pArguments, void *);
+					m_aArgs.add(Temp);
 					break;
 				case 'f':
-					m_aArgs[Temp]->m_ArgType = FLOAT;
-					m_aArgs[Temp++]->m_EndPos = nLetter + 1;
+					Temp = new sArg;
+					Temp->m_ArgType = FLOAT;
+					Temp->m_EndPos = nLetter + 1;
+					Temp->m_Args = va_arg(pArguments, void *);
+					m_aArgs.add(Temp);
 					break;
 				case 's':
-					m_aArgs[Temp]->m_ArgType = STRING;
-					m_aArgs[Temp++]->m_EndPos = nLetter + 1;
+					Temp = new sArg;
+					Temp->m_ArgType = STRING;
+					Temp->m_EndPos = nLetter + 1;
+					Temp->m_Args = va_arg(pArguments, void *);
+					m_aArgs.add(Temp);
 					break;
-				case 'l':
-					m_aArgs[Temp]->m_ArgType = LONG;
-					m_aArgs[Temp++]->m_EndPos = nLetter + 1;
+				default:
 					break;
-				default:break;
-			}
-			if (String[nLetter + 1] == '0' && String[nLetter + 2] == '.' && String[nLetter + 3] == '2' && String[nLetter + 4] == 'f')
-			{
-				m_aArgs[Temp]->m_ArgType = FLOAT;
-				m_aArgs[Temp++]->m_EndPos = nLetter + 4;
 			}
 		}
 	}
 }
 
-void CElementText::SaveArguments(bool TextUpdate, char const *pText, ...)
+void CElementText::SetText(bool TextUpdate, TEXT_ALIGN Align, const char *pText, ...)
 {
+	m_aArgs.clear();
 	va_list pArguments;
 	va_start(pArguments, pText);
 	if (TextUpdate)
 	{
-		for (void *Arg = va_arg(pArguments, void *); Arg != NULL; Arg = va_arg(pArguments, void *))
-		{
-			sArg *Temp = new sArg;
-			Temp->m_Args = Arg;
-			m_aArgs.add(Temp);
-		}
-		ParseTypes(pText);
+		ParseTypes(pText, pArguments);
 	}
 	else
 	{
@@ -150,13 +146,6 @@ void CElementText::SaveArguments(bool TextUpdate, char const *pText, ...)
 		CheckProcent2(m_UnUpdatedText); // "%" Bug Fix
 	}
 	va_end(pArguments);
-}
-
-void CElementText::SetText(bool TextUpdate, TEXT_ALIGN Align, const char *pText, ...)
-{
-	m_aArgs.clear();
-	va_list Arguments;
-	SaveArguments(TextUpdate, pText, Arguments);
 
 	m_TextUpdate = TextUpdate;
 	m_pTextTemplate = pText;

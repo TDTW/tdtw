@@ -3,6 +3,8 @@
 
 #include <base/tl/array.h>
 #include "nelements.h"
+#include <stdarg.h>
+#include <stdio.h>
 
 class CElementText : public CNUIElements
 {
@@ -17,8 +19,7 @@ public:
 	virtual void PreRender();
 
 private:
-	void SaveArguments(bool TextUpdate, char const *pText, ...);
-	void ParseTypes(const char *String);
+	void ParseTypes(const char *String, va_list pArguments);
 
 	enum TYPES
 	{
