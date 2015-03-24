@@ -59,7 +59,7 @@ public:
 
 	void SetCallbacksVisual(CallBack FocusOn, CallBack FocusOut, CallBack MouseDown, CallBack MouseUp, void *Arg);
 	void SetCallbacksEvents(CallBack Click, CallBack DblClick, CallBack RightClick, void *Arg);
-	void SetEndLifeTimeCallback(CallBack func, void *Arg);
+	void SetEndLifeTimeCallback(CallBack EndTime, CallBack BeforeDie, void *Arg);
 	
 	virtual void PreRender();
 	virtual void PostRender();
@@ -140,6 +140,8 @@ private:
 
 	//EndLifeTime
 	CallBack m_EndLifeTimeCallback;
+	bool m_EndLifeTimeCB;
+	CallBack m_BeforeDieCallback;
 	void *m_pEndLifeTimeArg;
 
 	void *m_pVisualArg;

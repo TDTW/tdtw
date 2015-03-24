@@ -587,8 +587,10 @@ void CChat::OnRenderNew()
 	float Height = Screen.h;
 	
 	CUIRect View = Screen;
-	m_MousePos.x = clamp(m_MousePos.x, View.x, View.x+View.w);
-	m_MousePos.y = clamp(m_MousePos.y, View.y-5, View.y+View.h);
+	if(IsActive())
+		m_MousePos = ControllerNui()->GetMousePosClamp(vec4(View.x, View.y-5, View.x+View.w, View.y+View.h));
+	//m_MousePos.x = clamp(m_MousePos.x, View.x, View.x+View.w);
+	//m_MousePos.y = clamp(m_MousePos.y, View.y-5, View.y+View.h);
 	CUIRect Header, Footer, Down, TypeBox, Scroll, Row, d_Extra, d_Left, d_Right, d_Bottom, d_Top;
 	
 	View.HSplitTop(17.0f, &Header, &View);

@@ -36,6 +36,13 @@ vec2 CControllerNui::GetMousePos()
 	return vec2(MousePositionX, MousePositionY);
 }
 
+vec2 CControllerNui::GetMousePosClamp(vec4 ClampBox)
+{
+	m_MousePosition.x = clamp(m_MousePosition.x, ClampBox.x, ClampBox.w);
+	m_MousePosition.y = clamp(m_MousePosition.y, ClampBox.y, ClampBox.h);
+	return m_MousePosition;
+}
+
 
 CNUIElements *CControllerNui::ParseElementName(const char *pSrc)
 {
@@ -60,7 +67,7 @@ void CControllerNui::ChangeElementLevel()
 				m_aNui.swap(i, j);
 }
 
-CNUIElements *CControllerNui::GetElement(ELEMENT_TYPES Type, const char *Name)
+CNUIElements *CControllerNui::GetElement(ELEMENT_TYPES Type, const char Name[64])
 {
 	dbg_msg("GetElement", "%s", Name);
 	for (int i = 0; i < m_aNui.size(); ++i)
@@ -105,7 +112,12 @@ void CControllerNui::RemoveElement(char const *pName)
 	{
 		if (!strcmp(m_aNui[i]->m_pName, pName))
 		{
-			m_aNui.remove_index(i);
+			for(int j=0; j < m_aNui.size(); j++)
+			{
+				if(m_aNui[j]->m_pParent == m_aNui[i])
+					m_aNui.remove_index(j--);
+			}
+			m_aNui.remove_index(i--);
 			break;
 		}
 	}
@@ -130,4 +142,3 @@ class CRenderTools *CNUIElements::RenderTools() const
 {
 	return m_pClient->RenderTools();
 }
-

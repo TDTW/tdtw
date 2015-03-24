@@ -9,6 +9,7 @@ CElementText::CElementText(class CGameClient *pClient, class CControllerNui *pCo
 	m_Align = ALIGN_LEFT;
 	m_TextUpdate = false;
 	m_pColorOutline = CValue(this);
+	m_aArgs.clear();
 }
 
 void CheckProcent2(char *message)
@@ -28,8 +29,8 @@ void CElementText::Render()
 	char Text[255] = {0};
 	if (m_TextUpdate)
 	{
+		m_aArgs.optimize();
 		//str_copy(Text, m_pTextTemplate, sizeof(Text));
-
 		for (int i = 0; i < m_aArgs.size(); i++)
 		{
 			char TempStr[255] = {0};

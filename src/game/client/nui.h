@@ -22,7 +22,7 @@ class CControllerNui
 public:
 	CControllerNui(class CGameClient *Client);
 
-	CNUIElements *GetElement(ELEMENT_TYPES Type, const char *Name);
+	CNUIElements *GetElement(ELEMENT_TYPES Type, const char Name[64]);
 	CNUIElements *ParseElementName(const char *pSrc);
 	int GetSize() {return m_aNui.size();}
 
@@ -41,6 +41,9 @@ public:
 	void ChangeElementLevel();
 
 	vec2 GetMousePos();
+
+	vec2 GetMousePosClamp(vec4 ClampBox);
+
 private:
 	class CGameClient *m_pClient;
 	vec2 m_MousePosition;

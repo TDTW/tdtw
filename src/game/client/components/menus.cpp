@@ -1819,6 +1819,7 @@ void CMenus::OnRender()
 	CUIRect *pScreen = UI()->Screen();
 	float mx = (m_MousePos.x/(float)Graphics()->ScreenWidth())*pScreen->w;
 	float my = (m_MousePos.y/(float)Graphics()->ScreenHeight())*pScreen->h;
+	vec2 MousePos = ControllerNui()->GetMousePos();
 
 	int Buttons = 0;
 	if(m_UseMouseButtons)
@@ -1828,7 +1829,7 @@ void CMenus::OnRender()
 		if(Input()->KeyPressed(KEY_MOUSE_3)) Buttons |= 4;
 	}
 
-	UI()->Update(mx,my,mx*3.0f,my*3.0f,Buttons);
+	UI()->Update(MousePos.x,MousePos.y,MousePos.x*3.0f,MousePos.y*3.0f,Buttons);
 
 	// render
 	if(Client()->State() != IClient::STATE_DEMOPLAYBACK)
@@ -1838,7 +1839,7 @@ void CMenus::OnRender()
 	Graphics()->TextureSet(g_pData->m_aImages[IMAGE_CURSOR].m_Id);
 	Graphics()->QuadsBegin();
 	Graphics()->SetColor(1,1,1,1);
-	IGraphics::CQuadItem QuadItem(mx, my, 24, 24);
+	IGraphics::CQuadItem QuadItem(MousePos.x, MousePos.y, 24, 24);
 	Graphics()->QuadsDrawTL(&QuadItem, 1);
 	Graphics()->QuadsEnd();
 

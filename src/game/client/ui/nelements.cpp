@@ -47,7 +47,9 @@ CNUIElements::CNUIElements(class CGameClient *pClient, class CControllerNui *pCo
 
 
 	m_EndLifeTimeCallback = NULL;
+	m_BeforeDieCallback = NULL;
 	m_pEndLifeTimeArg = NULL;
+	m_EndLifeTimeCB = false;
 }
 
 void CNUIElements::SetLifeTime(int LifeTime, float EndLifeDur)
@@ -77,9 +79,10 @@ void CNUIElements::SetCallbacksEvents(CallBack Click, CallBack DblClick, CallBac
 	m_pEventArg = Arg;
 }
 
-void CNUIElements::SetEndLifeTimeCallback(CallBack func, void *Arg)
+void CNUIElements::SetEndLifeTimeCallback(CallBack EndTime, CallBack BeforeDie, void *Arg)
 {
-	m_EndLifeTimeCallback = func;
+	m_EndLifeTimeCallback = EndTime;
+	m_BeforeDieCallback = BeforeDie;
 	m_pEndLifeTimeArg = Arg;
 }
 
@@ -111,7 +114,6 @@ void CNUIElements::CheckMouseVisual()
 		m_pControllerNui->m_pUnderMouse = this;
 		if(m_FocusOn)
 			m_FocusOn(this, m_pVisualArg);
-		//dbg_msg("ELEMENT", "FOCUS ON %s", m_pName);
 	}
 	else if(m_pControllerNui->m_pUnderMouse == this && !MouseInside()) //FOCUS OUT
 	{
@@ -119,7 +121,6 @@ void CNUIElements::CheckMouseVisual()
 		if(m_FocusOut)
 			m_FocusOut(this, m_pVisualArg);
 		m_pControllerNui->m_pActiveElement = NULL;
-		//dbg_msg("ELEMENT", "FOCUS OUT %s", m_pName);
 	}
 
 	if(m_pControllerNui->m_pUnderMouse == this && m_pClient->Input()->KeyDown(KEY_MOUSE_1))
@@ -127,14 +128,12 @@ void CNUIElements::CheckMouseVisual()
 		if(m_MouseDown)
 			m_MouseDown(this, m_pVisualArg);
 		m_pControllerNui->m_pActiveElement = this;
-		//dbg_msg("ELEMENT", "MOUSE DOWN %s", m_pName);
 	}
 	else if(m_pControllerNui->m_pUnderMouse == this && m_pClient->Input()->KeyUp(KEY_MOUSE_1))
 	{
 		if(m_MouseUp)
 			m_MouseUp(this, m_pVisualArg);
 		m_pControllerNui->m_pLastActiveElement = m_pControllerNui->m_pActiveElement;
-		//dbg_msg("ELEMENT", "MOUSE UP %s", m_pName);
 	}
 }
 
@@ -145,39 +144,37 @@ void CNUIElements::CheckMouseEvent()
 		if (m_Click)
 			m_Click(this, m_pEventArg);
 		m_pControllerNui->m_pLastActiveElement = m_pControllerNui->m_pActiveElement;
-		//dbg_msg("ELEMENT", "MOUSE UP %s", m_pName);
 	}
 	if(m_pControllerNui->m_pUnderMouse == this && m_pClient->Input()->MouseDoubleClick())
 	{
 		if(m_DblClick && !m_Click)
 			m_DblClick(this, m_pEventArg);
-		//dbg_msg("ELEMENT", "Dbl Click %s",m_pName);
+		m_pControllerNui->m_pLastActiveElement = m_pControllerNui->m_pActiveElement;
 	}
 	if(m_pControllerNui->m_pUnderMouse == this && m_pClient->Input()->KeyUp(KEY_MOUSE_2))
 	{
 		if(m_RightClick && !m_DblClick)
 			m_RightClick(this, m_pEventArg);
-		//dbg_msg("ELEMENT", "Right Click %s",m_pName);
+		m_pControllerNui->m_pLastActiveElement = m_pControllerNui->m_pActiveElement;
 	}
 }
 
 void CNUIElements::PreRender()
 {
+	if(m_EndLife && m_EndLifeTime < time_get() && m_EndLifeTimeCallback && !m_EndLifeTimeCB)
+	{
+		m_EndLifeTimeCallback(this, m_pEndLifeTimeArg);
+		m_EndLifeTimeCB = true;
+	}
+
 	if(m_EndLife && m_EndLifeTime < time_get() && !m_DieProcess)
 	{
-		if(!m_EndLifeTimeCallback)
-		{
-			m_Color.Init(vec4(m_Color.m_Value.r, m_Color.m_Value.g, m_Color.m_Value.b, 0.0f), m_EndLifeDur, Default); //TODO animation
+		m_Color.Init(vec4(m_Color.m_Value.r, m_Color.m_Value.g, m_Color.m_Value.b, 0.0f), m_EndLifeDur, Default); //TODO animation
 
-			if(m_DieAnimation != Default)
-				m_PosLocal.Init(m_DieCoord, m_EndLifeDur, m_DieAnimation);
+		if(m_DieAnimation != Default)
+			m_PosLocal.InitPlus(m_DieCoord, m_EndLifeDur, m_DieAnimation);
 
-			m_DieProcess = true;
-		}
-		else
-		{
-			m_EndLifeTimeCallback(this, m_pEndLifeTimeArg);
-		}
+		m_DieProcess = true;
 	}
 
 	if(m_PosLocal.m_AnimTime <= time_get() && time_get() <= m_PosLocal.m_AnimEndTime)
@@ -209,8 +206,11 @@ void CNUIElements::PreRender()
 void CNUIElements::PostRender()
 {
 	if(m_DieProcess && (m_EndLifeTime + m_EndLifeDur * time_freq() < time_get()))
+	{
 		m_pControllerNui->RemoveElement(m_pName);
-
+		if(m_BeforeDieCallback)
+			m_BeforeDieCallback(this, m_pEndLifeTimeArg);
+	}
 	if (m_pParent && m_pParent->GetClipEnable() && !m_StopClipByParent)
 		Graphics()->ClipDisable();
 	
@@ -275,5 +275,3 @@ void CNUIElements::SetRenderLevel(RENDER_LEVEL Level)
 	m_Renderlevel = Level;
 	m_pControllerNui->ChangeElementLevel();
 }
-
-

@@ -12,22 +12,32 @@ enum NotificationType
 
 class CNotification : public CComponent
 {
-public:
-	CNotification();
-
-	void RenderNotification(NotificationType Type, const char *pTitle, const char *pText);
-	virtual void OnRender();
-	class CControllerNui *ControllerNUI() {return ControllerNui();}
-private:
-	struct Notify
+	struct SNotify
 	{
 		NotificationType Type;
 		const char *pTitle;
 		const char *pText;
 	};
-	array<Notify *> m_aNotify;
+public:
+	CNotification();
+	void Add(NotificationType Type, const char *pTitle, const char *pText);
+	void RenderNotification(NotificationType Type, const char *pTitle, const char *pText);
+	virtual void OnRender();
+	class CControllerNui *ControllerNUI() { return ControllerNui(); }
+	int m_NowRendering;
+	array<CNUIElements *> *GetNotifyArray() { return &m_aNotify; }
+	array<SNotify> *GetNotifyWaitArray() {return &m_aNotifyWait;}
+	SNotify *GetNextNotify() {return &m_aNotifyWait[0];}
+	int m_Size;
+private:
 	bool m_Init;
+	array<CNUIElements *> m_aNotify;
+	array<SNotify> m_aNotifyWait;
+	char *TempNames[5];
+	char *TempTitle[5];
+	char *TempText[5];
 
+	bool AddNew(NotificationType Type, char const *pTitle, char const *pText);
 };
 
 

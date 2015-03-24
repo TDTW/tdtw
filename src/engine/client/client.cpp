@@ -1517,7 +1517,7 @@ void CClient::PumpNetworkTdtw(void *pUser)
 		{
 			pThis->SetStateTdtw(IClient::STATE_TDTW_OFFLINE);
 			//Disconnect();
-			pThis->m_pGameClient->SendNotification(0);
+			pThis->m_pGameClient->SendNotification(1);
 			pThis->m_NetTdtw.Disconnect(0);
 			char aBuf[256];
 			str_format(aBuf, sizeof(aBuf), "offline error='%s'", pThis->m_NetTdtw.ErrorString());
@@ -1536,7 +1536,7 @@ void CClient::PumpNetworkTdtw(void *pUser)
 		{
 			// we switched to online
 			pThis->m_pConsole->Print(IConsole::OUTPUT_LEVEL_STANDARD, "tdtw", "TDTW Server connected");
-			pThis->m_pGameClient->SendNotification(1);
+			pThis->m_pGameClient->SendNotification(0);
 			pThis->SetStateTdtw(IClient::STATE_TDTW_ONLINE);
 			CMsgPacker Msg(NETMSG_TDTW_VERSION);
 			Msg.AddString(GAME_VERSION, 30);

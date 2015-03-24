@@ -108,7 +108,7 @@ void CGameClient::OnConsoleInit()
 	m_pServerBrowser = Kernel()->RequestInterface<IServerBrowser>();
 	m_pEditor = Kernel()->RequestInterface<IEditor>();
 	m_pFriends = Kernel()->RequestInterface<IFriends>();
-
+	m_ControllerNui = new CControllerNui(this);
 
 	// setup pointers
 	m_pBinds = &::gs_Binds;
@@ -187,6 +187,7 @@ void CGameClient::OnConsoleInit()
 	Console()->Register("kill", "", CFGFLAG_CLIENT, ConKill, this, "Kill yourself");
 	Console()->Register("dynamic_camera_toggle", "", CFGFLAG_CLIENT, ConDynCameraToggle, this, "Toggle dynamic camera");
 	Console()->Register("test", "", CFGFLAG_CLIENT, ConTest, this, "Fire");
+	Console()->Register("notify_add", "i", CFGFLAG_CLIENT, ConNotify, this, "Fire");
 	// register server dummy commands for tab completion
 	Console()->Register("tune", "si", CFGFLAG_SERVER, 0, 0, "Tune variable to value");
 	Console()->Register("tune_reset", "", CFGFLAG_SERVER, 0, 0, "Reset tuning");
@@ -232,7 +233,6 @@ void CGameClient::OnInit()
 	m_pTDTWServer = Kernel()->RequestInterface<ITDTWServer>();
 	m_pGraphics = Kernel()->RequestInterface<IGraphics>();
 	m_pTDTWServer->Init();
-	m_ControllerNui = new CControllerNui(this);
 	// Antiping
 	m_Average_Prediction_Offset = -1;
 	m_Prediction_Offset_Summ = 0;
@@ -1226,10 +1226,18 @@ void CGameClient::SendKill(int ClientID)
 void CGameClient::SendNotification(int Type)
 {
 	if(Type == 0) // Connect to tdtw server
-		m_pNotification->RenderNotification(NT_IMPORTANT, "TDTWServer", "Connected to TDTW server");
+		m_pNotification->Add(NT_IMPORTANT, "TDTWServer", "Connected to TDTW server");
 	else if(Type == 1)
-		m_pNotification->RenderNotification(NT_IMPORTANT, "TDTWServer", "Disconnected from TDTW server");
+		m_pNotification->Add(NT_IMPORTANT, "TDTWServer", "Disconnected from TDTW server");
 }
+
+void CGameClient::ConNotify(IConsole::IResult *pResult, void *pUserData)
+{
+	int Count = pResult->GetInteger(0);
+	for(int i=0; i < Count; i++)
+		((CGameClient *) pUserData)->m_pNotification->Add(NT_IMPORTANT, "test", "TestText");
+}
+
 
 void CGameClient::ConTeam(IConsole::IResult *pResult, void *pUserData)
 {
@@ -1332,4 +1340,3 @@ IGameClient *CreateGameClient()
 {
 	return &g_GameClient;
 }
-
