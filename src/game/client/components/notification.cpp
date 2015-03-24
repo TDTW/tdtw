@@ -154,14 +154,13 @@ void CNotification::OnRender()
 		Main->GetPos()->Init(vec4(MainRect.x+10, MainRect.y, MainRect.w, MainRect.h), 1, EaseOUTElastic);
 		Main->SetBlock(5.0f, CORNER_L);
 		Main->GetColor()->Init(vec4(0, 1, 0, 0.2f));
-		Main->SetRenderLevel(HIGHTEST);
 		Main->SetCallbacksVisual(MainMouseOver, MainMouseOut, NULL, NULL, this);
 		Main->SetCallbacksEvents(MainClick, NULL, NULL, this);
 
 		CNUIElements *Text = ControllerNui()->GetElement(ELEMENT_TEXT, "Main.Background.Text");
 		Text->GetPos()->Init(vec4(0, 15, 50, 20.0f));
 		Text->GetColor()->Init(vec4(1,1,1,0.5f));
-		Text->SetText(false, ALIGN_CENTER, "%d", &m_Size);
+		Text->SetText(true, ALIGN_CENTER, "%d", &m_Size);
 
 		m_Init = true;
 	}

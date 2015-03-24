@@ -329,6 +329,8 @@ set(SOURCE_FILES
     src/game/client/ui/nuiblock.h
     src/game/client/ui/nuitext.cpp
     src/game/client/ui/nuitext.h
+    src/game/client/ui/nuimouse.cpp
+    src/game/client/ui/nuimouse.h
     src/game/client/nui.cpp
     src/game/client/nui.h
     src/game/editor/auto_map.cpp

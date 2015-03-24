@@ -1,9 +1,7 @@
-#ifndef _TDTW_NUIBLOCK_H_
-#define _TDTW_NUIBLOCK_H_
+#ifndef GAME_CLIENT_UI_NUIBLOCK_H
+#define GAME_CLIENT_UI_NUIBLOCK_H
 
 #include "nelements.h"
-
-
 
 class CElementBlock : public CNUIElements
 {
@@ -19,4 +17,4 @@ private:
 	CORNER_TYPES m_CornerType;
 
 };
-#endif //_TDTW_NUIBLOCK_H_
+#endif //GAME_CLIENT_UI_NUIBLOCK_H

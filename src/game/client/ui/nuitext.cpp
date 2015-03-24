@@ -3,6 +3,7 @@
 #include <stdio.h>
 #include <engine/shared/config.h>
 #include <game/client/gameclient.h>
+
 CElementText::CElementText(class CGameClient *pClient, class CControllerNui *pControllerNui, const char *Name)
 		: CNUIElements(pClient, pControllerNui, Name)
 {
@@ -29,7 +30,6 @@ void CElementText::Render()
 	char Text[255] = {0};
 	if (m_TextUpdate)
 	{
-		m_aArgs.optimize();
 		//str_copy(Text, m_pTextTemplate, sizeof(Text));
 		for (int i = 0; i < m_aArgs.size(); i++)
 		{
@@ -95,8 +95,7 @@ void CElementText::Render()
 
 void CElementText::ParseTypes(const char *String)
 {
-	unsigned int MessageLength = str_length(String);
-
+	unsigned int MessageLength = (unsigned int) str_length(String);
 	int Temp = 0;
 	for (unsigned int nLetter = 0; nLetter <= MessageLength; nLetter++)
 	{
@@ -120,6 +119,7 @@ void CElementText::ParseTypes(const char *String)
 					m_aArgs[Temp]->m_ArgType = LONG;
 					m_aArgs[Temp++]->m_EndPos = nLetter + 1;
 					break;
+				default:break;
 			}
 			if (String[nLetter + 1] == '0' && String[nLetter + 2] == '.' && String[nLetter + 3] == '2' && String[nLetter + 4] == 'f')
 			{
@@ -130,9 +130,8 @@ void CElementText::ParseTypes(const char *String)
 	}
 }
 
-void CElementText::SetText(bool TextUpdate, TEXT_ALIGN Align, const char *pText, ...)
+void CElementText::SaveArguments(bool TextUpdate, char const *pText, ...)
 {
-	m_aArgs.clear();
 	va_list pArguments;
 	va_start(pArguments, pText);
 	if (TextUpdate)
@@ -151,6 +150,13 @@ void CElementText::SetText(bool TextUpdate, TEXT_ALIGN Align, const char *pText,
 		CheckProcent2(m_UnUpdatedText); // "%" Bug Fix
 	}
 	va_end(pArguments);
+}
+
+void CElementText::SetText(bool TextUpdate, TEXT_ALIGN Align, const char *pText, ...)
+{
+	m_aArgs.clear();
+	va_list Arguments;
+	SaveArguments(TextUpdate, pText, Arguments);
 
 	m_TextUpdate = TextUpdate;
 	m_pTextTemplate = pText;

@@ -45,11 +45,14 @@ CNUIElements::CNUIElements(class CGameClient *pClient, class CControllerNui *pCo
 	m_pVisualArg = NULL;
 	m_pEventArg = NULL;
 
-
 	m_EndLifeTimeCallback = NULL;
 	m_BeforeDieCallback = NULL;
 	m_pEndLifeTimeArg = NULL;
 	m_EndLifeTimeCB = false;
+
+	m_AnimStart = NULL;
+	m_AnimEnd = NULL;
+	m_pAnimArg = NULL;
 }
 
 void CNUIElements::SetLifeTime(int LifeTime, float EndLifeDur)
@@ -101,10 +104,10 @@ void CNUIElements::SetEndLifeAnimation(ANIMATION_TYPE animation_type, vec4 Coord
 
 bool CNUIElements::MouseInside()
 {
-		return m_pControllerNui->GetMousePos().x >= GetClipWithoutScale().x &&
-				m_pControllerNui->GetMousePos().x <= GetClipWithoutScale().x+GetClipWithoutScale().w &&
-				m_pControllerNui->GetMousePos().y >= GetClipWithoutScale().y &&
-				m_pControllerNui->GetMousePos().y <= GetClipWithoutScale().y+GetClipWithoutScale().h;
+		return m_pControllerNui->Mouse()->GetPos().x >= GetClipWithoutScale().x &&
+				m_pControllerNui->Mouse()->GetPos().x <= GetClipWithoutScale().x+GetClipWithoutScale().w &&
+				m_pControllerNui->Mouse()->GetPos().y >= GetClipWithoutScale().y &&
+				m_pControllerNui->Mouse()->GetPos().y <= GetClipWithoutScale().y+GetClipWithoutScale().h;
 }
 
 void CNUIElements::CheckMouseVisual()
@@ -196,7 +199,6 @@ void CNUIElements::PreRender()
 	{
 		vec4 Pos = m_pParent->GetClipPos();
 		Graphics()->ClipEnable((int) Pos.x, (int) Pos.y, (int) Pos.w, (int) Pos.h);
-		//dbg_msg("olol", "%d %d %d %d", (int)Pos.x, (int)Pos.y, (int)Pos.w, (int)Pos.h);
 	}
 
 	if(m_UseVisualMouse && !m_DieProcess)
@@ -218,11 +220,6 @@ void CNUIElements::PostRender()
 		CheckMouseEvent();
 }
 
-vec4 CNUIElements::GetChildPosGlobal()
-{
-	return m_PosGlobal + m_PosLocal.m_Value;
-}
-
 void CNUIElements::SetChildClipping()
 {
 	m_ClipUsed = true;
@@ -233,7 +230,6 @@ void CNUIElements::SetChildClipping()
 
 	m_XScale = Graphics()->ScreenWidth() / w;
 	m_YScale = Graphics()->ScreenHeight() / h;
-	dbg_msg("olol", "%f %f", m_XScale, m_YScale);
 }
 
 vec4 CNUIElements::GetClipPos()
@@ -275,3 +271,8 @@ void CNUIElements::SetRenderLevel(RENDER_LEVEL Level)
 	m_Renderlevel = Level;
 	m_pControllerNui->ChangeElementLevel();
 }
+
+class IClient *CNUIElements::Client() const{return m_pClient->Client();}
+class IGraphics *CNUIElements::Graphics() const{return m_pClient->Graphics();}
+class ITextRender *CNUIElements::TextRender() const{return m_pClient->TextRender();}
+class CRenderTools *CNUIElements::RenderTools() const{return m_pClient->RenderTools();}

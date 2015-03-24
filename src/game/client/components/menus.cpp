@@ -1819,7 +1819,7 @@ void CMenus::OnRender()
 	CUIRect *pScreen = UI()->Screen();
 	float mx = (m_MousePos.x/(float)Graphics()->ScreenWidth())*pScreen->w;
 	float my = (m_MousePos.y/(float)Graphics()->ScreenHeight())*pScreen->h;
-	vec2 MousePos = ControllerNui()->GetMousePos();
+	vec2 MousePos = ControllerNui()->Mouse()->GetPos();
 
 	int Buttons = 0;
 	if(m_UseMouseButtons)

@@ -1,7 +1,4 @@
 #include <engine/graphics.h>
-#include <engine/client.h>
-#include <engine/textrender.h>
-#include <engine/shared/config.h>
 #include "nui.h"
 
 CControllerNui::CControllerNui(CGameClient *Client)
@@ -10,39 +7,8 @@ CControllerNui::CControllerNui(CGameClient *Client)
 	m_pUnderMouse = NULL;
 	m_pActiveElement = NULL;
 	m_pLastActiveElement = NULL;
-	m_MousePosition = vec2(0,0);
+	m_pMouse = new CNuiMouse(this);
 }
-
-void CControllerNui::OnMouseMove(vec2 MousePos)
-{
-	float Fac = (float)(g_Config.m_UiMousesens)/g_Config.m_InpMousesens;
-	MousePos.x = MousePos.x*Fac;
-	MousePos.y = MousePos.y*Fac;
-	m_MousePosition.x += MousePos.x;
-	m_MousePosition.y += MousePos.y;
-	if(m_MousePosition.x < 0) m_MousePosition.x = 0;
-	if(m_MousePosition.y < 0) m_MousePosition.y = 0;
-	if(m_MousePosition.x > m_pClient->Graphics()->ScreenWidth()) m_MousePosition.x = m_pClient->Graphics()->ScreenWidth();
-	if(m_MousePosition.y > m_pClient->Graphics()->ScreenHeight()) m_MousePosition.y = m_pClient->Graphics()->ScreenHeight();
-}
-
-vec2 CControllerNui::GetMousePos()
-{
-	CUIRect *pScreen = m_pClient->UI()->Screen();
-
-	float MousePositionX = (m_MousePosition.x/(float)m_pClient->Graphics()->ScreenWidth())*pScreen->w;
-	float MousePositionY = (m_MousePosition.y/(float)m_pClient->Graphics()->ScreenHeight())*pScreen->h;
-	//dbg_msg("MOUSE", "%f %f", MousePositionX, MousePositionY);
-	return vec2(MousePositionX, MousePositionY);
-}
-
-vec2 CControllerNui::GetMousePosClamp(vec4 ClampBox)
-{
-	m_MousePosition.x = clamp(m_MousePosition.x, ClampBox.x, ClampBox.w);
-	m_MousePosition.y = clamp(m_MousePosition.y, ClampBox.y, ClampBox.h);
-	return m_MousePosition;
-}
-
 
 CNUIElements *CControllerNui::ParseElementName(const char *pSrc)
 {
@@ -67,16 +33,25 @@ void CControllerNui::ChangeElementLevel()
 				m_aNui.swap(i, j);
 }
 
-CNUIElements *CControllerNui::GetElement(ELEMENT_TYPES Type, const char Name[64])
+CNUIElements *CControllerNui::GetElementByName(char const *Name)
 {
-	dbg_msg("GetElement", "%s", Name);
 	for (int i = 0; i < m_aNui.size(); ++i)
 	{
 		if (!strcmp(m_aNui[i]->m_pName, Name))
-			return m_aNui[i];
+			return  m_aNui[i];
 	}
+	return NULL;
+}
+
+CNUIElements *CControllerNui::GetElement(ELEMENT_TYPES Type, const char Name[])
+{
+	CNUIElements *pResult = GetElementByName(Name);
+	if(pResult != NULL)
+		return pResult;
+
 	CNUIElements *pNewElement = NULL;
 	CNUIElements *pParent = ParseElementName(Name);
+
 	while(pNewElement == NULL)
 	{
 		switch (Type)
@@ -94,51 +69,27 @@ CNUIElements *CControllerNui::GetElement(ELEMENT_TYPES Type, const char Name[64]
 				break;
 		}
 	}
+
 	if(pParent != NULL)
 		pNewElement->m_pParent = pParent;
-	if(pParent)
-		dbg_msg("GetElement", "Created %s->%s",pParent->m_pName, pNewElement->m_pName);
-	else
-		dbg_msg("GetElement", "Created %s", pNewElement->m_pName);
 
 	m_aNui.add(pNewElement);
-	ChangeElementLevel();
+	ChangeElementLevel(); //TODO: rewrite
+
 	return pNewElement;
 }
 
 void CControllerNui::RemoveElement(char const *pName)
 {
-	for (int i = 0; i < m_aNui.size(); ++i)
+	CNUIElements *pRemovedElement = GetElementByName(pName);
+	if(pRemovedElement != NULL)
 	{
-		if (!strcmp(m_aNui[i]->m_pName, pName))
+		for(int j=0; j < m_aNui.size(); j++)
 		{
-			for(int j=0; j < m_aNui.size(); j++)
-			{
-				if(m_aNui[j]->m_pParent == m_aNui[i])
-					m_aNui.remove_index(j--);
-			}
-			m_aNui.remove_index(i--);
-			break;
+			if(m_aNui[j]->m_pParent == pRemovedElement)
+				m_aNui.remove_index_fast(j);
 		}
+		m_aNui.remove(pRemovedElement);
+		ChangeElementLevel();
 	}
-}
-
-class IClient *CNUIElements::Client() const
-{
-	return m_pClient->Client();
-}
-
-class IGraphics *CNUIElements::Graphics() const
-{
-	return m_pClient->Graphics();
-}
-
-class ITextRender *CNUIElements::TextRender() const
-{
-	return m_pClient->TextRender();
-}
-
-class CRenderTools *CNUIElements::RenderTools() const
-{
-	return m_pClient->RenderTools();
 }

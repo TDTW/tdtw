@@ -41,21 +41,10 @@ public:
 
 	CNUIElements(class CGameClient *pClient, class CControllerNui *pControllerNui, const char *Name);
 
-	virtual void Render()
-	{
-	};
-
-	virtual void SetQuad()
-	{
-	};
-
-	virtual void SetText(bool TextUpdate, TEXT_ALIGN Align, const char *pText, ...)
-	{
-	};
-
-	virtual void SetBlock(float RoundCorner, CORNER_TYPES Type)
-	{
-	};
+	virtual void Render(){};
+	virtual void SetQuad(){	};
+	virtual void SetText(bool TextUpdate, TEXT_ALIGN Align, const char *pText, ...)	{};
+	virtual void SetBlock(float RoundCorner, CORNER_TYPES Type){};
 
 	void SetCallbacksVisual(CallBack FocusOn, CallBack FocusOut, CallBack MouseDown, CallBack MouseUp, void *Arg);
 	void SetCallbacksEvents(CallBack Click, CallBack DblClick, CallBack RightClick, void *Arg);
@@ -70,42 +59,24 @@ public:
 
 	class IClient *Client() const;
 	class IGraphics *Graphics() const;
-
 	class ITextRender *TextRender() const;
 	class CRenderTools *RenderTools() const;
 
 	class CValue *GetPos() { return &m_PosLocal; }
 	class CValue *GetColor() { return &m_Color; }
 
-	virtual class CValue *GetColorOutline()
-	{
-	};
-
+	virtual class CValue *GetColorOutline()	{};
 	void SetChildClipping();
-
-	void DisableParentClipping()
-	{
-		m_StopClipByParent = true;
-	}
-
-	void EnableParentClipping()
-	{
-		m_StopClipByParent = false;
-	}
-
+	void DisableParentClipping(){m_StopClipByParent = true;}
+	void EnableParentClipping(){m_StopClipByParent = false;}
 	vec4 GetClipPos();
-
-	bool GetClipEnable()
-	{
-		return m_ClipUsed;
-	};
-	vec4 GetChildPosGlobal();
+	bool GetClipEnable(){return m_ClipUsed;};
+	vec4 GetChildPosGlobal(){return m_PosGlobal + m_PosLocal.m_Value;};
 
 	void SetRenderLevel(RENDER_LEVEL Level);
 	RENDER_LEVEL GetRenderLevel() {return m_Renderlevel;}
 
 	CNUIElements *m_pParent;
-
 protected:
 
 	bool m_StopClipByParent;
@@ -124,10 +95,11 @@ protected:
 	vec4 m_PosGlobal;
 	CValue m_PosLocal;
 	CValue m_Color;
-	class CGameClient *m_pClient;
-	RENDER_LEVEL m_Renderlevel;
-	class CControllerNui *m_pControllerNui;
 
+	RENDER_LEVEL m_Renderlevel;
+
+	class CGameClient *m_pClient;
+	class CControllerNui *m_pControllerNui;
 private:
 	CallBack m_FocusOn;
 	CallBack m_FocusOut;
@@ -143,6 +115,11 @@ private:
 	bool m_EndLifeTimeCB;
 	CallBack m_BeforeDieCallback;
 	void *m_pEndLifeTimeArg;
+
+	//Animation
+	CallBack m_AnimStart;
+	CallBack m_AnimEnd;
+	void *m_pAnimArg;
 
 	void *m_pVisualArg;
 	void *m_pEventArg;

@@ -1,20 +1,15 @@
-#ifndef _TDTW_NUITEXT_H_
-#define _TDTW_NUITEXT_H_
-
+#ifndef GAME_CLIENT_UI_NUITEXT_H
+#define GAME_CLIENT_UI_NUITEXT_H
 
 #include <base/tl/array.h>
 #include "nelements.h"
-
 
 class CElementText : public CNUIElements
 {
 public:
 	CElementText(class CGameClient *pClient, class CControllerNui *pControllerNui, const char *Name);
 
-	virtual class CValue *GetColorOutline()
-	{
-		return &m_pColorOutline;
-	};
+	virtual class CValue *GetColorOutline()	{return &m_pColorOutline;};
 
 	virtual void Render();
 	virtual void SetText(bool TextUpdate, TEXT_ALIGN Align, const char *pText, ...);
@@ -22,6 +17,7 @@ public:
 	virtual void PreRender();
 
 private:
+	void SaveArguments(bool TextUpdate, char const *pText, ...);
 	void ParseTypes(const char *String);
 
 	enum TYPES
@@ -49,4 +45,4 @@ private:
 	array<sArg *> m_aArgs;
 };
 
-#endif //_TDTW_NUITEXT_H_
+#endif //GAME_CLIENT_UI_NUITEXT_H

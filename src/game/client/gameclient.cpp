@@ -108,7 +108,7 @@ void CGameClient::OnConsoleInit()
 	m_pServerBrowser = Kernel()->RequestInterface<IServerBrowser>();
 	m_pEditor = Kernel()->RequestInterface<IEditor>();
 	m_pFriends = Kernel()->RequestInterface<IFriends>();
-	m_ControllerNui = new CControllerNui(this);
+
 
 	// setup pointers
 	m_pBinds = &::gs_Binds;
@@ -232,6 +232,7 @@ void CGameClient::OnInit()
 {
 	m_pTDTWServer = Kernel()->RequestInterface<ITDTWServer>();
 	m_pGraphics = Kernel()->RequestInterface<IGraphics>();
+	m_ControllerNui = new CControllerNui(this);
 	m_pTDTWServer->Init();
 	// Antiping
 	m_Average_Prediction_Offset = -1;
@@ -320,7 +321,7 @@ void CGameClient::DispatchInput()
 			if(m_Input.m_paComponents[h]->OnMouseMove(x, y))
 				break;
 		}
-		ControllerNui()->OnMouseMove(vec2(x, y));
+		ControllerNui()->Mouse()->OnMove(vec2(x, y));
 	}
 
 	// handle key presses

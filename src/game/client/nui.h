@@ -6,6 +6,7 @@
 #include <game/client/ui/value.h>
 #include <game/client/ui/nuiblock.h>
 #include <game/client/ui/nuitext.h>
+#include <game/client/ui/nuimouse.h>
 #include "render.h"
 #include "gameclient.h"
 
@@ -22,33 +23,25 @@ class CControllerNui
 public:
 	CControllerNui(class CGameClient *Client);
 
-	CNUIElements *GetElement(ELEMENT_TYPES Type, const char Name[64]);
+	CNUIElements *GetElement(ELEMENT_TYPES Type, const char Name[]);
+	CNUIElements *GetElement(int num){return m_aNui[num];}
 	CNUIElements *ParseElementName(const char *pSrc);
-	int GetSize() {return m_aNui.size();}
-
-	CNUIElements *GetElement(int num)
-	{
-		return m_aNui[num];
-	}
 	void RemoveElement(char const *pName);
+	void ChangeElementLevel();
 
 	CNUIElements *m_pUnderMouse;
 	CNUIElements *m_pActiveElement;
 	CNUIElements *m_pLastActiveElement;
 
-	void OnMouseMove(vec2 MousePos);
+	int GetSize() {return m_aNui.size();}
 
-	void ChangeElementLevel();
-
-	vec2 GetMousePos();
-
-	vec2 GetMousePosClamp(vec4 ClampBox);
-
+	class CGameClient *Client() { return m_pClient; }
+	class CNuiMouse *Mouse() { return m_pMouse; }
 private:
 	class CGameClient *m_pClient;
-	vec2 m_MousePosition;
 	array<CNUIElements *> m_aNui;
-
+	class CNuiMouse *m_pMouse;
+	CNUIElements *GetElementByName(char const *Name);
 };
 
 #endif //GAME_CLIENT_NUI_H
