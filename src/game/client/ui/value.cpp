@@ -52,6 +52,7 @@ void CValue::Recalculate()
 
 void CValue::EndAnimation()
 {
+	m_AnimEnded = true;
 	m_Value = m_NewValue;
 }
 

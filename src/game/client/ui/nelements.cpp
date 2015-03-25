@@ -30,6 +30,7 @@ CNUIElements::CNUIElements(class CGameClient *pClient, class CControllerNui *pCo
 
 	m_ClipUsed = false;
 
+	m_Focus = false;
 	m_FocusOn = NULL;
 	m_FocusOut = NULL;
 	m_MouseDown = NULL;
@@ -50,7 +51,6 @@ CNUIElements::CNUIElements(class CGameClient *pClient, class CControllerNui *pCo
 	m_pEndLifeTimeArg = NULL;
 	m_EndLifeTimeCB = false;
 
-	m_AnimStart = NULL;
 	m_AnimEnd = NULL;
 	m_pAnimArg = NULL;
 }
@@ -70,6 +70,11 @@ void CNUIElements::SetCallbacksVisual(CallBack FocusOn, CallBack FocusOut, CallB
 	m_MouseUp = MouseUp;
 	m_UseVisualMouse = true;
 	m_pVisualArg = Arg;
+}
+void CNUIElements::SetAnimationEndCallback(CallBack End, void *Arg)
+{
+	m_AnimEnd = End;
+	m_pAnimArg = Arg;
 }
 
 void CNUIElements::SetCallbacksEvents(CallBack Click, CallBack DblClick, CallBack RightClick, void *Arg)
@@ -112,18 +117,20 @@ bool CNUIElements::MouseInside()
 
 void CNUIElements::CheckMouseVisual()
 {
-	if(MouseInside() && m_pControllerNui->m_pUnderMouse != this) //FOCUS ON
+	if(MouseInside() && m_pControllerNui->m_pUnderMouse != this && !m_Focus) //FOCUS ON
 	{
 		m_pControllerNui->m_pUnderMouse = this;
 		if(m_FocusOn)
 			m_FocusOn(this, m_pVisualArg);
+		m_Focus = true;
 	}
-	else if(m_pControllerNui->m_pUnderMouse == this && !MouseInside()) //FOCUS OUT
+	else if(!MouseInside() && m_Focus) //FOCUS OUT
 	{
 		m_pControllerNui->m_pUnderMouse = NULL;
 		if(m_FocusOut)
 			m_FocusOut(this, m_pVisualArg);
 		m_pControllerNui->m_pActiveElement = NULL;
+		m_Focus = false;
 	}
 
 	if(m_pControllerNui->m_pUnderMouse == this && m_pClient->Input()->KeyDown(KEY_MOUSE_1))
@@ -183,8 +190,11 @@ void CNUIElements::PreRender()
 	if(m_PosLocal.m_AnimTime <= time_get() && time_get() <= m_PosLocal.m_AnimEndTime)
 		m_PosLocal.Recalculate();
 	else if(!m_PosLocal.m_AnimEnded)
+	{
 		m_PosLocal.EndAnimation();
-
+		if(m_AnimEnd)
+			m_AnimEnd(this, m_pAnimArg);
+	}
 	if(m_Color.m_AnimTime <= time_get() && time_get() <= m_Color.m_AnimEndTime)
 		m_Color.Recalculate();
 	else if(!m_Color.m_AnimEnded)

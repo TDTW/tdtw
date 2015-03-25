@@ -49,13 +49,13 @@ public:
 	void SetCallbacksVisual(CallBack FocusOn, CallBack FocusOut, CallBack MouseDown, CallBack MouseUp, void *Arg);
 	void SetCallbacksEvents(CallBack Click, CallBack DblClick, CallBack RightClick, void *Arg);
 	void SetEndLifeTimeCallback(CallBack EndTime, CallBack BeforeDie, void *Arg);
-	
-	virtual void PreRender();
-	virtual void PostRender();
-
+	void SetAnimationEndCallback(CallBack End, void *Arg);
 	void SetLifeTime(int LifeTime, float EndLifeDur = 1);
 	void SetEndLife(float EndLifeDur = 1);
 	void SetEndLifeAnimation(ANIMATION_TYPE animation_type, vec4 Coord);
+
+	virtual void PreRender();
+	virtual void PostRender();
 
 	class IClient *Client() const;
 	class IGraphics *Graphics() const;
@@ -101,6 +101,7 @@ protected:
 	class CGameClient *m_pClient;
 	class CControllerNui *m_pControllerNui;
 private:
+	bool m_Focus;
 	CallBack m_FocusOn;
 	CallBack m_FocusOut;
 	CallBack m_MouseDown;
@@ -117,7 +118,6 @@ private:
 	void *m_pEndLifeTimeArg;
 
 	//Animation
-	CallBack m_AnimStart;
 	CallBack m_AnimEnd;
 	void *m_pAnimArg;
 

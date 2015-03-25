@@ -28,7 +28,8 @@ public:
 	array<CNUIElements *> *GetNotifyArray() { return &m_aNotify; }
 	array<SNotify> *GetNotifyWaitArray() {return &m_aNotifyWait;}
 	SNotify *GetNextNotify() {return &m_aNotifyWait[0];}
-
+	void SetSize(int Size){m_Size = Size;}
+	vec4 GetNotifyBoxStartPos() {return m_NotifyBoxStartPos; }
 private:
 	bool m_Init;
 	array<CNUIElements *> m_aNotify;
@@ -37,6 +38,7 @@ private:
 	char *TempTitle[5];
 	char *TempText[5];
 	int m_Size;
+	vec4 m_NotifyBoxStartPos;
 	bool AddNew(NotificationType Type, char const *pTitle, char const *pText);
 };
 
