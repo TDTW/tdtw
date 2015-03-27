@@ -66,6 +66,7 @@ void CElementText::Render()
 	else
 	{
 		str_copy(Text, m_UnUpdatedText, sizeof(m_UnUpdatedText));
+
 	}
 
 	vec4 Pos = m_PosLocal.m_Value;
@@ -73,9 +74,9 @@ void CElementText::Render()
 	Pos.y += m_PosGlobal.y;
 
 	float Height = Pos.h * (g_Config.m_UiScale / 100.0f);
-
-	TextRender()->TextOutlineColor(m_pColorOutline.m_Value.r, m_pColorOutline.m_Value.g, m_pColorOutline.m_Value.b, m_pColorOutline.m_Value.a);
-	TextRender()->TextColor(m_Color.m_Value.r, m_Color.m_Value.g, m_Color.m_Value.b, m_Color.m_Value.a);    // TODO: Selected
+	// TODO: FIX COLOR!!! Sometimes text not rendering
+	//TextRender()->TextOutlineColor(m_pColorOutline.m_Value.r, m_pColorOutline.m_Value.g, m_pColorOutline.m_Value.b, m_pColorOutline.m_Value.a);
+	//TextRender()->TextColor(m_Color.m_Value.r, m_Color.m_Value.g, m_Color.m_Value.b, m_Color.m_Value.a);
 	if (m_Align == 0)
 	{
 		float tw = TextRender()->TextWidth(0, Height, Text, -1);
