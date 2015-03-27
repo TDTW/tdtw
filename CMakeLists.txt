@@ -321,16 +321,16 @@ set(SOURCE_FILES
     src/game/client/render_map.cpp
     src/game/client/ui.cpp
     src/game/client/ui.h
-    src/game/client/ui/nelements.cpp
-    src/game/client/ui/nelements.h
+    src/game/client/ui/elements.cpp
+    src/game/client/ui/elements.h
     src/game/client/ui/value.cpp
     src/game/client/ui/value.h
-    src/game/client/ui/nuiblock.cpp
-    src/game/client/ui/nuiblock.h
-    src/game/client/ui/nuitext.cpp
-    src/game/client/ui/nuitext.h
-    src/game/client/ui/nuimouse.cpp
-    src/game/client/ui/nuimouse.h
+    src/game/client/ui/block.cpp
+    src/game/client/ui/block.h
+    #src/game/client/ui2/nuitext.cpp
+    #src/game/client/ui2/nuitext.h
+    #src/game/client/ui2/nuimouse.cpp
+    #src/game/client/ui2/nuimouse.h
     src/game/client/nui.cpp
     src/game/client/nui.h
     src/game/editor/auto_map.cpp

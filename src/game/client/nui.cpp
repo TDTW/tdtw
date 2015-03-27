@@ -1,7 +1,8 @@
 #include <engine/graphics.h>
 #include "nui.h"
+#include "ui/block.h"
 
-CControllerNui::CControllerNui(CGameClient *Client)
+/*CControllerNui::CControllerNui(CGameClient *Client)
 {
 	m_pClient = Client;
 	m_pUnderMouse = NULL;
@@ -9,87 +10,91 @@ CControllerNui::CControllerNui(CGameClient *Client)
 	m_pLastActiveElement = NULL;
 	m_pMouse = new CNuiMouse(this);
 }
+}*/
 
-CNUIElements *CControllerNui::ParseElementName(const char *pSrc)
+CNui::CNui(class CGameClient *Client)
 {
-	for(int i = str_length(pSrc); i >= 0; i--)
+	m_pClient = Client;
+}
+
+CNuiElements *CNui::NewElement(CNuiElements::ELEMENT_TYPE Type, const char* Name)
+{
+	CNuiElements *Element;
+	switch (Type)
 	{
-		if(pSrc[i] == '.')
-		{
-			char *name = new char[64];
-			memset(name, 0, 64);
-			str_copy(name, pSrc, i+1);
-			return GetElement(ELEMENT_BLOCK, name);
-		}
+		case CNuiElements::BLOCK:
+			Element = new CBlock(this, Name);
+			break;
+		/*case ELEMENT_TEXT:
+			Element = new CElementText(m_pClient, this, Name);
+			break;
+		case ELEMENT_QUAD:
+		case ELEMENT_TEE:*/
+		default:
+			Element = new CNuiElements(this, Name);
+			break;
 	}
-	return 0;
+	return Element;
 }
 
-void CControllerNui::ChangeElementLevel()
+CNuiElements *CNui::GetElement(CNuiElements::ELEMENT_TYPE Type, const char *Name)
 {
-	for(int i=0; i < m_aNui.size(); i++)
-		for(int j=i; j < m_aNui.size(); j++)
-			if(m_aNui[j]->GetRenderLevel() < m_aNui[i]->GetRenderLevel())
-				m_aNui.swap(i, j);
+	CNuiElements *pResultElement = SearchElement(Name);
+	if (pResultElement == NULL)
+		pResultElement = NewElement(Type, Name);
+
+	pResultElement->m_pParent = ParseParent(Name);
+
+	if(pResultElement->m_pParent != NULL)
+		pResultElement->m_pParent->m_apChild.add(pResultElement);
+
+	// TODO: ChangeLevel
+
+	return pResultElement;
 }
 
-CNUIElements *CControllerNui::GetElementByName(char const *Name)
+CNuiElements *CNui::SearchElement(char const *Name)
 {
-	for (int i = 0; i < m_aNui.size(); ++i)
+	for(int i = 0; i < m_aNuiElements.size(); i++)
 	{
-		if (!strcmp(m_aNui[i]->m_pName, Name))
-			return  m_aNui[i];
+		if(!str_comp(m_aNuiElements[i]->m_pName,Name))
+			return m_aNuiElements[i];
 	}
 	return NULL;
 }
 
-CNUIElements *CControllerNui::GetElement(ELEMENT_TYPES Type, const char Name[])
+int CNui::SearchElementIndex(char const *Name)
 {
-	CNUIElements *pResult = GetElementByName(Name);
-	if(pResult != NULL)
-		return pResult;
-
-	CNUIElements *pNewElement = NULL;
-	CNUIElements *pParent = ParseElementName(Name);
-
-	while(pNewElement == NULL)
+	for(int i = 0; i < m_aNuiElements.size(); i++)
 	{
-		switch (Type)
-		{
-			case ELEMENT_BLOCK:
-				pNewElement = new CElementBlock(m_pClient, this, Name);
-				break;
-			case ELEMENT_TEXT:
-				pNewElement = new CElementText(m_pClient, this, Name);
-				break;
-			case ELEMENT_QUAD:
-			case ELEMENT_TEE:
-			default:
-				//NewElement = new CNUIElements(m_pClient, this, Name);
-				break;
-		}
+		if(!str_comp(m_aNuiElements[i]->m_pName,Name))
+			return i;
 	}
-
-	if(pParent != NULL)
-		pNewElement->m_pParent = pParent;
-
-	m_aNui.add(pNewElement);
-	ChangeElementLevel(); //TODO: rewrite
-
-	return pNewElement;
+	return -1;
 }
 
-void CControllerNui::RemoveElement(char const *pName)
+CNuiElements *CNui::ParseParent(const char *Name)
 {
-	CNUIElements *pRemovedElement = GetElementByName(pName);
-	if(pRemovedElement != NULL)
+	for(int i = str_length(Name) - 1; i >= 0; i--)
 	{
-		for(int j=0; j < m_aNui.size(); j++)
+		if(Name[i] == '.')
 		{
-			if(m_aNui[j]->m_pParent == pRemovedElement)
-				m_aNui.remove_index_fast(j);
+			char *tempName = new char[i] (Name);
+			return GetElement(CNuiElements::BLOCK, tempName);
 		}
-		m_aNui.remove(pRemovedElement);
-		ChangeElementLevel();
+	}
+	return NULL;
+}
+
+void CNui::DeleteElement(const char *Name) 
+{
+	int index = SearchElementIndex(Name);
+	if(index != -1)
+	{
+		for (int i = 0; i < m_aNuiElements[index]->m_apChild.size(); ++i)
+			m_aNuiElements.remove(m_aNuiElements[index]->m_apChild[i]);
+
+		delete m_aNuiElements[index];
+		m_aNuiElements.remove_index(index);
 	}
 }

@@ -232,7 +232,7 @@ void CGameClient::OnInit()
 {
 	m_pTDTWServer = Kernel()->RequestInterface<ITDTWServer>();
 	m_pGraphics = Kernel()->RequestInterface<IGraphics>();
-	m_ControllerNui = new CControllerNui(this);
+	m_pNui = new CNui(this);
 	m_pTDTWServer->Init();
 	// Antiping
 	m_Average_Prediction_Offset = -1;
@@ -321,7 +321,7 @@ void CGameClient::DispatchInput()
 			if(m_Input.m_paComponents[h]->OnMouseMove(x, y))
 				break;
 		}
-		ControllerNui()->Mouse()->OnMove(vec2(x, y));
+		//ControllerNui()->Mouse()->OnMove(vec2(x, y));
 	}
 
 	// handle key presses
@@ -515,11 +515,12 @@ void CGameClient::OnRender()
 	CUIRect Screen = *UI()->Screen();
 	Graphics()->MapScreen(Screen.x, Screen.y, Screen.w, Screen.h);
 //	ControllerNui()->MouseUpdate();
-	for(int i= 0; i < m_ControllerNui->GetSize(); i++)
+
+	for(int i= 0; i < m_pNui->GetElementNumber(); i++)
 	{
-		m_ControllerNui->GetElement(i)->PreRender();
-		m_ControllerNui->GetElement(i)->Render();
-		m_ControllerNui->GetElement(i)->PostRender();
+		m_pNui->GetElement(i)->PreRender();
+		m_pNui->GetElement(i)->Render();
+		m_pNui->GetElement(i)->PostRender();
 	}
 
 
@@ -1251,17 +1252,17 @@ void CGameClient::ConKill(IConsole::IResult *pResult, void *pUserData)
 }
 
 static int type = -1;
-void Test(CNUIElements *test, void *arg)
+void Test(CNuiElements *test, void *arg)
 {
 	type = (type + 1) % 1;
 	test->GetPos()->Init(vec4(0, 50, 100, 100));
 	test->GetPos()->Init(vec4(200, 50, 100, 100), 3, (ANIMATION_TYPE) (type + (int) EaseINOUTBounce));
 }
-void Test2(CNUIElements *test, void *arg)
+void Test2(CNuiElements *test, void *arg)
 {
 	test->GetColor()->Init(vec4(0.2f, 0.0f, 0.3f, 1.0f), 0.5f, Default);
 }
-void Test3(CNUIElements *test, void *arg)
+void Test3(CNuiElements *test, void *arg)
 {
 	//test->SetLifeTime(0,2);
 	test->SetEndLife(2);
@@ -1269,9 +1270,9 @@ void Test3(CNUIElements *test, void *arg)
 }
 void CGameClient::ConTest(IConsole::IResult *pResult, void *pUserData)
 {
-	((CGameClient *) pUserData)->ControllerNui()->GetElement(ELEMENT_BLOCK, "Test")->GetPos()->Init(vec4(0, 50, 100, 100));
-	((CGameClient *) pUserData)->ControllerNui()->GetElement(ELEMENT_BLOCK, "Test")->GetColor()->Init(vec4(1, 1, 1, 1));
-	((CGameClient *) pUserData)->ControllerNui()->GetElement(ELEMENT_BLOCK, "Test")->SetCallbacksEvents(Test, NULL, NULL, pUserData);
+	((CGameClient *) pUserData)->ControllerNui()->GetElement(CNuiElements::BLOCK, "Test")->GetPos()->Init(vec4(0, 50, 100, 100));
+	((CGameClient *) pUserData)->ControllerNui()->GetElement(CNuiElements::BLOCK, "Test")->GetColor()->Init(vec4(1, 1, 1, 1));
+	((CGameClient *) pUserData)->ControllerNui()->GetElement(CNuiElements::BLOCK, "Test")->SetCallbacksEvents(Test, NULL, NULL, pUserData);
 
 	((CGameClient *) pUserData)->ControllerNui()->GetElement(ELEMENT_TEXT, "Test.Text2")->GetPos()->Init(vec4(0, 20, 100, 10));
 	((CGameClient *) pUserData)->ControllerNui()->GetElement(ELEMENT_TEXT, "Test.Text2")->GetColor()->Init(vec4(1, 0, 0, 1));

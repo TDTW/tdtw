@@ -63,7 +63,7 @@ class CGameClient : public IGameClient
 
 	int64 m_LastSendInfo;
 
-	class CControllerNui *m_ControllerNui;
+	class CNui *m_pNui;
 
 	static void ConTeam(IConsole::IResult *pResult, void *pUserData);
 	static void ConKill(IConsole::IResult *pResult, void *pUserData);
@@ -92,7 +92,7 @@ public:
 	class IEditor *Editor() { return m_pEditor; }
 	class IFriends *Friends() { return m_pFriends; }
 	class ITDTWServer *TDTWServer() { return m_pTDTWServer; }
-	class CControllerNui *ControllerNui() { return m_ControllerNui; }
+	class CNui *ControllerNui() { return m_pNui; }
 
 
 	int NetobjNumCorrections() { return m_NetObjHandler.NumObjCorrections(); }

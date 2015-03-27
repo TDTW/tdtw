@@ -1,16 +1,17 @@
 #include <base/system.h>
 #include <base/math.h>
 #include "value.h"
-#include "nelements.h"
+#include "elements.h"
 
 CValue::CValue()
 {
 
 }
 
-CValue::CValue(CNUIElements *pNUI)
+CValue::CValue(CNuiElements *pNUI)
 {
-	m_pNui = pNUI;
+	//m_pNui = pNUI;
+	m_BackAnimation = false;
 	m_Value = vec4(1, 1, 1, 1);
 }
 
@@ -18,29 +19,26 @@ void CValue::Init(vec4 Value)
 {
 	m_Value = Value;
 	m_NewValue = Value;
+	m_OldValue = Value;
 	m_AnimEnded = true;
 }
 
-void CValue::Init(vec4 Value, float time, ANIMATION_TYPE animation_type)
+void CValue::Init(vec4 Value, float time, ANIMATION_TYPE AnimationType, bool BackAnimation)
 {
 	m_NewValue = Value;
 	m_OldValue = m_Value;
 
 	m_AnimEnded = false;
-	m_Animation = animation_type;
+	m_Animation = AnimationType;
 	m_AnimTime = time_get();
 	m_AnimEndTime = time_get() + (int)round(time_freq() * time);
+
+	m_BackAnimation = BackAnimation;
 }
 
-void CValue::InitPlus(vec4 Value, float time, ANIMATION_TYPE animation_type)
+void CValue::InitPlus(vec4 Value, float time, ANIMATION_TYPE AnimationType, bool BackAnimation)
 {
-	m_NewValue = m_NewValue + Value;
-	m_OldValue = m_Value;
-
-	m_AnimEnded = false;
-	m_Animation = animation_type;
-	m_AnimTime = time_get();
-	m_AnimEndTime = time_get() + (int) round(time_freq() * time);
+	Init(m_NewValue + Value, time, AnimationType, BackAnimation);
 }
 
 void CValue::Recalculate()
@@ -54,6 +52,9 @@ void CValue::EndAnimation()
 {
 	m_AnimEnded = true;
 	m_Value = m_NewValue;
+
+	if (m_BackAnimation)
+		Init(m_OldValue, (float)((m_AnimEndTime - m_AnimTime) / time_freq()), m_Animation, false);
 }
 
 vec4 CValue::Animation(ANIMATION_TYPE anim, vec4 min, vec4 max, float time)
