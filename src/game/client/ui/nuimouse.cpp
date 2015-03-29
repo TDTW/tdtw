@@ -1,3 +1,4 @@
+/*
 #include <engine/shared/config.h>
 #include <engine/graphics.h>
 #include "nuimouse.h"
@@ -39,3 +40,4 @@ vec2 CNuiMouse::GetPosClamp(vec4 ClampBox)
 }
 
 class CGameClient *CNuiMouse::Client() const {return m_pNUI->Client();}
+*/

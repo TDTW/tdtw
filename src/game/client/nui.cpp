@@ -7,7 +7,7 @@ CNui::CNui(class CGameClient *Client)
 	m_pClient = Client;
 }
 
-CNuiElements *CNui::NewElement(CNuiElements::ELEMENT_TYPE Type, const char* Name)
+CNuiElements *CNui::NewElement(CNuiElements::ELEMENT_TYPE Type, const char *Name)
 {
 	CNuiElements *Element;
 	switch (Type)
@@ -21,9 +21,11 @@ CNuiElements *CNui::NewElement(CNuiElements::ELEMENT_TYPE Type, const char* Name
 		case ELEMENT_QUAD:
 		case ELEMENT_TEE:*/
 		default:
-			Element = new CNuiElements(this, Name);
+			Element = new CBlock(this, Name);
 			break;
 	}
+	dbg_msg("Nui", "Element %s created", Name);
+	m_aNuiElements.add(Element);
 	return Element;
 }
 
@@ -47,7 +49,7 @@ CNuiElements *CNui::SearchElement(char const *Name)
 {
 	for(int i = 0; i < m_aNuiElements.size(); i++)
 	{
-		if(!str_comp(m_aNuiElements[i]->m_pName,Name))
+		if(!str_comp(m_aNuiElements[i]->m_pName, Name))
 			return m_aNuiElements[i];
 	}
 	return NULL;
@@ -69,7 +71,8 @@ CNuiElements *CNui::ParseParent(const char *Name)
 	{
 		if(Name[i] == '.')
 		{
-			char *tempName = new char[i] (Name);
+			char tempName[i];
+			str_copy(tempName, Name, sizeof(tempName));
 			return GetElement(CNuiElements::BLOCK, tempName);
 		}
 	}

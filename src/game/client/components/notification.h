@@ -3,6 +3,7 @@
 #include <game/client/component.h>
 #include <base/tl/array.h>
 
+/*
 enum NotificationType
 {
 	NT_DEFAULT,
@@ -41,6 +42,7 @@ private:
 	vec4 m_NotifyBoxStartPos;
 	bool AddNew(NotificationType Type, char const *pTitle, char const *pText);
 };
+*/
 
 
 #endif // GAME_CLIENT_COMPONENTS_NOTIFICATION_H

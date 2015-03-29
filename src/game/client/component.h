@@ -29,7 +29,7 @@ protected:
 	class IServerBrowser *ServerBrowser() const { return m_pClient->ServerBrowser(); }
 	class CLayers *Layers() const { return m_pClient->Layers(); }
 	class CCollision *Collision() const { return m_pClient->Collision(); }
-	class CControllerNui *ControllerNui() const { return m_pClient->ControllerNui(); }
+	class CNui *ControllerNui() const { return m_pClient->ControllerNui(); }
 public:
 	virtual ~CComponent() {}
 

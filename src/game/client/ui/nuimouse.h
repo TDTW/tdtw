@@ -1,3 +1,4 @@
+/*
 #ifndef GAME_CLIENT_UI_NUIMOUSE_H
 #define GAME_CLIENT_UI_NUIMOUSE_H
 
@@ -20,3 +21,4 @@ private:
 };
 
 #endif //GAME_CLIENT_UI_NUIMOUSE_H
+*/

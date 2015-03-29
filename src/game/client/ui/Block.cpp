@@ -2,8 +2,8 @@
 #include <game/client/render.h>
 #include "block.h"
 
-CBlock::CBlock(class CNui *pControllerNui, const char *Name)
-    : CNuiElements(pControllerNui, Name)
+CBlock::CBlock(class CNui *pNui, const char *Name)
+    : CNuiElements(pNui, Name)
 {
 	m_CornerType = CORNER_ALL;
 	m_RoundCorner = 0.0f;

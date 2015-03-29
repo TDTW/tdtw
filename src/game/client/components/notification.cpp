@@ -2,13 +2,14 @@
 #include <engine/graphics.h>
 #include <engine/shared/config.h>
 #include "notification.h"
-
+/*
 CNotification::CNotification()
 {
 	m_Init = false;
 	m_NowRendering = 0;
 	m_Size = 0;
 }
+
 
 void NotifyAnimationDie(CNUIElements *Main, void *arg)
 {
@@ -49,7 +50,8 @@ void NotifyBoxAnimEnd(CNUIElements *Main, void *arg)
 	pThis->SetSize(pThis->GetNotifyWaitArray()->size());
 }
 
-bool CNotification::AddNew(NotificationType Type, const char *pTitle, const char *pText)
+*/
+/*bool CNotification::AddNew(NotificationType Type, const char *pTitle, const char *pText)
 {
 	if(m_aNotify.size() < 5)
 	{
@@ -99,7 +101,8 @@ bool CNotification::AddNew(NotificationType Type, const char *pTitle, const char
 		m_aNotifyWait.add(Notify);
 		return false;
 	}
-}
+}*//*
+
 
 void CNotification::RenderNotification(NotificationType Type, const char *pTitle, const char *pText)
 {
@@ -118,7 +121,8 @@ void CNotification::Add(NotificationType Type, const char *pTitle, const char *p
 	SetSize(GetNotifyWaitArray()->size());
 }
 
-void MainMouseOver(CNUIElements *Main, void *arg)
+*/
+/*void MainMouseOver(CNUIElements *Main, void *arg)
 {
 	CNotification *pThis = (CNotification *)arg;
 	Main->GetPos()->InitPlus(vec4(-10, -2, 0, 4), 1, EaseOUTElastic);
@@ -147,11 +151,13 @@ void MainClick(CNUIElements *Main, void *arg)
 		pThis->RenderNotification(pThis->GetNextNotify()->Type, pThis->GetNextNotify()->pTitle, pThis->GetNextNotify()->pText);
 		pThis->GetNotifyWaitArray()->remove_index(0);
 	}
-}
+}*//*
+
 
 void CNotification::OnRender()
 {
-	if(!m_Init)
+	*/
+/*if(!m_Init)
 	{
 		m_Size = 0;
 		CNUIElements *Main2 = ControllerNui()->GetElement(ELEMENT_BLOCK, "Notification1.Background");
@@ -183,5 +189,6 @@ void CNotification::OnRender()
 			NotifyBox->GetColor()->Init(vec4(0, 0, 0, 0.2f));
 
 		m_Init = true;
-	}
-}
+	}*//*
+
+}*/

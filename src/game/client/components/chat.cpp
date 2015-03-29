@@ -66,10 +66,10 @@ bool CChat::OnMouseMove(float x, float y)
 	UI()->ConvertMouseMove(&x, &y);
 	m_MousePos.x += x;
 	m_MousePos.y += y;
-	//if(m_MousePos.x < 0) m_MousePos.x = 0;
-	//if(m_MousePos.y < 0) m_MousePos.y = 0;
-	//if(m_MousePos.x > Graphics()->ScreenWidth()) m_MousePos.x = Graphics()->ScreenWidth();
-	//if(m_MousePos.y > Graphics()->ScreenHeight()) m_MousePos.y = Graphics()->ScreenHeight();
+	if(m_MousePos.x < 0) m_MousePos.x = 0;
+	if(m_MousePos.y < 0) m_MousePos.y = 0;
+	if(m_MousePos.x > Graphics()->ScreenWidth()) m_MousePos.x = Graphics()->ScreenWidth();
+	if(m_MousePos.y > Graphics()->ScreenHeight()) m_MousePos.y = Graphics()->ScreenHeight();
 
 	return true;
 }
@@ -587,10 +587,8 @@ void CChat::OnRenderNew()
 	float Height = Screen.h;
 	
 	CUIRect View = Screen;
-	if(IsActive())
-		m_MousePos = ControllerNui()->Mouse()->GetPosClamp(vec4(View.x, View.y - 5, View.x + View.w, View.y + View.h));
-	//m_MousePos.x = clamp(m_MousePos.x, View.x, View.x+View.w);
-	//m_MousePos.y = clamp(m_MousePos.y, View.y-5, View.y+View.h);
+	m_MousePos.x = clamp(m_MousePos.x, View.x, View.x+View.w);
+	m_MousePos.y = clamp(m_MousePos.y, View.y-5, View.y+View.h);
 	CUIRect Header, Footer, Down, TypeBox, Scroll, Row, d_Extra, d_Left, d_Right, d_Bottom, d_Top;
 	
 	View.HSplitTop(17.0f, &Header, &View);

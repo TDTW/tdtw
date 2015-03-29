@@ -143,10 +143,10 @@ void CEmoticon::OnRender()
 	Graphics()->SetColor(0,0,0,(((m_CircleSize-50.0f)/140.0f)*0.3f));
 	DrawCircle(Screen.w/2, Screen.h/2, m_CircleSize*0.55f, m_CircleSize, 64);
 	Graphics()->QuadsEnd();
-	m_SelectorMouse = ControllerNui()->Mouse()->GetPos();
+	//m_SelectorMouse = ControllerNui()->Mouse()->GetPos();
 	// Mouse cliping
-	if (length(m_SelectorMouse) > 170.0f)
-		m_SelectorMouse = normalize(m_SelectorMouse) * 170.0f;
+	//if (length(m_SelectorMouse) > 170.0f)
+		//m_SelectorMouse = normalize(m_SelectorMouse) * 170.0f;
 		//m_SelectorMouse = ControllerNui()->GetPosClamp(vec4(Screen.x, Screen.y, Screen.w, Screen.h));
 
 	// Selected emote

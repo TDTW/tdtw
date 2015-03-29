@@ -82,7 +82,7 @@ static CNamePlates gs_NamePlates;
 static CItems gs_Items;
 static CMapImages gs_MapImages;
 
-static CNotification gs_Notification;
+//static CNotification gs_Notification;
 
 static CMapLayers gs_MapLayersBackGround(CMapLayers::TYPE_BACKGROUND);
 static CMapLayers gs_MapLayersForeGround(CMapLayers::TYPE_FOREGROUND);
@@ -127,7 +127,7 @@ void CGameClient::OnConsoleInit()
 	m_pDamageind = &::gsDamageInd;
 	m_pTest = &::gsTest;
 	m_pMapimages = &::gs_MapImages;
-	m_pNotification = &::gs_Notification;
+	//m_pNotification = &::gs_Notification;
 	m_pVoting = &::gs_Voting;
 	m_pScoreboard = &::gs_Scoreboard;
 	m_pItems = &::gs_Items;
@@ -155,7 +155,7 @@ void CGameClient::OnConsoleInit()
 	m_All.Add(&m_pParticles->m_RenderExplosions);
 	m_All.Add(m_pTest);
 	m_All.Add(&gs_NamePlates);
-	m_All.Add(m_pNotification);
+	//m_All.Add(m_pNotification);
 	m_All.Add(&m_pParticles->m_RenderGeneral);
 	m_All.Add(m_pDamageind);
 	m_All.Add(&gs_Hud);
@@ -1227,17 +1227,17 @@ void CGameClient::SendKill(int ClientID)
 
 void CGameClient::SendNotification(int Type)
 {
-	if(Type == 0) // Connect to tdtw server
+	/*if(Type == 0) // Connect to tdtw server
 		m_pNotification->Add(NT_IMPORTANT, "TDTWServer", "Connected to TDTW server");
 	else if(Type == 1)
-		m_pNotification->Add(NT_IMPORTANT, "TDTWServer", "Disconnected from TDTW server");
+		m_pNotification->Add(NT_IMPORTANT, "TDTWServer", "Disconnected from TDTW server");*/
 }
 
 void CGameClient::ConNotify(IConsole::IResult *pResult, void *pUserData)
 {
-	int Count = pResult->GetInteger(0);
+	/*int Count = pResult->GetInteger(0);
 	for(int i=0; i < Count; i++)
-		((CGameClient *) pUserData)->m_pNotification->Add(NT_IMPORTANT, "test", "TestText");
+		((CGameClient *) pUserData)->m_pNotification->Add(NT_IMPORTANT, "test", "TestText");*/
 }
 
 
@@ -1251,7 +1251,7 @@ void CGameClient::ConKill(IConsole::IResult *pResult, void *pUserData)
 	((CGameClient*)pUserData)->SendKill(-1);
 }
 
-static int type = -1;
+/*static int type = -1;
 void Test(CNuiElements *test, void *arg)
 {
 	type = (type + 1) % 1;
@@ -1267,16 +1267,19 @@ void Test3(CNuiElements *test, void *arg)
 	//test->SetLifeTime(0,2);
 	test->SetEndLife(2);
 	test->SetEndLifeAnimation(Default, vec4(0,0,0,0));
-}
+}*/
 void CGameClient::ConTest(IConsole::IResult *pResult, void *pUserData)
 {
-	((CGameClient *) pUserData)->ControllerNui()->GetElement(CNuiElements::BLOCK, "Test")->GetPos()->Init(vec4(0, 50, 100, 100));
+	((CGameClient *) pUserData)->ControllerNui()->DeleteElement("Test");
+	((CGameClient *) pUserData)->ControllerNui()->NewElement(CNuiElements::BLOCK, "Test")->GetPos()->Init(vec4(0, 50, 100, 100));
+	((CGameClient *) pUserData)->ControllerNui()->GetElement(CNuiElements::BLOCK, "Test")->GetColor()->Init(vec4(1, 1, 1, 1));
+/*	((CGameClient *) pUserData)->ControllerNui()->GetElement(CNuiElements::BLOCK, "Test")->GetPos()->Init(vec4(0, 50, 100, 100));
 	((CGameClient *) pUserData)->ControllerNui()->GetElement(CNuiElements::BLOCK, "Test")->GetColor()->Init(vec4(1, 1, 1, 1));
 	((CGameClient *) pUserData)->ControllerNui()->GetElement(CNuiElements::BLOCK, "Test")->SetCallbacksEvents(Test, NULL, NULL, pUserData);
 
 	((CGameClient *) pUserData)->ControllerNui()->GetElement(ELEMENT_TEXT, "Test.Text2")->GetPos()->Init(vec4(0, 20, 100, 10));
 	((CGameClient *) pUserData)->ControllerNui()->GetElement(ELEMENT_TEXT, "Test.Text2")->GetColor()->Init(vec4(1, 0, 0, 1));
-	((CGameClient *) pUserData)->ControllerNui()->GetElement(ELEMENT_TEXT, "Test.Text2")->SetText(true, ALIGN_CENTER, "Type = %d", &type);
+	((CGameClient *) pUserData)->ControllerNui()->GetElement(ELEMENT_TEXT, "Test.Text2")->SetText(true, ALIGN_CENTER, "Type = %d", &type);*/
 
 	/*((CGameClient *) pUserData)->ControllerNui()->RemoveElement("Test");
 	((CGameClient *) pUserData)->ControllerNui()->RemoveElement("Test1");

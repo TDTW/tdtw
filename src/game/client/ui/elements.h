@@ -3,12 +3,11 @@
 
 #include <base/tl/array.h>
 #include "value.h"
-#include "block.h"
-#include "text.h"
 
 class CNuiElements
 {
 public:
+
     enum ELEMENT_TYPE
     {
         BLOCK,
@@ -16,6 +15,26 @@ public:
         QUAD,
         TEE
     };
+	enum CORNER_TYPES
+	{
+		CORNER_TL = 1,
+		CORNER_TR = 2,
+		CORNER_BL = 4,
+		CORNER_BR = 8,
+
+		CORNER_T = CORNER_TL | CORNER_TR,
+		CORNER_B = CORNER_BL | CORNER_BR,
+		CORNER_R = CORNER_TR | CORNER_BR,
+		CORNER_L = CORNER_TL | CORNER_BL,
+
+		CORNER_ALL = CORNER_T | CORNER_B
+	};
+	enum TEXT_ALIGN
+	{
+		ALIGN_CENTER,
+		ALIGN_LEFT,
+		ALIGN_RIGHT
+	};
 
     CNuiElements(class CNui *pNui, const char *Name);
 	~CNuiElements();
@@ -24,15 +43,17 @@ public:
     virtual void PreRender();
     virtual void PostRender();
 
-	virtual void SetBlock(float RoundCorner, CBlock::CORNER_TYPES Type) = 0;
-	virtual void SetText(bool TextUpdate, CText::TEXT_ALIGN Align, const char *pText, ...) = 0;
+	virtual void SetBlock(float RoundCorner, CNuiElements::CORNER_TYPES Type){};
+	virtual void SetText(bool TextUpdate, CNuiElements::TEXT_ALIGN Align, const char *pText, ...){};
 
 	class IClient *Client() const;
 	class IGraphics *Graphics() const;
 	class ITextRender *TextRender() const;
 	class CRenderTools *RenderTools() const;
 
-    const char *m_pName;
+	CValue *GetPos() { return m_pPosLocal; }
+	CValue *GetColor() { return m_pColor; }
+    char *m_pName;
 
     CNuiElements *m_pParent;
     array<CNuiElements *> m_apChild;
