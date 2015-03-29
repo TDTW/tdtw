@@ -5,12 +5,6 @@
 
 CValue::CValue()
 {
-
-}
-
-CValue::CValue(CNuiElements *pNUI)
-{
-	//m_pNui = pNUI;
 	m_BackAnimation = false;
 	m_Value = vec4(1, 1, 1, 1);
 }
@@ -43,7 +37,7 @@ void CValue::InitPlus(vec4 Value, float time, ANIMATION_TYPE AnimationType, bool
 
 void CValue::Recalculate()
 {
-	float PassedTime = (float) (time_get() - m_AnimTime) / ((m_AnimEndTime - m_AnimTime) * 1.0f);
+	float PassedTime = (float)((time_get() - m_AnimTime) / ((m_AnimEndTime - m_AnimTime) * 1.0f));
 
 	m_Value = Animation(m_Animation, m_OldValue, m_NewValue, PassedTime);
 }

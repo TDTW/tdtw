@@ -43,7 +43,7 @@ public:
 	};
 
 	CValue();
-	CValue(class CNuiElements *pNUI);
+
 	void Init(vec4 value);
 	void Init(vec4 value, float time, ANIMATION_TYPE AnimationType, bool BackAnimation = false);
 
@@ -53,6 +53,7 @@ public:
 	void EndAnimation();
 
 	bool m_AnimEnded;
+	vec4 GetValue(){ return m_Value; }
 private:
 	bool m_BackAnimation;
 	double m_AnimTime;
@@ -60,7 +61,6 @@ private:
 	ANIMATION_TYPE m_Animation;
 	vec4 m_Value, m_NewValue, m_OldValue;
 
-	//class CNuiElements *m_pNui;
 
 	vec4 Animation(ANIMATION_TYPE anim, vec4 min, vec4 max, float time);
 

@@ -327,6 +327,8 @@ set(SOURCE_FILES
     src/game/client/ui/value.h
     src/game/client/ui/block.cpp
     src/game/client/ui/block.h
+    src/game/client/ui/text.cpp
+    src/game/client/ui/text.h
     #src/game/client/ui2/nuitext.cpp
     #src/game/client/ui2/nuitext.h
     #src/game/client/ui2/nuimouse.cpp

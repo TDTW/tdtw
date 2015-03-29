@@ -3,14 +3,8 @@
 
 #include <base/tl/array.h>
 #include <game/client/ui/elements.h>
-/*#include <game/client/ui/value.h>
-#include <game/client/ui/nuiblock.h>
-#include <game/client/ui/nuitext.h>
-#include <game/client/ui/nuimouse.h>
-#include <game/client/ui2/nelements.h>*/
 #include "render.h"
 #include "gameclient.h"
-
 
 class CNui
 {
@@ -22,10 +16,12 @@ public:
 
 	int GetElementNumber() { m_aNuiElements.size(); }
 	CNuiElements *GetElement(int Index) { return m_aNuiElements[Index]; }
+
+	class CGameClient *Client() { return m_pClient; }
 private:
 	array <CNuiElements*> m_aNuiElements;
 
-	CGameClient *m_pClient;
+	class CGameClient *m_pClient;
 
 	CNuiElements *ParseParent(const char *Name);
 	CNuiElements *SearchElement(char const *Name);

@@ -2,16 +2,6 @@
 #include "nui.h"
 #include "ui/block.h"
 
-/*CControllerNui::CControllerNui(CGameClient *Client)
-{
-	m_pClient = Client;
-	m_pUnderMouse = NULL;
-	m_pActiveElement = NULL;
-	m_pLastActiveElement = NULL;
-	m_pMouse = new CNuiMouse(this);
-}
-}*/
-
 CNui::CNui(class CGameClient *Client)
 {
 	m_pClient = Client;

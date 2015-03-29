@@ -1,5 +1,5 @@
-#ifndef GAME_CLIENT_UI_NUITEXT_H
-#define GAME_CLIENT_UI_NUITEXT_H
+#ifndef GAME_CLIENT_UI2_NUITEXT_H
+#define GAME_CLIENT_UI2_NUITEXT_H
 
 #include <base/tl/array.h>
 #include "nelements.h"
@@ -46,4 +46,4 @@ private:
 	array<sArg *> m_aArgs;
 };
 
-#endif //GAME_CLIENT_UI_NUITEXT_H
+#endif //GAME_CLIENT_UI2_NUITEXT_H
