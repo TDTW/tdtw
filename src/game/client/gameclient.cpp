@@ -1274,7 +1274,7 @@ void CGameClient::ConTest(IConsole::IResult *pResult, void *pUserData)
 	((CGameClient *) pUserData)->ControllerNui()->DeleteElement("Test");
 	((CGameClient *) pUserData)->ControllerNui()->NewElement(CNuiElements::BLOCK, "Test")->GetPos()->Init(vec4(500, 50, 100, 100));
 	((CGameClient *) pUserData)->ControllerNui()->GetElement(CNuiElements::BLOCK, "Test")->GetColor()->Init(vec4(1, 1, 1, 1));
-	((CGameClient *) pUserData)->ControllerNui()->GetElement(CNuiElements::BLOCK, "Test")->GetPos()->InitPlus(vec4(0, 200, 0, 0), 2, CValue::EaseOUTBounce);
+	((CGameClient *) pUserData)->ControllerNui()->GetElement(CNuiElements::BLOCK, "Test")->GetPos()->InitPlus(vec4(0, 200, 0, 0), 2, CValue::EaseINOUTBounce, true);
 	((CGameClient *) pUserData)->ControllerNui()->GetElement(CNuiElements::BLOCK, "Test")->GetColor()->Init(vec4(1, 1, 1, 1));
 	//((CGameClient *) pUserData)->ControllerNui()->GetElement(CNuiElements::BLOCK, "Test")->SetCallbacksEvents(Test, NULL, NULL, pUserData);
 

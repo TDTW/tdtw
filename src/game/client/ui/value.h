@@ -8,6 +8,8 @@ class CValue
 public:
 	enum ANIMATION_TYPE
 	{
+		AnimIN,
+		AnimOUT,
 		LINEAR,
 		EaseIN,				// плавно, вначале медленно, вконце быстро, общая скорость - очень медленно
 		EaseOUT,			// плавно, вначале быстро, вконце медленно, общая скорость - очень медленно

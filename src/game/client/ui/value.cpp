@@ -48,7 +48,16 @@ void CValue::EndAnimation()
 	m_Value = m_NewValue;
 
 	if (m_BackAnimation)
-		Init(m_OldValue, (float)((m_AnimEndTime - m_AnimTime) / time_freq()), m_Animation, false);
+	{
+		int BackAnimation = m_Animation;
+
+		if (m_Animation % 3 == AnimIN)
+			BackAnimation++;
+		else if (m_Animation % 3 == AnimOUT)
+			BackAnimation--;
+
+		Init(m_OldValue, (float) ((m_AnimEndTime - m_AnimTime) / time_freq()), (ANIMATION_TYPE)BackAnimation , false);
+	}
 }
 
 vec4 CValue::Animation(ANIMATION_TYPE anim, vec4 min, vec4 max, float time)
