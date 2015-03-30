@@ -51,9 +51,9 @@ void CValue::EndAnimation()
 	{
 		int BackAnimation = m_Animation;
 
-		if (m_Animation % 3 == AnimIN)
+		if (m_Animation % 4 == AnimIN)
 			BackAnimation++;
-		else if (m_Animation % 3 == AnimOUT)
+		else if (m_Animation % 4 == AnimOUT)
 			BackAnimation--;
 
 		Init(m_OldValue, (float) ((m_AnimEndTime - m_AnimTime) / time_freq()), (ANIMATION_TYPE)BackAnimation , false);
@@ -73,6 +73,18 @@ vec4 CValue::Animation(ANIMATION_TYPE anim, vec4 min, vec4 max, float time)
 			break;
 		case EaseINOUT:			// плавно, вначале и конце медленно, общая скорость - очень медленно
 			time = -0.5f * (cosf(pi * time) - 1);
+			break;
+		case EaseOUTIN:
+			time *= 2;
+			if (time < 1)
+			{
+				time = 0.5f * sinf(time * pi / 2);
+			}
+			else
+			{
+				time -= 1;
+				time = -0.5f * cosf(time * pi / 2) + 1;
+			}
 			break;
 
 		case EaseIN2:			// плавно, вначале медленно, вконце быстро, общая скорость - медленно
@@ -280,9 +292,5 @@ void CValue::PreRender()
 	if(m_AnimTime <= time_get() && time_get() <= m_AnimEndTime)
 		Recalculate();
 	else if(!m_AnimEnded)
-	{
 		EndAnimation();
-		//if(m_AnimEnd)
-		//	m_AnimEnd(this, m_pAnimArg);
-	}
 }

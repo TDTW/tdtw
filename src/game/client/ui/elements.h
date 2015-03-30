@@ -46,6 +46,10 @@ public:
 	virtual void SetBlock(float RoundCorner, CORNER_TYPES Type){};
 	virtual void SetText(bool TextUpdate, TEXT_ALIGN Align, const char *pText, ...){};
 
+	void SetChildClipping();
+	void DisableParentClipping(){m_StopClipByParent = true;}
+	void EnableParentClipping(){m_StopClipByParent = false;}
+
 	class IClient *Client() const;
 	class IGraphics *Graphics() const;
 	class ITextRender *TextRender() const;
@@ -61,11 +65,21 @@ public:
 	vec4 GetChildPosGlobal() { return m_PosGlobal+m_pPosLocal->GetValue();}
 
 protected:
+	vec4 GetClipPos();
+	bool GetClipEnable(){return m_ClipUsed;};
+	vec4 GetClipWithoutScale();
+
 	vec4 m_PosGlobal;
     CValue *m_pPosLocal;
     CValue *m_pColor;
 
     class CNui *m_pNui;
+
+	bool m_StopClipByParent;
+	bool m_ClipUsed;
+	float m_XScale;
+	float m_YScale;
+
 };
 
 #endif //GAME_CLIENT_UI_NELEMENTS_H
