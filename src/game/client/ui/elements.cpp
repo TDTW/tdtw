@@ -4,13 +4,15 @@
 CNuiElements::CNuiElements(class CNui *pNui, const char *Name)
 {
     m_pName = new char[str_length(Name)+1];
+	m_pPosLocal = new CValue();
+	m_pColor = new CValue();
+
 	str_copy(m_pName, Name, str_length(Name)+1);
+
     m_pNui = pNui;
     m_pParent = NULL;
 	m_apChild.clear();
-	m_pPosLocal = new CValue();
 	m_PosGlobal = vec4(0, 0, 0, 0);
-	m_pColor = new CValue();
 }
 
 CNuiElements::~CNuiElements()

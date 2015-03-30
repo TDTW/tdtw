@@ -43,8 +43,8 @@ public:
     virtual void PreRender();
     virtual void PostRender();
 
-	virtual void SetBlock(float RoundCorner, CNuiElements::CORNER_TYPES Type){};
-	virtual void SetText(bool TextUpdate, CNuiElements::TEXT_ALIGN Align, const char *pText, ...){};
+	virtual void SetBlock(float RoundCorner, CORNER_TYPES Type){};
+	virtual void SetText(bool TextUpdate, TEXT_ALIGN Align, const char *pText, ...){};
 
 	class IClient *Client() const;
 	class IGraphics *Graphics() const;

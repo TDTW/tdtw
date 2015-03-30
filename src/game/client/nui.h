@@ -10,12 +10,13 @@ class CNui
 {
 public:
 	CNui(class CGameClient *Client);
+
+	void DeleteElement(const char *Name);
 	CNuiElements *NewElement(CNuiElements::ELEMENT_TYPE Type, const char *Name);
 	CNuiElements *GetElement(CNuiElements::ELEMENT_TYPE Type, const char *Name);
-	void DeleteElement(const char *Name);
 
-	int GetElementNumber() { m_aNuiElements.size(); }
 	CNuiElements *GetElement(int Index) { return m_aNuiElements[Index]; }
+	int GetElementNumber() { m_aNuiElements.size(); }
 
 	class CGameClient *Client() { return m_pClient; }
 private:

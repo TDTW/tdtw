@@ -1268,19 +1268,21 @@ void Test3(CNuiElements *test, void *arg)
 	test->SetEndLife(2);
 	test->SetEndLifeAnimation(Default, vec4(0,0,0,0));
 }*/
+static int type = 2195;
 void CGameClient::ConTest(IConsole::IResult *pResult, void *pUserData)
 {
 	((CGameClient *) pUserData)->ControllerNui()->DeleteElement("Test");
-	((CGameClient *) pUserData)->ControllerNui()->NewElement(CNuiElements::BLOCK, "Test")->GetPos()->Init(vec4(0, 50, 100, 100));
+	((CGameClient *) pUserData)->ControllerNui()->NewElement(CNuiElements::BLOCK, "Test")->GetPos()->Init(vec4(500, 50, 100, 100));
 	((CGameClient *) pUserData)->ControllerNui()->GetElement(CNuiElements::BLOCK, "Test")->GetColor()->Init(vec4(1, 1, 1, 1));
 /*	((CGameClient *) pUserData)->ControllerNui()->GetElement(CNuiElements::BLOCK, "Test")->GetPos()->Init(vec4(0, 50, 100, 100));
 	((CGameClient *) pUserData)->ControllerNui()->GetElement(CNuiElements::BLOCK, "Test")->GetColor()->Init(vec4(1, 1, 1, 1));
-	((CGameClient *) pUserData)->ControllerNui()->GetElement(CNuiElements::BLOCK, "Test")->SetCallbacksEvents(Test, NULL, NULL, pUserData);
+	((CGameClient *) pUserData)->ControllerNui()->GetElement(CNuiElements::BLOCK, "Test")->SetCallbacksEvents(Test, NULL, NULL, pUserData);*/
 
-	((CGameClient *) pUserData)->ControllerNui()->GetElement(ELEMENT_TEXT, "Test.Text2")->GetPos()->Init(vec4(0, 20, 100, 10));
-	((CGameClient *) pUserData)->ControllerNui()->GetElement(ELEMENT_TEXT, "Test.Text2")->GetColor()->Init(vec4(1, 0, 0, 1));
-	((CGameClient *) pUserData)->ControllerNui()->GetElement(ELEMENT_TEXT, "Test.Text2")->SetText(true, ALIGN_CENTER, "Type = %d", &type);*/
+	((CGameClient *) pUserData)->ControllerNui()->GetElement(CNuiElements::TEXT, "Test.Text2")->GetPos()->Init(vec4(0, 20, 100, 10));
+	((CGameClient *) pUserData)->ControllerNui()->GetElement(CNuiElements::TEXT, "Test.Text2")->GetColor()->Init(vec4(1, 0, 0, 1));
+	((CGameClient *) pUserData)->ControllerNui()->GetElement(CNuiElements::TEXT, "Test.Text2")->SetText(true, CNuiElements::ALIGN_CENTER, "Type = %d", &type);
 
+	type++;
 	/*((CGameClient *) pUserData)->ControllerNui()->RemoveElement("Test");
 	((CGameClient *) pUserData)->ControllerNui()->RemoveElement("Test1");
 	((CGameClient *) pUserData)->ControllerNui()->RemoveElement("Test2");

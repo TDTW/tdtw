@@ -1,4 +1,5 @@
 #include <engine/graphics.h>
+#include <game/client/ui/text.h>
 #include "nui.h"
 #include "ui/block.h"
 
@@ -15,10 +16,10 @@ CNuiElements *CNui::NewElement(CNuiElements::ELEMENT_TYPE Type, const char *Name
 		case CNuiElements::BLOCK:
 			Element = new CBlock(this, Name);
 			break;
-		/*case ELEMENT_TEXT:
-			Element = new CElementText(m_pClient, this, Name);
+		case CNuiElements::TEXT:
+			Element = new CText(this, Name);
 			break;
-		case ELEMENT_QUAD:
+		/*case ELEMENT_QUAD:
 		case ELEMENT_TEE:*/
 		default:
 			Element = new CBlock(this, Name);
@@ -71,7 +72,7 @@ CNuiElements *CNui::ParseParent(const char *Name)
 	{
 		if(Name[i] == '.')
 		{
-			char tempName[i];
+			char tempName[i+1];
 			str_copy(tempName, Name, sizeof(tempName));
 			return GetElement(CNuiElements::BLOCK, tempName);
 		}
