@@ -52,6 +52,8 @@ public:
 	void Recalculate();
 	void EndAnimation();
 
+	void PreRender();
+
 	bool m_AnimEnded;
 	vec4 GetValue(){ return m_Value; }
 private:

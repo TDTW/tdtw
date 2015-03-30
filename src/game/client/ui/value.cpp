@@ -265,3 +265,15 @@ float CValue::BounceOut(float time)
 	}
 	return time;
 }
+
+void CValue::PreRender()
+{
+	if(m_AnimTime <= time_get() && time_get() <= m_AnimEndTime)
+		Recalculate();
+	else if(!m_AnimEnded)
+	{
+		EndAnimation();
+		//if(m_AnimEnd)
+		//	m_AnimEnd(this, m_pAnimArg);
+	}
+}

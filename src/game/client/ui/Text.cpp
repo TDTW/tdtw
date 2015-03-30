@@ -87,10 +87,10 @@ void CText::Render()
 	char Text[255] = {0};
 	if (m_TextUpdate)
 	{
-		//str_copy(Text, m_pTextTemplate, sizeof(Text));
 		for (int i = 0; i < m_apArgs.size(); i++)
 		{
 			char TempStr[255] = {0};
+			char TempStr2[255] = {0};
 			if (i > 0 && i != m_apArgs.size())
 				mem_copy(TempStr, &m_pTextTemplate[m_apArgs[i - 1]->m_EndPos + 1], m_apArgs[i]->m_EndPos - m_apArgs[i - 1]->m_EndPos);
 			else if (i > 0 && i == m_apArgs.size())
@@ -101,39 +101,40 @@ void CText::Render()
 			switch (m_apArgs[i]->m_ArgType)
 			{
 				case INT:
-					str_format(TempStr, sizeof(TempStr), TempStr, *(int *) m_apArgs[i]->m_Args);
-					str_append(Text, TempStr, sizeof(TempStr));
+					str_format(TempStr2, sizeof(TempStr), TempStr, *(int *) m_apArgs[i]->m_Args);
+					str_append(Text, TempStr2, sizeof(TempStr2));
 					break;
 				case FLOAT:
-					str_format(TempStr, sizeof(TempStr), TempStr, *(float *) m_apArgs[i]->m_Args);
-					str_append(Text, TempStr, sizeof(TempStr));
+					str_format(TempStr2, sizeof(TempStr), TempStr, *(float *) m_apArgs[i]->m_Args);
+					str_append(Text, TempStr2, sizeof(TempStr2));
 					break;
 				case STRING:
-					str_format(TempStr, sizeof(TempStr), TempStr, *(char *) m_apArgs[i]->m_Args);
-					str_append(Text, TempStr, sizeof(TempStr));
+					str_format(TempStr2, sizeof(TempStr), TempStr, *(char *) m_apArgs[i]->m_Args);
+					str_append(Text, TempStr2, sizeof(TempStr2));
 					break;
 				case LONG:
-					str_format(TempStr, sizeof(TempStr), TempStr, *(long *) m_apArgs[i]->m_Args);
-					str_append(Text, TempStr, sizeof(TempStr));
+					str_format(TempStr2, sizeof(TempStr), TempStr, *(long *) m_apArgs[i]->m_Args);
+					str_append(Text, TempStr2, sizeof(TempStr2));
 					break;
-
 			}
 		}
 	}
 	else
 	{
 		str_copy(Text, m_pRenderText, sizeof(Text));
-
 	}
 
 	vec4 Pos = m_pPosLocal->GetValue();
 	Pos.x += m_PosGlobal.x;
 	Pos.y += m_PosGlobal.y;
 
+	vec4 Color = m_pColor->GetValue();
+
 	float Height = Pos.h * (g_Config.m_UiScale / 100.0f);
+
 	// TODO: FIX COLOR!!! Sometimes text not rendering
 	//TextRender()->TextOutlineColor(m_pColorOutline.m_Value.r, m_pColorOutline.m_Value.g, m_pColorOutline.m_Value.b, m_pColorOutline.m_Value.a);
-	//TextRender()->TextColor(m_Color.m_Value.r, m_Color.m_Value.g, m_Color.m_Value.b, m_Color.m_Value.a);
+	TextRender()->TextColor(Color.r, Color.g, Color.b, Color.a);
 	if (m_Align == 0)
 	{
 		float tw = TextRender()->TextWidth(0, Height, Text, -1);
@@ -149,5 +150,4 @@ void CText::Render()
 
 	TextRender()->TextColor(1, 1, 1, 1);
 	TextRender()->TextOutlineColor(0.0f, 0.0f, 0.0f, 0.3f);
-
 }

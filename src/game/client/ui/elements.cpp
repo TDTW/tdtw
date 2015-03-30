@@ -24,6 +24,9 @@ CNuiElements::~CNuiElements()
 
 void CNuiElements::PreRender()
 {
+	m_pPosLocal->PreRender();
+	m_pColor->PreRender();
+
 	if (m_pParent != NULL)
 		m_PosGlobal = m_pParent->GetChildPosGlobal();
 	else
