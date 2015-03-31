@@ -105,6 +105,19 @@ vec4 CValue::Animation(ANIMATION_TYPE anim, vec4 min, vec4 max, float time)
 				time = -0.5f * (time * (time - 2) - 1);
 			}
 			break;
+		case EaseOUTIN2:
+			time *= 2;
+			if (time < 1)
+			{
+				time = -0.5f * time * (time - 2);
+			}
+			else
+			{
+				time -= 1;
+				time = 0.5f * time * time + 0.5f;
+			}
+			break;
+
 
 		case EaseIN3:			// плавно, вначале медленно, вконце быстро, общая скорость - средне
 			time = time * time * time;
@@ -123,6 +136,18 @@ vec4 CValue::Animation(ANIMATION_TYPE anim, vec4 min, vec4 max, float time)
 			{
 				time -= 2;
 				time = 0.5f * (time * time * time + 2);
+			}
+			break;
+		case EaseOUTIN3:
+			time *= 2;
+			if (time < 1)
+			{
+				time = 0.5f * (time * time * time + 2) - 1;
+			}
+			else
+			{
+				time -= 1;
+				time = 0.5f * time * time * time + 0.5f;
 			}
 			break;
 
@@ -145,6 +170,18 @@ vec4 CValue::Animation(ANIMATION_TYPE anim, vec4 min, vec4 max, float time)
 				time = -0.5f * (time * time * time * time - 2);
 			}
 			break;
+		case EaseOUTIN4:
+			time *= 2;
+			if (time < 1)
+			{
+				time = -0.5f * time * time * time * (time - 2);
+			}
+			else
+			{
+				time -= 1;
+				time = 0.5f * time * time * time * time + 0.5f;
+			}
+			break;
 
 		case EaseIN5:			// плавно, вначале медленно, вконце быстро, общая скорость - очень быстро
 			time = time * time * time * time * time;
@@ -165,6 +202,18 @@ vec4 CValue::Animation(ANIMATION_TYPE anim, vec4 min, vec4 max, float time)
 				time = 0.5f * (time * time * time * time * time + 2);
 			}
 			break;
+		case EaseOUTIN5:
+			time *= 2;
+			if (time < 1)
+			{
+				time = 0.5f * (time * time * time * time * time + 2) - 1;
+			}
+			else
+			{
+				time -= 1;
+				time = 0.5f * time * time * time * time * time + 0.5f;
+			}
+			break;
 
 		case EaseIN6:            // плавно, вначале медленно, вконце быстро, общая скорость - очень очень быстро
 			time = powf(2.0f, 10 * (time - 1));
@@ -182,6 +231,18 @@ vec4 CValue::Animation(ANIMATION_TYPE anim, vec4 min, vec4 max, float time)
 			{
 				time -= 1;
 				time = 0.5f * (-powf(2.0f, -10 * time) + 2);
+			}
+			break;
+		case EaseOUTIN6:
+			time *= 2;
+			if (time < 1)
+			{
+				time = -0.5f * time * time * time * time * time * (time - 2);
+			}
+			else
+			{
+				time -= 1;
+				time = 0.5f * time * time * time * time * time * time + 0.5f;
 			}
 			break;
 

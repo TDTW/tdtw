@@ -1268,7 +1268,7 @@ void Test3(CNuiElements *test, void *arg)
 	test->SetEndLife(2);
 	test->SetEndLifeAnimation(Default, vec4(0,0,0,0));
 }*/
-static int type = 2195;
+static int type = -1;
 void CGameClient::ConTest(IConsole::IResult *pResult, void *pUserData)
 {
 	((CGameClient *) pUserData)->ControllerNui()->DeleteElement("Test");
@@ -1277,14 +1277,15 @@ void CGameClient::ConTest(IConsole::IResult *pResult, void *pUserData)
 	//((CGameClient *) pUserData)->ControllerNui()->GetElement(CNuiElements::BLOCK, "Test")->GetPos()->InitPlus(vec4(0, 200, 0, 0), 2, CValue::EaseOUTIN);
 	((CGameClient *) pUserData)->ControllerNui()->GetElement(CNuiElements::BLOCK, "Test")->GetColor()->Init(vec4(1, 1, 1, 1));
 	//((CGameClient *) pUserData)->ControllerNui()->GetElement(CNuiElements::BLOCK, "Test")->SetCallbacksEvents(Test, NULL, NULL, pUserData);
-	((CGameClient *) pUserData)->ControllerNui()->GetElement(CNuiElements::BLOCK, "Test")->SetChildClipping();
+	//((CGameClient *) pUserData)->ControllerNui()->GetElement(CNuiElements::BLOCK, "Test")->SetChildClipping();
+
+	type = (type+1)%6;
 
 	((CGameClient *) pUserData)->ControllerNui()->GetElement(CNuiElements::TEXT, "Test.Text2")->GetPos()->Init(vec4(-100, 30, 100, 15));
-	((CGameClient *) pUserData)->ControllerNui()->GetElement(CNuiElements::TEXT, "Test.Text2")->GetPos()->InitPlus(vec4(200, 0, 0, 0), 2, CValue::EaseOUTIN);
+	((CGameClient *) pUserData)->ControllerNui()->GetElement(CNuiElements::TEXT, "Test.Text2")->GetPos()->InitPlus(vec4(200, 0, 0, 0), 1, (CValue::ANIMATION_TYPE)(CValue::EaseOUTIN + (4 * type)));
 	((CGameClient *) pUserData)->ControllerNui()->GetElement(CNuiElements::TEXT, "Test.Text2")->GetColor()->Init(vec4(1, 0, 0, 1));
 	((CGameClient *) pUserData)->ControllerNui()->GetElement(CNuiElements::TEXT, "Test.Text2")->SetText(true, CNuiElements::ALIGN_CENTER, "Type = %d", &type);
 
-	type++;
 	/*((CGameClient *) pUserData)->ControllerNui()->RemoveElement("Test");
 	((CGameClient *) pUserData)->ControllerNui()->RemoveElement("Test1");
 	((CGameClient *) pUserData)->ControllerNui()->RemoveElement("Test2");
@@ -1317,8 +1318,6 @@ void CGameClient::ConTest(IConsole::IResult *pResult, void *pUserData)
 	((CGameClient *) pUserData)->ControllerNui()->GetElement(ELEMENT_BLOCK, "Test.Text")->SetChildClipping();
 	((CGameClient *) pUserData)->ControllerNui()->GetElement(ELEMENT_BLOCK, "Test.Text")->SetCallbacksVisual(Test,Test2,NULL,NULL);
 	((CGameClient *) pUserData)->ControllerNui()->GetElement(ELEMENT_BLOCK, "Test.Text")->SetCallbacksEvents(Test3,NULL,NULL);
-
-
 
 	((CGameClient *) pUserData)->ControllerNui()->GetElement(ELEMENT_TEXT, "Test.Text.asd")->GetPos()->Init(vec4(10.0f, 10.0f, 80.0f, 25.0f));
 	((CGameClient *) pUserData)->ControllerNui()->GetElement(ELEMENT_TEXT, "Test.Text.asd")->GetPos()->Init(vec4(130.0f, 30.0f, 80.0f, 25.0f), 1, EaseIN);
