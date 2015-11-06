@@ -1,6 +1,6 @@
 #include <engine/graphics.h>
 #include <game/client/render.h>
-#include "block1.h"
+#include "block.h"
 
 CBlock::CBlock(class CNui *pNui, const char *Name)
     : CNuiElements(pNui, Name)

@@ -325,10 +325,10 @@ set(SOURCE_FILES
     src/game/client/ui/elements.h
     src/game/client/ui/value.cpp
     src/game/client/ui/value.h
-    src/game/client/ui/block1.cpp
-    src/game/client/ui/block1.h
-    src/game/client/ui/text1.cpp
-    src/game/client/ui/text1.h
+    src/game/client/ui/block.cpp
+    src/game/client/ui/block.h
+    src/game/client/ui/text.cpp
+    src/game/client/ui/text.h
     src/game/client/nui.cpp
     src/game/client/nui.h
     src/game/editor/auto_map.cpp
