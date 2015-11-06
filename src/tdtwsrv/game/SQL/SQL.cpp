@@ -85,7 +85,7 @@ bool CSQL::GetBool(const char *ColName)
 
 const char *CSQL::GetString(const char *ColName)
 {
-	const char *value;
+	const char *value = nullptr;
 	bool find=false;
 	for(int i = 0; i < m_Data.size(); i++)
 	{

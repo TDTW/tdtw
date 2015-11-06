@@ -1,7 +1,7 @@
 #include <engine/graphics.h>
-#include <game/client/ui/text.h>
+#include "ui/text1.h"
 #include "nui.h"
-#include "ui/block.h"
+#include "ui/block1.h"
 
 CNui::CNui(class CGameClient *Client)
 {

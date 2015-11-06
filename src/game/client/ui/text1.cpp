@@ -1,7 +1,7 @@
 #include <stdio.h>
 #include <engine/shared/config.h>
 #include <engine/textrender.h>
-#include "text.h"
+#include "text1.h"
 
 
 CText::CText(class CNui *pNui, char const *Name)

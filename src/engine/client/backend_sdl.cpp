@@ -1,7 +1,5 @@
-
 #include "SDL.h"
 #include "SDL_opengl.h"
-
 #include <base/tl/threading.h>
 #include "graphics_threaded.h"
 #include "backend_sdl.h"
@@ -498,7 +496,7 @@ int CGraphicsBackend_SDL_OpenGL::Init(const char *pName, int *Width, int *Height
 
 		#ifdef CONF_FAMILY_WINDOWS
 			if(!getenv("SDL_VIDEO_WINDOW_POS") && !getenv("SDL_VIDEO_CENTERED")) // ignore_convention
-				putenv("SDL_VIDEO_WINDOW_POS=center"); // ignore_convention
+				_wputenv((const wchar_t *) "SDL_VIDEO_WINDOW_POS=center"); // ignore_convention
 		#endif
 	}
 

@@ -325,10 +325,10 @@ set(SOURCE_FILES
     src/game/client/ui/elements.h
     src/game/client/ui/value.cpp
     src/game/client/ui/value.h
-    src/game/client/ui/block.cpp
-    src/game/client/ui/block.h
-    src/game/client/ui/text.cpp
-    src/game/client/ui/text.h
+    src/game/client/ui/block1.cpp
+    src/game/client/ui/block1.h
+    src/game/client/ui/text1.cpp
+    src/game/client/ui/text1.h
     src/game/client/nui.cpp
     src/game/client/nui.h
     src/game/editor/auto_map.cpp
@@ -431,8 +431,8 @@ set(EXECUTABLE_OUTPUT_PATH ${CMAKE_SOURCE_DIR}/)
 set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_SOURCE_DIR})
 
 if(OS_WINDOWS)
-    set(CMAKE_CXX_FLAGS_DEBUG "${CMAKE_CXX_FLAGS_DEBUG} -static-libgcc -static-libstdc++")
-    set(CMAKE_CXX_FLAGS_RELEASE "${CMAKE_CXX_FLAGS_RELEASE} -static-libgcc -static-libstdc++")
+    set(CMAKE_CXX_FLAGS_DEBUG "${CMAKE_CXX_FLAGS_DEBUG} -std=c++11 -static-libgcc -static-libstdc++")
+    set(CMAKE_CXX_FLAGS_RELEASE "${CMAKE_CXX_FLAGS_RELEASE} -std=c++11 -static-libgcc -static-libstdc++")
 endif(OS_WINDOWS)
 
 #SERVER_DEBUG
