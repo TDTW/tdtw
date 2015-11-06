@@ -12,6 +12,7 @@ CNuiElements::CNuiElements(class CNui *pNui, const char *Name)
 
     m_pNui = pNui;
     m_pParent = NULL;
+	m_ClipUsed = false;
 	m_apChild.clear();
 	m_PosGlobal = vec4(0, 0, 0, 0);
 }

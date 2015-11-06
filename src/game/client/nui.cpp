@@ -11,6 +11,7 @@ CNui::CNui(class CGameClient *Client)
 CNuiElements *CNui::NewElement(CNuiElements::ELEMENT_TYPE Type, const char *Name)
 {
 	CNuiElements *Element;
+
 	switch (Type)
 	{
 		case CNuiElements::BLOCK:
@@ -25,8 +26,14 @@ CNuiElements *CNui::NewElement(CNuiElements::ELEMENT_TYPE Type, const char *Name
 			Element = new CBlock(this, Name);
 			break;
 	}
-	dbg_msg("Nui", "Element %s created", Name);
+	dbg_msg("Nui", "Element %s created x:%.2f y:%.2f", Name, Element->GetChildPosGlobal().x, Element->GetChildPosGlobal().y);
 	m_aNuiElements.add(Element);
+
+	Element->m_pParent = ParseParent(Name);
+
+	if(Element->m_pParent != NULL)
+		Element->m_pParent->m_apChild.add(Element);
+
 	return Element;
 }
 
@@ -35,11 +42,6 @@ CNuiElements *CNui::GetElement(CNuiElements::ELEMENT_TYPE Type, const char *Name
 	CNuiElements *pResultElement = SearchElement(Name);
 	if (pResultElement == NULL)
 		pResultElement = NewElement(Type, Name);
-
-	pResultElement->m_pParent = ParseParent(Name);
-
-	if(pResultElement->m_pParent != NULL)
-		pResultElement->m_pParent->m_apChild.add(pResultElement);
 
 	// TODO: ChangeLevel
 
@@ -86,7 +88,10 @@ void CNui::DeleteElement(const char *Name)
 	if(index != -1)
 	{
 		for (int i = 0; i < m_aNuiElements[index]->m_apChild.size(); ++i)
+		{
+			DeleteElement(m_aNuiElements[index]->m_apChild[i]->m_pName);
 			m_aNuiElements.remove(m_aNuiElements[index]->m_apChild[i]);
+		}
 
 		delete m_aNuiElements[index];
 		m_aNuiElements.remove_index(index);
