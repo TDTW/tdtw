@@ -265,6 +265,19 @@ vec4 CValue::Animation(ANIMATION_TYPE anim, vec4 min, vec4 max, float time)
 				time = 0.5f * (sqrtf(1 - time * time) + 1);
 			}
 			break;
+		case EaseOUTINCirc:
+			time *= 2;
+			if (time < 1)
+			{
+				time -= 1;
+				time = 0.5f * sqrtf(1 - time * time);
+			}
+			else
+			{
+				time -= 1;
+				time = - 0.5f * sqrtf(1 - time * time) + 1;
+			}
+			break;
 
 		case EaseINBack:		// плавно c запозданием, вначале запаздываем
 			s = 1.70158f;
@@ -286,6 +299,20 @@ vec4 CValue::Animation(ANIMATION_TYPE anim, vec4 min, vec4 max, float time)
 			{
 				time -= 2;
 				time = 0.5f * (time * time * ((s + 1) * time + s) + 2);
+			}
+			break;
+		case EaseOUTINBack:
+			s = 1.70158f * 1.525f;
+			time *= 2;
+			if (time < 1)
+			{
+				time -= 1;
+				time = 0.5f * (time * time * ((s + 1) * time + s) + 1);
+			}
+			else
+			{
+				//time -= 2;
+				time = 0.5f * (time * time * ((s + 1) * time - s));
 			}
 			break;
 
